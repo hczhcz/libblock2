@@ -7,6 +7,11 @@
 struct Instance;
 struct NodeBlock;
 
+struct Node;
+using NodeRef = std::unique_ptr<Node>;
+struct Typed;
+using TypedRef = std::unique_ptr<Typed>;
+
 struct Typed {
     NodeBlock &block;
     Instance &instance;
@@ -18,7 +23,7 @@ struct TypedNode: public Typed, public T {};
 struct TypedSymbol: public Typed {};
 
 struct Node {
-    virtual std::unique_ptr<Typed> build(NodeBlock &block, Instance &instance) {
+    virtual Typed *build(NodeBlock &block, Instance &instance) {
         // TODO
     }
 };
@@ -47,12 +52,12 @@ struct NodeLiteralSymbol: public NodeLiteral<std::string> {
 };
 
 struct NodeCall: public Node {
-    std::unique_ptr<Node> callee;
-    std::vector<Node> args;
+    NodeRef callee;
+    std::vector<NodeRef> args;
 
-    NodeCall(Node &&_callee, decltype(args) &&_args):
-        callee {new Node {std::move(_callee)}},
-        args {std::move(_args)} {}
+    template <class... Args>
+    NodeCall(Node *_callee, Args... _args):
+        callee {_callee} {} // TODO: push?
 };
 
 struct Symbol {
@@ -62,49 +67,50 @@ struct Symbol {
 
 struct Instance {
     std::map<std::string, TypedSymbol> symbols;
-    std::unique_ptr<Node> ast;
+    NodeRef ast;
 };
 
 struct NodeBlock: public Node {
     std::vector<std::string> args;
     std::map<std::string, Symbol> symbols;
-    std::unique_ptr<Node> ast;
+    NodeRef ast;
 
     std::vector<Instance> instances;
 
-    NodeBlock(decltype(args) &&_args, decltype(symbols) &&_symbols, Node &&_ast):
+    NodeBlock(decltype(args) &&_args, decltype(symbols) &&_symbols, Node *_ast):
         args {std::move(_args)},
         symbols {std::move(_symbols)},
-        ast {new Node {std::move(_ast)}} {}
+        ast {_ast} {}
 };
 
 namespace builder {
-    NodeLiteralBool _(bool &&value) {
-        return {std::move(value)};
+    NodeLiteralBool *_(bool &&value) {
+        return new NodeLiteralBool {std::move(value)};
     }
 
-    NodeLiteralInt _(int64_t &&value) {
-        return {std::move(value)};
+    NodeLiteralInt *_(int32_t &&value) {
+        return new NodeLiteralInt {std::move(value)};
     }
 
-    NodeLiteralReal _(double &&value) {
-        return {std::move(value)};
+    NodeLiteralInt *_(int64_t &&value) {
+        return new NodeLiteralInt {std::move(value)};
     }
 
-    NodeLiteralStr _(std::string &&value) {
-        return {std::move(value)};
+    NodeLiteralReal *_(double &&value) {
+        return new NodeLiteralReal {std::move(value)};
     }
 
-    NodeLiteralSymbol $(std::string &&value) {
-        return {std::move(value)};
+    NodeLiteralStr *_(std::string &&value) {
+        return new NodeLiteralStr {std::move(value)};
     }
 
-    using block = NodeBlock;
-    using call = NodeCall;
+    NodeLiteralSymbol *$(std::string &&value) {
+        return new NodeLiteralSymbol {std::move(value)};
+    }
 
-    template <class T>
-    NodeCall $(T &&callee, decltype(NodeCall::args) &&args) {
-        return {$(std::move(callee)), std::move(args)};
+    template <class... Args>
+    NodeCall *call(Node *callee, Args... args) {
+        return new NodeCall {callee, args...};
     }
 
     using symbol_pair_t = decltype(NodeBlock::symbols)::value_type;
@@ -132,26 +138,25 @@ int main() {
     NodeBlock root {
         {},
         {tmp("c")},
-        $(";", {
-            $("=", {
-                $("c"),
-                NodeBlock {
+        call(
+            $(";"),
+            call(
+                $("="), $("c"), new NodeBlock {
                     {"a", "b"},
                     {in("a"), in("b"), tmp("t"), out("r")},
-                    $(";", {
-                        $("=", {
-                            $("t"), $("*", {_(2l), $("b")}),
-                        }),
-                        $("=", {
-                            $("r"), $("+", {$("a"), $("t")}),
-                        }),
-                    })
+                    call(
+                        $(";"),
+                        call(
+                            $("="), $("t"), call($("*"), _(2), $("b"))
+                        ),
+                        call(
+                            $("="), $("r"), call($("+"), $("a"), $("t"))
+                        )
+                    )
                 }
-            }),
-            $("c", {
-                _("xx"), _("yy")
-            })
-        })
+            ),
+            call($("c"), _("xx"), _("yy"))
+        )
     };
 
     return 0;
