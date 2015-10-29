@@ -13,7 +13,6 @@ struct Typed;
 using TypedRef = std::unique_ptr<Typed>;
 
 struct Typed {
-    NodeBlock &block;
     Instance &instance;
 };
 
@@ -23,7 +22,7 @@ struct TypedNode: public Typed, public T {};
 struct TypedSymbol: public Typed {};
 
 struct Node {
-    virtual Typed *build(NodeBlock &block, Instance &instance) {
+    virtual Typed *build(Instance &instance) {
         // TODO
     }
 };
@@ -57,7 +56,15 @@ struct NodeCall: public Node {
 
     template <class... Args>
     NodeCall(Node *_callee, Args... _args):
-        callee {_callee} {} // TODO: push?
+        callee {_callee},
+        args {} {
+            Node *init[] {_args...};
+
+            args.reserve(sizeof...(_args));
+            for (Node *i: init) {
+                args.push_back(NodeRef {i});
+            }
+        }
 };
 
 struct Symbol {
@@ -66,6 +73,8 @@ struct Symbol {
 };
 
 struct Instance {
+    NodeBlock &block;
+
     std::map<std::string, TypedSymbol> symbols;
     NodeRef ast;
 };
