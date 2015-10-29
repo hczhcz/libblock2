@@ -46,8 +46,12 @@ struct NodeLiteralReal: public NodeLiteral<double> {
 struct NodeLiteralStr: public NodeLiteral<std::string> {
     using NodeLiteral::NodeLiteral;
 };
-struct NodeLiteralSymbol: public NodeLiteral<std::string> {
-    using NodeLiteral::NodeLiteral;
+
+struct NodeSymbol: public Node {
+    std::string name;
+
+    NodeSymbol(std::string &&_name):
+        name {std::move(_name)} {}
 };
 
 struct NodeCall: public Node {
@@ -67,11 +71,6 @@ struct NodeCall: public Node {
         }
 };
 
-struct Symbol {
-    bool in;
-    bool out;
-};
-
 struct Instance {
     NodeBlock &block;
 
@@ -79,14 +78,23 @@ struct Instance {
     NodeRef ast;
 };
 
+struct SymbolInfo {
+    bool in;
+    bool out;
+};
+
 struct NodeBlock: public Node {
     std::vector<std::string> args;
-    std::map<std::string, Symbol> symbols;
+    std::map<std::string, SymbolInfo> symbols;
     NodeRef ast;
 
     std::vector<Instance> instances;
 
-    NodeBlock(decltype(args) &&_args, decltype(symbols) &&_symbols, Node *_ast):
+    NodeBlock(
+        std::vector<std::string> &&_args,
+        std::map<std::string, SymbolInfo> &&_symbols,
+        Node *_ast
+    ):
         args {std::move(_args)},
         symbols {std::move(_symbols)},
         ast {_ast} {}
@@ -113,8 +121,8 @@ namespace builder {
         return new NodeLiteralStr {std::move(value)};
     }
 
-    NodeLiteralSymbol *$(std::string &&value) {
-        return new NodeLiteralSymbol {std::move(value)};
+    NodeSymbol *$(std::string &&name) {
+        return new NodeSymbol {std::move(name)};
     }
 
     template <class... Args>
@@ -122,7 +130,15 @@ namespace builder {
         return new NodeCall {callee, args...};
     }
 
-    using symbol_pair_t = decltype(NodeBlock::symbols)::value_type;
+    NodeBlock *block(
+        std::vector<std::string> &&args,
+        std::map<std::string, SymbolInfo> &&symbols,
+        Node *ast
+    ) {
+        return new NodeBlock {std::move(args), std::move(symbols), ast};
+    }
+
+    using symbol_pair_t = std::pair<std::string, SymbolInfo>;
 
     symbol_pair_t var(std::string &&name) {
         return {std::move(name), {true, true}};
@@ -150,7 +166,7 @@ int main() {
         call(
             $(";"),
             call(
-                $("="), $("c"), new NodeBlock {
+                $("="), $("c"), block(
                     {"a", "b"},
                     {in("a"), in("b"), tmp("t"), out("r")},
                     call(
@@ -162,7 +178,7 @@ int main() {
                             $("="), $("r"), call($("+"), $("a"), $("t"))
                         )
                     )
-                }
+                )
             ),
             call($("c"), _("xx"), _("yy"))
         )
