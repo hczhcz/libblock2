@@ -7,15 +7,20 @@
 struct Instance;
 struct Block;
 
-using symbol_t = std::string;
-using instance_t = Instance *;
-using block_t = Block *;
+struct Typed {
+    Block &block;
+    Instance &instance;
+};
+
+template <class T>
+struct TypedNode: public Typed, public T {};
+
+struct TypedSymbol: public Typed {};
 
 struct Node {
-    block_t block;
-    instance_t instance;
-
-    Node(): block {nullptr}, instance {nullptr} {}
+    virtual std::unique_ptr<Typed> build(Block &env_block, Instance &env_instance) {
+        // TODO
+    }
 };
 
 template <class T>
@@ -38,20 +43,19 @@ struct NodeCall: public Node {
 struct Symbol {
     bool in;
     bool out;
-
-    Symbol(bool _in, bool _out): in {_in}, out {_out} {}
 };
 
 struct Instance {
-    std::vector<instance_t> arg_types;
-    std::map<std::string, instance_t> symbol_types;
+    std::map<std::string, TypedSymbol> symbols;
+    std::unique_ptr<Node> ast;
 };
 
 struct Block {
     std::vector<std::string> args;
     std::map<std::string, Symbol> symbols;
-    std::vector<Instance> instances;
     std::unique_ptr<Node> ast;
+
+    std::vector<Instance> instances;
 
     Block(decltype(args) &&_args, decltype(symbols) &&_symbols, Node &&_ast):
         args {std::move(_args)},
