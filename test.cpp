@@ -5,10 +5,10 @@
 #include <iostream>
 
 struct Instance;
-struct Block;
+struct NodeBlock;
 
 struct Typed {
-    Block &block;
+    NodeBlock &block;
     Instance &instance;
 };
 
@@ -18,7 +18,7 @@ struct TypedNode: public Typed, public T {};
 struct TypedSymbol: public Typed {};
 
 struct Node {
-    virtual std::unique_ptr<Typed> build(Block &env_block, Instance &env_instance) {
+    virtual std::unique_ptr<Typed> build(NodeBlock &block, Instance &instance) {
         // TODO
     }
 };
@@ -50,14 +50,14 @@ struct Instance {
     std::unique_ptr<Node> ast;
 };
 
-struct Block {
+struct NodeBlock: public Node {
     std::vector<std::string> args;
     std::map<std::string, Symbol> symbols;
     std::unique_ptr<Node> ast;
 
     std::vector<Instance> instances;
 
-    Block(decltype(args) &&_args, decltype(symbols) &&_symbols, Node &&_ast):
+    NodeBlock(decltype(args) &&_args, decltype(symbols) &&_symbols, Node &&_ast):
         args {std::move(_args)},
         symbols {std::move(_symbols)},
         ast {new Node {std::move(_ast)}} {}
@@ -103,9 +103,8 @@ namespace builder {
         return {std::move(value)};
     }
 
-    NodeLiteralBlock $(Block &&value) {
-        return {std::move(value)};
-    }
+    using block = NodeBlock;
+    using call = NodeCall;
 
     template <class T>
     NodeCall $(T &&callee, decltype(NodeCall::args) &&args) {
@@ -132,13 +131,13 @@ namespace builder {
 int main() {
     using namespace builder;
 
-    Block root {
+    NodeBlock root {
         {},
         {tmp("c")},
         $(";", {
             $("=", {
                 $("c"),
-                $(Block {
+                NodeBlock {
                     {"a", "b"},
                     {in("a"), in("b"), tmp("t"), out("r")},
                     $(";", {
@@ -149,7 +148,7 @@ int main() {
                             $("r"), $("+", {$("a"), $("t")}),
                         }),
                     })
-                })
+                }
             }),
             $("c", {
                 _("xx"), _("yy")
