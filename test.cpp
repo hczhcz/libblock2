@@ -30,6 +30,21 @@ struct NodeLiteral: public Node {
     NodeLiteral(T &&_value):
         value {std::move(_value)} {}
 };
+struct NodeLiteralBool: public NodeLiteral<bool> {
+    using NodeLiteral::NodeLiteral;
+};
+struct NodeLiteralInt: public NodeLiteral<int64_t> {
+    using NodeLiteral::NodeLiteral;
+};
+struct NodeLiteralReal: public NodeLiteral<double> {
+    using NodeLiteral::NodeLiteral;
+};
+struct NodeLiteralStr: public NodeLiteral<std::string> {
+    using NodeLiteral::NodeLiteral;
+};
+struct NodeLiteralSymbol: public NodeLiteral<std::string> {
+    using NodeLiteral::NodeLiteral;
+};
 
 struct NodeCall: public Node {
     std::unique_ptr<Node> callee;
@@ -63,27 +78,8 @@ struct NodeBlock: public Node {
         ast {new Node {std::move(_ast)}} {}
 };
 
-struct NodeLiteralBool: public NodeLiteral<bool> {
-    using NodeLiteral::NodeLiteral;
-};
-struct NodeLiteralInt: public NodeLiteral<int64_t> {
-    using NodeLiteral::NodeLiteral;
-};
-struct NodeLiteralReal: public NodeLiteral<double> {
-    using NodeLiteral::NodeLiteral;
-};
-struct NodeLiteralStr: public NodeLiteral<std::string> {
-    using NodeLiteral::NodeLiteral;
-};
-struct NodeLiteralSymbol: public NodeLiteral<std::string> {
-    using NodeLiteral::NodeLiteral;
-};
-struct NodeLiteralBlock: public NodeLiteral<Block> {
-    using NodeLiteral::NodeLiteral;
-};
-
 namespace builder {
-    NodeLiteralInt _(bool &&value) {
+    NodeLiteralBool _(bool &&value) {
         return {std::move(value)};
     }
 
@@ -111,19 +107,21 @@ namespace builder {
         return {$(std::move(callee)), std::move(args)};
     }
 
-    std::pair<std::string, Symbol> var(std::string &&name) {
+    using symbol_pair_t = decltype(NodeBlock::symbols)::value_type;
+
+    symbol_pair_t var(std::string &&name) {
         return {std::move(name), {true, true}};
     }
 
-    std::pair<std::string, Symbol> in(std::string &&name) {
+    symbol_pair_t in(std::string &&name) {
         return {std::move(name), {true, false}};
     }
 
-    std::pair<std::string, Symbol> out(std::string &&name) {
+    symbol_pair_t out(std::string &&name) {
         return {std::move(name), {false, true}};
     }
 
-    std::pair<std::string, Symbol> tmp(std::string &&name) {
+    symbol_pair_t tmp(std::string &&name) {
         return {std::move(name), {false, false}};
     }
 }
