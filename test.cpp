@@ -28,11 +28,20 @@ struct Instance: public Type {
         block {_block} {}
 };
 
+bool operator==(const Type &a, const Type &b) {
+    return &a == &b; // notice: assumed
+}
+
+bool operator!=(const Type &a, const Type &b) {
+    return !(a == b);
+}
+
 //////////////// Nodes ////////////////
 
 struct Node {
-    virtual Type &infer(Instance &instance) = 0;
-    virtual void check(Instance &instance, Type &type) = 0;
+    virtual void buildProc(Instance &instance) = 0;
+    virtual Type &buildOut(Instance &instance) = 0;
+    virtual void buildIn(Instance &instance, Type &type) = 0;
 };
 using NodeRef = std::unique_ptr<Node>;
 
@@ -43,13 +52,17 @@ struct NodeLiteral: public Node {
     NodeLiteral(T &&_value):
         value {std::move(_value)} {}
 
-    virtual Type &infer(Instance &instance) {
+    virtual void buildProc(Instance &instance) {
+        // nothing
+    }
+
+    virtual Type &buildOut(Instance &instance) {
         static TypeNative<T> type {};
 
         return type;
     }
 
-    virtual void check(Instance &instance, Type &type) {
+    virtual void buildIn(Instance &instance, Type &type) {
         throw std::exception {};
     }
 };
@@ -64,7 +77,17 @@ struct NodeSymbol: public Node {
     NodeSymbol(std::string &&_name):
         name {std::move(_name)} {}
 
-    virtual Type &infer(Instance &instance) {
+    virtual void buildProc(Instance &instance) {
+        const auto &symbol = instance.symbol_types.find(name);
+
+        if (symbol != instance.symbol_types.end()) {
+            // nothing
+        } else {
+            throw std::exception {};
+        }
+    }
+
+    virtual Type &buildOut(Instance &instance) {
         const auto &symbol = instance.symbol_types.find(name);
 
         if (symbol != instance.symbol_types.end()) {
@@ -74,11 +97,11 @@ struct NodeSymbol: public Node {
         }
     }
 
-    virtual void check(Instance &instance, Type &type) {
+    virtual void buildIn(Instance &instance, Type &type) {
         const auto &symbol = instance.symbol_types.find(name);
 
         if (symbol != instance.symbol_types.end()) {
-            if (&symbol->second != &type) { // TODO
+            if (symbol->second != type) {
                 throw std::exception {};
             }
         } else {
@@ -110,11 +133,15 @@ struct Block: public Node, public Type {
         symbols {std::move(_symbols)},
         ast {_ast} {}
 
-    virtual Type &infer(Instance &instance) {
+    virtual void buildProc(Instance &instance) {
+        // nothing
+    }
+
+    virtual Type &buildOut(Instance &instance) {
         return *this;
     }
 
-    virtual void check(Instance &instance, Type &type) {
+    virtual void buildIn(Instance &instance, Type &type) {
         throw std::exception {};
     }
 
@@ -123,10 +150,7 @@ struct Block: public Node, public Type {
             bool ok {true};
 
             for (const auto &symbol: instance.symbol_types) {
-                if (
-                    &(symbol.second)
-                    != &(target.symbol_types[symbol.first])
-                ) { // TODO
+                if (symbol.second != target.symbol_types[symbol.first]) {
                     ok = false;
                     break;
                 }
@@ -140,7 +164,7 @@ struct Block: public Node, public Type {
 
         // not found
         instances.push_back(std::move(instance));
-        ast->infer(instances.back());
+        ast->buildProc(instances.back());
 
         return instances.back();
     }
@@ -154,8 +178,7 @@ struct NodeCall: public Node {
 
     template <class... Args>
     NodeCall(Node *_callee, Args... _args):
-        callee {_callee},
-        args {} {
+        callee {_callee} {
             Node *init[] {_args...};
 
             args.reserve(sizeof...(_args));
@@ -164,10 +187,11 @@ struct NodeCall: public Node {
             }
         }
 
-    virtual Type &infer(Instance &instance) {
-        // TODO: special args: result, self, parent
+    template <class Before, class After>
+    void build(Instance &instance, Before before, After after) {
+        // TODO: special args: input, result, self, parent
 
-        Type &callee_type {callee->infer(instance)};
+        Type &callee_type {callee->buildOut(instance)};
 
         if (
             Block *block_p {
@@ -181,12 +205,16 @@ struct NodeCall: public Node {
 
             Instance a_instance {*block_p};
 
+            before(a_instance);
+
             // input arguments
             for (size_t i = 0; i < args.size(); ++i) {
                 std::string &param {block_p->params[i]};
 
                 if (block_p->symbols.at(param).in) {
-                    a_instance.symbol_types.insert({param, args[i]->infer(instance)});
+                    a_instance.symbol_types.insert({
+                        param, args[i]->buildOut(instance)
+                    });
                 }
             }
 
@@ -199,18 +227,69 @@ struct NodeCall: public Node {
                 std::string &param {block_p->params[i]};
 
                 if (block_p->symbols.at(param).out) {
-                     args[i]->check(instance, f_instance.symbol_types.at(param));
+                    const auto &symbol = f_instance.symbol_types.find(param);
+
+                    if (symbol != f_instance.symbol_types.end()) {
+                        args[i]->buildIn(
+                            instance, symbol->second
+                        );
+                    } else {
+                        throw std::exception {};
+                    }
                 }
             }
+
+            after(f_instance);
         } else {
             // TODO: value as callee
             throw std::exception {};
         }
     }
 
-    virtual void check(Instance &instance, Type &type) {
-        // TODO
-        throw std::exception {};
+    virtual void buildProc(Instance &instance) {
+        build(
+            instance,
+            [](Instance &instance) {
+                // nothing
+            },
+            [](Instance &instance) {
+                // nothing
+            }
+        );
+    }
+
+    virtual Type &buildOut(Instance &instance) {
+        Type *type_p;
+
+        build(
+            instance,
+            [](Instance &instance) {
+                // nothing
+            },
+            [&](Instance &instance) {
+                const auto &symbol = instance.symbol_types.find("result");
+
+                if (symbol != instance.symbol_types.end()) {
+                    type_p = &symbol->second;
+                } else {
+                    throw std::exception {};
+                }
+            }
+        );
+
+        return *type_p;
+    }
+
+    virtual void buildIn(Instance &instance, Type &type) {
+        build(
+            instance,
+            [&](Instance &instance) {
+                instance.symbol_types.insert({"input", type});
+            },
+            [](Instance &instance) {
+                // nothing
+            }
+        );
     }
 };
 
