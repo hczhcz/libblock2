@@ -119,7 +119,30 @@ struct Block: public Node, public Type {
     }
 
     Instance &getInstance(Instance &&instance) {
-        // TODO
+        for (Instance &target: instances) {
+            bool ok {true};
+
+            for (const auto &symbol: instance.symbol_types) {
+                if (
+                    &(symbol.second)
+                    != &(target.symbol_types[symbol.first])
+                ) { // TODO
+                    ok = false;
+                    break;
+                }
+            }
+
+            if (ok) {
+                // found
+                return target;
+            }
+        }
+
+        // not found
+        instances.push_back(std::move(instance));
+        ast->infer(instances.back());
+
+        return instances.back();
     }
 };
 
