@@ -7,24 +7,25 @@
 struct Instance;
 struct NodeBlock;
 
-struct Node;
-using NodeRef = std::unique_ptr<Node>;
-struct Typed;
-using TypedRef = std::unique_ptr<Typed>;
+struct Instance {
+    NodeBlock &block;
 
-struct Typed {
-    Instance &instance;
+    std::map<std::string, Instance &> symbol_types;
 };
 
-template <class T>
-struct TypedNode: public Typed, public T {};
+struct Type {
+    //
+};
 
-struct TypedSymbol: public Typed {};
+struct TypeBlock: public Type, public Instance {
+    //
+};
+
+struct Node;
+using NodeRef = std::unique_ptr<Node>;
 
 struct Node {
-    virtual Typed *build(Instance &instance) {
-        // TODO
-    }
+    virtual void infer(Instance &instance) = 0;
 };
 
 template <class T>
@@ -33,6 +34,10 @@ struct NodeLiteral: public Node {
 
     NodeLiteral(T &&_value):
         value {std::move(_value)} {}
+
+    virtual void infer(Instance &instance) {
+        // TODO
+    }
 };
 using NodeLiteralBool = NodeLiteral<bool>;
 using NodeLiteralInt = NodeLiteral<int64_t>;
@@ -44,6 +49,10 @@ struct NodeSymbol: public Node {
 
     NodeSymbol(std::string &&_name):
         name {std::move(_name)} {}
+
+    virtual void infer(Instance &instance) {
+        // TODO
+    }
 };
 
 struct NodeCall: public Node {
@@ -61,13 +70,10 @@ struct NodeCall: public Node {
                 args.push_back(NodeRef {i});
             }
         }
-};
 
-struct Instance {
-    NodeBlock &block;
-
-    std::map<std::string, TypedSymbol> symbols;
-    NodeRef ast;
+    virtual void infer(Instance &instance) {
+        // TODO
+    }
 };
 
 struct SymbolInfo {
@@ -90,6 +96,10 @@ struct NodeBlock: public Node {
         args {std::move(_args)},
         symbols {std::move(_symbols)},
         ast {_ast} {}
+
+    virtual void infer(Instance &instance) {
+        // TODO
+    }
 };
 
 namespace builder {
