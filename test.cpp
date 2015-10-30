@@ -4,7 +4,7 @@
 #include <map>
 #include <iostream>
 
-struct NodeBlock;
+struct Block;
 
 //////////////// Types ////////////////
 
@@ -18,11 +18,11 @@ struct TypeNative: public Type {
 };
 
 struct Instance: public Type {
-    NodeBlock &block;
+    Block &block;
 
     std::map<std::string, const Type &> symbol_types;
 
-    Instance(NodeBlock &_block):
+    Instance(Block &_block):
         block {_block} {}
 };
 
@@ -82,19 +82,21 @@ struct NodeCall: public Node {
     }
 };
 
+//////////////// Blocks ////////////////
+
 struct SymbolInfo {
     bool in;
     bool out;
 };
 
-struct NodeBlock: public Node {
+struct Block: public Node, public Type {
     std::vector<std::string> args;
     std::map<std::string, SymbolInfo> symbols;
     NodeRef ast;
 
     std::vector<Instance> instances;
 
-    NodeBlock(
+    Block(
         std::vector<std::string> &&_args,
         std::map<std::string, SymbolInfo> &&_symbols,
         Node *_ast
@@ -140,12 +142,12 @@ namespace builder {
         return new NodeCall {callee, args...};
     }
 
-    NodeBlock *block(
+    Block *block(
         std::vector<std::string> &&args,
         std::map<std::string, SymbolInfo> &&symbols,
         Node *ast
     ) {
-        return new NodeBlock {std::move(args), std::move(symbols), ast};
+        return new Block {std::move(args), std::move(symbols), ast};
     }
 
     using symbol_pair_t = std::pair<std::string, SymbolInfo>;
@@ -170,7 +172,7 @@ namespace builder {
 int main() {
     using namespace builder;
 
-    NodeBlock root {
+    Block root {
         {},
         {tmp("c")},
         call(
