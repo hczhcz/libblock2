@@ -43,8 +43,14 @@ struct NodeLiteral: public Node {
     NodeLiteral(T &&_value):
         value {std::move(_value)} {}
 
-    virtual void infer(Instance &instance) {
-        // TODO
+    virtual Type &infer(Instance &instance) {
+        static TypeNative<T> type {};
+
+        return type;
+    }
+
+    virtual void check(Instance &instance, Type &type) {
+        throw std::exception {};
     }
 };
 using NodeLiteralBool = NodeLiteral<bool>;
@@ -58,29 +64,26 @@ struct NodeSymbol: public Node {
     NodeSymbol(std::string &&_name):
         name {std::move(_name)} {}
 
-    virtual void infer(Instance &instance) {
-        // TODO
-    }
-};
+    virtual Type &infer(Instance &instance) {
+        const auto &symbol = instance.symbol_types.find(name);
 
-struct NodeCall: public Node {
-    NodeRef callee;
-    std::vector<NodeRef> args;
-
-    template <class... Args>
-    NodeCall(Node *_callee, Args... _args):
-        callee {_callee},
-        args {} {
-            Node *init[] {_args...};
-
-            args.reserve(sizeof...(_args));
-            for (Node *i: init) {
-                args.push_back(NodeRef {i});
-            }
+        if (symbol != instance.symbol_types.end()) {
+            return symbol->second;
+        } else {
+            throw std::exception {};
         }
+    }
 
-    virtual void infer(Instance &instance) {
-        // TODO
+    virtual void check(Instance &instance, Type &type) {
+        const auto &symbol = instance.symbol_types.find(name);
+
+        if (symbol != instance.symbol_types.end()) {
+            if (&symbol->second != &type) { // TODO
+                throw std::exception {};
+            }
+        } else {
+            instance.symbol_types.insert({name, type});
+        }
     }
 };
 
@@ -107,8 +110,84 @@ struct Block: public Node, public Type {
         symbols {std::move(_symbols)},
         ast {_ast} {}
 
-    virtual void infer(Instance &instance) {
+    virtual Type &infer(Instance &instance) {
+        return *this;
+    }
+
+    virtual void check(Instance &instance, Type &type) {
+        throw std::exception {};
+    }
+
+    Instance &getInstance(Instance &&instance) {
         // TODO
+    }
+};
+
+//////////////// Calls ////////////////
+
+struct NodeCall: public Node {
+    NodeRef callee;
+    std::vector<NodeRef> args;
+
+    template <class... Args>
+    NodeCall(Node *_callee, Args... _args):
+        callee {_callee},
+        args {} {
+            Node *init[] {_args...};
+
+            args.reserve(sizeof...(_args));
+            for (Node *i: init) {
+                args.push_back(NodeRef {i});
+            }
+        }
+
+    virtual Type &infer(Instance &instance) {
+        // TODO: special args: result, self, parent
+
+        Type &callee_type {callee->infer(instance)};
+
+        if (
+            Block *block_p {
+                dynamic_cast<Block *>(&callee_type)
+            }
+        ) {
+            if (args.size() != block_p->params.size()) {
+                // TODO: arg size != param size
+                throw std::exception {};
+            }
+
+            Instance a_instance {*block_p};
+
+            // input arguments
+            for (size_t i = 0; i < args.size(); ++i) {
+                std::string &param {block_p->params[i]};
+
+                if (block_p->symbols.at(param).in) {
+                    a_instance.symbol_types.insert({param, args[i]->infer(instance)});
+                }
+            }
+
+            Instance &f_instance {
+                block_p->getInstance(std::move(a_instance))
+            };
+
+            // output arguments
+            for (size_t i = 0; i < args.size(); ++i) {
+                std::string &param {block_p->params[i]};
+
+                if (block_p->symbols.at(param).out) {
+                     args[i]->check(instance, f_instance.symbol_types.at(param));
+                }
+            }
+        } else {
+            // TODO: value as callee
+            throw std::exception {};
+        }
+    }
+
+    virtual void check(Instance &instance, Type &type) {
+        // TODO
+        throw std::exception {};
     }
 };
 
