@@ -38,10 +38,14 @@ bool operator!=(const Type &a, const Type &b) {
 
 //////////////// Nodes ////////////////
 
+using Output = std::vector<std::vector<std::string>>;
+
 struct Node {
     virtual void buildProc(Instance &instance) = 0;
     virtual Type &buildOut(Instance &instance) = 0;
     virtual void buildIn(Instance &instance, Type &type) = 0;
+
+    virtual void render(Output &output) = 0;
 };
 using NodeRef = std::unique_ptr<Node>;
 
@@ -64,6 +68,10 @@ struct NodeLiteral: public Node {
 
     virtual void buildIn(Instance &instance, Type &type) {
         throw std::exception {};
+    }
+
+    virtual void render(Output &output) {
+        // TODO
     }
 };
 using NodeLiteralBool = NodeLiteral<bool>;
@@ -108,6 +116,10 @@ struct NodeSymbol: public Node {
             instance.symbol_types.insert({name, type});
         }
     }
+
+    virtual void render(Output &output) {
+        // TODO
+    }
 };
 
 //////////////// Blocks ////////////////
@@ -133,24 +145,12 @@ struct Block: public Node, public Type {
         symbols {std::move(_symbols)},
         ast {_ast} {}
 
-    virtual void buildProc(Instance &instance) {
-        // nothing
-    }
-
-    virtual Type &buildOut(Instance &instance) {
-        return *this;
-    }
-
-    virtual void buildIn(Instance &instance, Type &type) {
-        throw std::exception {};
-    }
-
     Instance &getInstance(Instance &&instance) {
         for (Instance &target: instances) {
             bool ok {true};
 
             for (const auto &symbol: instance.symbol_types) {
-                if (symbol.second != target.symbol_types[symbol.first]) {
+                if (symbol.second != target.symbol_types.at(symbol.first)) {
                     ok = false;
                     break;
                 }
@@ -167,6 +167,22 @@ struct Block: public Node, public Type {
         ast->buildProc(instances.back());
 
         return instances.back();
+    }
+
+    virtual void buildProc(Instance &instance) {
+        // nothing
+    }
+
+    virtual Type &buildOut(Instance &instance) {
+        return *this;
+    }
+
+    virtual void buildIn(Instance &instance, Type &type) {
+        throw std::exception {};
+    }
+
+    virtual void render(Output &output) {
+        // TODO
     }
 };
 
@@ -270,6 +286,7 @@ struct NodeCall: public Node {
                 const auto &symbol = instance.symbol_types.find("result");
 
                 if (symbol != instance.symbol_types.end()) {
+                    // TODO: instance.block.symbols.at("result").out ?
                     type_p = &symbol->second;
                 } else {
                     throw std::exception {};
@@ -284,6 +301,7 @@ struct NodeCall: public Node {
         build(
             instance,
             [&](Instance &instance) {
+                // TODO: instance.block.symbols.at("input").in ?
                 instance.symbol_types.insert({"input", type});
             },
             [](Instance &instance) {
@@ -291,9 +309,13 @@ struct NodeCall: public Node {
             }
         );
     }
+
+    virtual void render(Output &output) {
+        // TODO
+    }
 };
 
-//////////////// The Builder ////////////////
+//////////////// Node Tree Builder ////////////////
 
 namespace builder {
     NodeLiteralBool *_(bool &&value) {
@@ -378,6 +400,8 @@ int main() {
             call($("c"), _("xx"), _("yy"))
         )
     };
+
+    root.getInstance(Instance {root});
 
     return 0;
 }
