@@ -4,29 +4,35 @@
 #include <map>
 #include <iostream>
 
-struct Instance;
 struct NodeBlock;
 
-struct Instance {
-    NodeBlock &block;
-
-    std::map<std::string, Instance &> symbol_types;
-};
+//////////////// Types ////////////////
 
 struct Type {
     //
 };
 
-struct TypeBlock: public Type, public Instance {
+template <class T>
+struct TypeNative: public Type {
     //
 };
 
-struct Node;
-using NodeRef = std::unique_ptr<Node>;
+struct Instance: public Type {
+    NodeBlock &block;
+
+    std::map<std::string, const Type &> symbol_types;
+
+    Instance(NodeBlock &_block):
+        block {_block} {}
+};
+
+//////////////// Nodes ////////////////
 
 struct Node {
-    virtual void infer(Instance &instance) = 0;
+    virtual const Type &infer(Instance &instance) = 0;
+    virtual void check(Instance &instance, const Type &type) = 0;
 };
+using NodeRef = std::unique_ptr<Node>;
 
 template <class T>
 struct NodeLiteral: public Node {
@@ -101,6 +107,8 @@ struct NodeBlock: public Node {
         // TODO
     }
 };
+
+//////////////// The Builder ////////////////
 
 namespace builder {
     NodeLiteralBool *_(bool &&value) {
