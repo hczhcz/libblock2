@@ -34,18 +34,10 @@ struct NodeLiteral: public Node {
     NodeLiteral(T &&_value):
         value {std::move(_value)} {}
 };
-struct NodeLiteralBool: public NodeLiteral<bool> {
-    using NodeLiteral::NodeLiteral;
-};
-struct NodeLiteralInt: public NodeLiteral<int64_t> {
-    using NodeLiteral::NodeLiteral;
-};
-struct NodeLiteralReal: public NodeLiteral<double> {
-    using NodeLiteral::NodeLiteral;
-};
-struct NodeLiteralStr: public NodeLiteral<std::string> {
-    using NodeLiteral::NodeLiteral;
-};
+using NodeLiteralBool = NodeLiteral<bool>;
+using NodeLiteralInt = NodeLiteral<int64_t>;
+using NodeLiteralReal = NodeLiteral<double>;
+using NodeLiteralStr = NodeLiteral<std::string>;
 
 struct NodeSymbol: public Node {
     std::string name;
@@ -168,14 +160,14 @@ int main() {
             call(
                 $("="), $("c"), block(
                     {"a", "b"},
-                    {in("a"), in("b"), tmp("t"), out("r")},
+                    {in("a"), in("b"), tmp("t"), out("result")},
                     call(
                         $(";"),
                         call(
                             $("="), $("t"), call($("*"), _(2), $("b"))
                         ),
                         call(
-                            $("="), $("r"), call($("+"), $("a"), $("t"))
+                            $("="), $("result"), call($("+"), $("a"), $("t"))
                         )
                     )
                 )
