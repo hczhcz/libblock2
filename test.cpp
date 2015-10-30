@@ -9,7 +9,9 @@ struct Block;
 //////////////// Types ////////////////
 
 struct Type {
-    //
+    virtual void print() {
+        // TODO
+    }
 };
 
 template <class T>
@@ -20,7 +22,7 @@ struct TypeNative: public Type {
 struct Instance: public Type {
     Block &block;
 
-    std::map<std::string, const Type &> symbol_types;
+    std::map<std::string, Type &> symbol_types;
 
     Instance(Block &_block):
         block {_block} {}
@@ -29,8 +31,8 @@ struct Instance: public Type {
 //////////////// Nodes ////////////////
 
 struct Node {
-    virtual const Type &infer(Instance &instance) = 0;
-    virtual void check(Instance &instance, const Type &type) = 0;
+    virtual Type &infer(Instance &instance) = 0;
+    virtual void check(Instance &instance, Type &type) = 0;
 };
 using NodeRef = std::unique_ptr<Node>;
 
@@ -90,18 +92,18 @@ struct SymbolInfo {
 };
 
 struct Block: public Node, public Type {
-    std::vector<std::string> args;
+    std::vector<std::string> params;
     std::map<std::string, SymbolInfo> symbols;
     NodeRef ast;
 
     std::vector<Instance> instances;
 
     Block(
-        std::vector<std::string> &&_args,
+        std::vector<std::string> &&_params,
         std::map<std::string, SymbolInfo> &&_symbols,
         Node *_ast
     ):
-        args {std::move(_args)},
+        params {std::move(_params)},
         symbols {std::move(_symbols)},
         ast {_ast} {}
 
@@ -143,11 +145,11 @@ namespace builder {
     }
 
     Block *block(
-        std::vector<std::string> &&args,
+        std::vector<std::string> &&params,
         std::map<std::string, SymbolInfo> &&symbols,
         Node *ast
     ) {
-        return new Block {std::move(args), std::move(symbols), ast};
+        return new Block {std::move(params), std::move(symbols), ast};
     }
 
     using symbol_pair_t = std::pair<std::string, SymbolInfo>;
