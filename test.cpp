@@ -9,6 +9,10 @@ struct Block;
 //////////////// Types ////////////////
 
 struct Type {
+    uintptr_t uid() const {
+        return (uintptr_t) this; // notice: assumed
+    }
+
     virtual void print() {
         // TODO
     }
@@ -29,7 +33,7 @@ struct Instance: public Type {
 };
 
 bool operator==(const Type &a, const Type &b) {
-    return &a == &b; // notice: assumed
+    return a.uid() == b.uid();
 }
 
 bool operator!=(const Type &a, const Type &b) {
@@ -86,6 +90,7 @@ struct NodeSymbol: public Node {
         name {std::move(_name)} {}
 
     virtual void buildProc(Instance &instance) {
+        // TODO: lookup?
         const auto &symbol = instance.symbol_types.find(name);
 
         if (symbol != instance.symbol_types.end()) {
@@ -96,6 +101,7 @@ struct NodeSymbol: public Node {
     }
 
     virtual Type &buildOut(Instance &instance) {
+        // TODO: lookup?
         const auto &symbol = instance.symbol_types.find(name);
 
         if (symbol != instance.symbol_types.end()) {
@@ -106,6 +112,7 @@ struct NodeSymbol: public Node {
     }
 
     virtual void buildIn(Instance &instance, Type &type) {
+        // TODO: lookup?
         const auto &symbol = instance.symbol_types.find(name);
 
         if (symbol != instance.symbol_types.end()) {
@@ -130,6 +137,7 @@ struct SymbolInfo {
 };
 
 struct Block: public Node, public Type {
+    // TODO: multiple signature (overloading and SFINAE)
     std::vector<std::string> params;
     std::map<std::string, SymbolInfo> symbols;
     NodeRef ast;
@@ -215,7 +223,7 @@ struct NodeCall: public Node {
             }
         ) {
             if (args.size() != block_p->params.size()) {
-                // TODO: arg size != param size
+                // error: arg size != param size
                 throw std::exception {};
             }
 
@@ -257,7 +265,7 @@ struct NodeCall: public Node {
 
             after(f_instance);
         } else {
-            // TODO: value as callee
+            // error: value as callee
             throw std::exception {};
         }
     }
