@@ -84,14 +84,14 @@ using NodeLiteralReal = NodeLiteral<double>;
 using NodeLiteralStr = NodeLiteral<std::string>;
 
 struct NodeSymbol: public Node {
-    std::string name;
+    std::vector<std::string> path;
 
-    NodeSymbol(std::string &&_name):
-        name {std::move(_name)} {}
+    NodeSymbol(std::vector<std::string> &&_path):
+        path {std::move(_path)} {}
 
     virtual void buildProc(Instance &instance, Output &output) {
         // TODO: lookup?
-        const auto &symbol = instance.symbol_types.find(name);
+        const auto &symbol = instance.symbol_types.find(path[0]); // TODO
 
         if (symbol != instance.symbol_types.end()) {
             // nothing
@@ -102,7 +102,7 @@ struct NodeSymbol: public Node {
 
     virtual Type &buildOut(Instance &instance, Output &output) {
         // TODO: lookup?
-        const auto &symbol = instance.symbol_types.find(name);
+        const auto &symbol = instance.symbol_types.find(path[0]); // TODO
 
         if (symbol != instance.symbol_types.end()) {
             return symbol->second;
@@ -113,14 +113,14 @@ struct NodeSymbol: public Node {
 
     virtual void buildIn(Instance &instance, Type &type, Output &output) {
         // TODO: lookup?
-        const auto &symbol = instance.symbol_types.find(name);
+        const auto &symbol = instance.symbol_types.find(path[0]); // TODO
 
         if (symbol != instance.symbol_types.end()) {
             if (symbol->second != type) {
                 throw std::exception {};
             }
         } else {
-            instance.symbol_types.insert({name, type});
+            instance.symbol_types.insert({path[0], type}); // TODO
         }
     }
 };
@@ -335,7 +335,11 @@ namespace builder {
     }
 
     NodeSymbol *$(std::string &&name) {
-        return new NodeSymbol {std::move(name)};
+        return new NodeSymbol {{std::move(name)}};
+    }
+
+    NodeSymbol *$(std::vector<std::string> &&path) {
+        return new NodeSymbol {std::move(path)};
     }
 
     template <class... Args>
@@ -381,7 +385,7 @@ int main() {
             call(
                 $("="), $("c"), block(
                     {"a", "b"},
-                    {in("a"), in("b"), tmp("t"), out("result")},
+                    {in("a"), in("b"), tmp("t")},
                     call(
                         $(";"),
                         call(
