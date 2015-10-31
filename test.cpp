@@ -50,11 +50,10 @@ using Output = std::map<uintptr_t, OutputContext>;
 //////////////// Nodes ////////////////
 
 struct Node {
-    virtual void buildProc(Instance &instance) = 0;
-    virtual Type &buildOut(Instance &instance) = 0;
-    virtual void buildIn(Instance &instance, Type &type) = 0;
 
-    virtual void render(Output &output) = 0;
+    virtual void buildProc(Instance &instance, Output &output) = 0;
+    virtual Type &buildOut(Instance &instance, Output &output) = 0;
+    virtual void buildIn(Instance &instance, Type &type, Output &output) = 0;
 };
 using NodeRef = std::unique_ptr<Node>;
 
@@ -65,22 +64,18 @@ struct NodeLiteral: public Node {
     NodeLiteral(T &&_value):
         value {std::move(_value)} {}
 
-    virtual void buildProc(Instance &instance) {
+    virtual void buildProc(Instance &instance, Output &output) {
         // nothing
     }
 
-    virtual Type &buildOut(Instance &instance) {
+    virtual Type &buildOut(Instance &instance, Output &output) {
         static TypeNative<T> type {};
 
         return type;
     }
 
-    virtual void buildIn(Instance &instance, Type &type) {
+    virtual void buildIn(Instance &instance, Type &type, Output &output) {
         throw std::exception {};
-    }
-
-    virtual void render(Output &output) {
-        // TODO
     }
 };
 using NodeLiteralBool = NodeLiteral<bool>;
@@ -94,7 +89,7 @@ struct NodeSymbol: public Node {
     NodeSymbol(std::string &&_name):
         name {std::move(_name)} {}
 
-    virtual void buildProc(Instance &instance) {
+    virtual void buildProc(Instance &instance, Output &output) {
         // TODO: lookup?
         const auto &symbol = instance.symbol_types.find(name);
 
@@ -105,7 +100,7 @@ struct NodeSymbol: public Node {
         }
     }
 
-    virtual Type &buildOut(Instance &instance) {
+    virtual Type &buildOut(Instance &instance, Output &output) {
         // TODO: lookup?
         const auto &symbol = instance.symbol_types.find(name);
 
@@ -116,7 +111,7 @@ struct NodeSymbol: public Node {
         }
     }
 
-    virtual void buildIn(Instance &instance, Type &type) {
+    virtual void buildIn(Instance &instance, Type &type, Output &output) {
         // TODO: lookup?
         const auto &symbol = instance.symbol_types.find(name);
 
@@ -127,10 +122,6 @@ struct NodeSymbol: public Node {
         } else {
             instance.symbol_types.insert({name, type});
         }
-    }
-
-    virtual void render(Output &output) {
-        // TODO
     }
 };
 
@@ -158,7 +149,7 @@ struct Block: public Node, public Type {
         symbols {std::move(_symbols)},
         ast {_ast} {}
 
-    Instance &getInstance(Instance &&instance) {
+    Instance &getInstance(Instance &&instance, Output &output) {
         for (Instance &target: instances) {
             bool ok {true};
 
@@ -177,25 +168,21 @@ struct Block: public Node, public Type {
 
         // not found
         instances.push_back(std::move(instance));
-        ast->buildProc(instances.back());
+        ast->buildProc(instances.back(), output);
 
         return instances.back();
     }
 
-    virtual void buildProc(Instance &instance) {
+    virtual void buildProc(Instance &instance, Output &output) {
         // nothing
     }
 
-    virtual Type &buildOut(Instance &instance) {
+    virtual Type &buildOut(Instance &instance, Output &output) {
         return *this;
     }
 
-    virtual void buildIn(Instance &instance, Type &type) {
+    virtual void buildIn(Instance &instance, Type &type, Output &output) {
         throw std::exception {};
-    }
-
-    virtual void render(Output &output) {
-        // TODO
     }
 };
 
@@ -217,10 +204,10 @@ struct NodeCall: public Node {
         }
 
     template <class Before, class After>
-    void build(Instance &instance, Before before, After after) {
+    void build(Instance &instance, Output &output, Before before, After after) {
         // TODO: special args: input, result, self, parent
 
-        Type &callee_type {callee->buildOut(instance)};
+        Type &callee_type {callee->buildOut(instance, output)};
 
         if (
             Block *block_p {
@@ -242,13 +229,13 @@ struct NodeCall: public Node {
 
                 if (block_p->symbols.at(param).in) {
                     a_instance.symbol_types.insert({
-                        param, args[i]->buildOut(instance)
+                        param, args[i]->buildOut(instance, output)
                     });
                 }
             }
 
             Instance &f_instance {
-                block_p->getInstance(std::move(a_instance))
+                block_p->getInstance(std::move(a_instance), output)
             };
 
             // output arguments
@@ -260,7 +247,7 @@ struct NodeCall: public Node {
 
                     if (symbol != f_instance.symbol_types.end()) {
                         args[i]->buildIn(
-                            instance, symbol->second
+                            instance, symbol->second, output
                         );
                     } else {
                         throw std::exception {};
@@ -275,9 +262,9 @@ struct NodeCall: public Node {
         }
     }
 
-    virtual void buildProc(Instance &instance) {
+    virtual void buildProc(Instance &instance, Output &output) {
         build(
-            instance,
+            instance, output,
             [](Instance &instance) {
                 // nothing
             },
@@ -287,11 +274,11 @@ struct NodeCall: public Node {
         );
     }
 
-    virtual Type &buildOut(Instance &instance) {
+    virtual Type &buildOut(Instance &instance, Output &output) {
         Type *type_p;
 
         build(
-            instance,
+            instance, output,
             [](Instance &instance) {
                 // nothing
             },
@@ -310,9 +297,9 @@ struct NodeCall: public Node {
         return *type_p;
     }
 
-    virtual void buildIn(Instance &instance, Type &type) {
+    virtual void buildIn(Instance &instance, Type &type, Output &output) {
         build(
-            instance,
+            instance, output,
             [&](Instance &instance) {
                 // TODO: instance.block.symbols.at("input").in ?
                 instance.symbol_types.insert({"input", type});
@@ -321,10 +308,6 @@ struct NodeCall: public Node {
                 // nothing
             }
         );
-    }
-
-    virtual void render(Output &output) {
-        // TODO
     }
 };
 
@@ -414,7 +397,9 @@ int main() {
         )
     };
 
-    root.getInstance(Instance {root});
+    Output output;
+
+    root.getInstance(Instance {root}, output);
 
     return 0;
 }
