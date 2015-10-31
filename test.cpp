@@ -1,4 +1,5 @@
 #include "util.hpp"
+#include <sstream>
 #include <iostream>
 
 struct Block;
@@ -6,8 +7,8 @@ struct Block;
 //////////////// Types ////////////////
 
 struct Type {
-    uintptr_t uid() const {
-        return (uintptr_t) this; // notice: assumed
+    uintptr_t tuid() const {
+        return (uintptr_t) this;
     }
 
     virtual void print() {
@@ -30,16 +31,23 @@ struct Instance: public Type {
 };
 
 bool operator==(const Type &a, const Type &b) {
-    return a.uid() == b.uid();
+    return a.tuid() == b.tuid();
 }
 
 bool operator!=(const Type &a, const Type &b) {
     return !(a == b);
 }
 
-//////////////// Nodes ////////////////
+//////////////// Output ////////////////
 
-using Output = std::vector<std::vector<std::string>>;
+struct OutputContext {
+    std::ostringstream header;
+    std::ostringstream content;
+};
+
+using Output = std::map<uintptr_t, OutputContext>;
+
+//////////////// Nodes ////////////////
 
 struct Node {
     virtual void buildProc(Instance &instance) = 0;
