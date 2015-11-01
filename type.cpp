@@ -1,4 +1,4 @@
-#include "type.hpp"
+#include "block.hpp"
 
 template <>
 std::string TypeNative<bool>::typeName() {
@@ -20,6 +20,10 @@ std::string TypeNative<std::string>::typeName() {
     return "str";
 }
 
+std::string Block::typeName() {
+    return "block" + std::to_string(tuid());
+}
+
 std::string Instance::typeName() {
-    return "Instance";
+    return "instance_" + std::to_string(tuid());
 }

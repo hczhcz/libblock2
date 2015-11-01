@@ -51,7 +51,3 @@ Type &Block::buildOut(Instance &instance, Output &output) {
 void Block::buildIn(Instance &instance, Type &type, Output &output) {
     throw std::exception {};
 }
-
-std::string Block::typeName() {
-    return "block";
-}

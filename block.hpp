@@ -12,6 +12,17 @@ struct SymbolInfo {
     bool out;
 };
 
+struct Instance: public Type {
+    Block &block;
+
+    std::map<std::string, Type &> symbol_types;
+
+    inline Instance(Block &_block):
+        block {_block} {}
+
+    virtual std::string typeName();
+};
+
 struct Block: public Node, public Type {
     // TODO: multiple signature (overloading and SFINAE)
     std::vector<std::string> params;

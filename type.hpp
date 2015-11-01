@@ -18,17 +18,6 @@ struct TypeNative: public Type {
     virtual std::string typeName();
 };
 
-struct Instance: public Type {
-    Block &block;
-
-    std::map<std::string, Type &> symbol_types;
-
-    inline Instance(Block &_block):
-        block {_block} {}
-
-    virtual std::string typeName();
-};
-
 inline bool operator==(const Type &a, const Type &b) {
     return a.tuid() == b.tuid();
 }
