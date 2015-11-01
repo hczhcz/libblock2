@@ -3,10 +3,6 @@
 #include "type.hpp"
 #include "node.hpp"
 
-#include <string>
-#include <vector>
-#include <map>
-
 struct SymbolInfo {
     bool in;
     bool out;
