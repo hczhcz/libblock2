@@ -51,6 +51,9 @@ using Output = std::map<uintptr_t, OutputContext>;
 //////////////// Nodes ////////////////
 
 struct Node {
+    uintptr_t nuid() const {
+        return (uintptr_t) this;
+    }
 
     virtual void buildProc(Instance &instance, Output &output) = 0;
     virtual Type &buildOut(Instance &instance, Output &output) = 0;
@@ -70,8 +73,15 @@ struct NodeLiteral: public Node {
     }
 
     virtual Type &buildOut(Instance &instance, Output &output) {
-        static TypeNative<T> type {};
+        // render
 
+        output.at(instance.tuid()).content
+            << "    " << util::cType("result_" + std::to_string(nuid()), value)
+            << " = " << util::cCode(value) << ";\n";
+
+        // get type
+
+        static TypeNative<T> type {};
         return type;
     }
 
@@ -92,6 +102,8 @@ struct NodeSymbol: public Node {
 
     virtual void buildProc(Instance &instance, Output &output) {
         // TODO: lookup?
+        // TODO: render
+
         const auto &symbol = instance.symbol_types.find(path[0]); // TODO
 
         if (symbol != instance.symbol_types.end()) {
@@ -103,6 +115,8 @@ struct NodeSymbol: public Node {
 
     virtual Type &buildOut(Instance &instance, Output &output) {
         // TODO: lookup?
+        // TODO: render
+
         const auto &symbol = instance.symbol_types.find(path[0]); // TODO
 
         if (symbol != instance.symbol_types.end()) {
@@ -114,6 +128,8 @@ struct NodeSymbol: public Node {
 
     virtual void buildIn(Instance &instance, Type &type, Output &output) {
         // TODO: lookup?
+        // TODO: render
+
         const auto &symbol = instance.symbol_types.find(path[0]); // TODO
 
         if (symbol != instance.symbol_types.end()) {
@@ -163,11 +179,15 @@ struct Block: public Node, public Type {
 
             if (ok) {
                 // found
+
                 return target;
             }
         }
 
         // not found
+
+        // TODO: render
+
         instances.push_back(std::move(instance));
         ast->buildProc(instances.back(), output);
 
@@ -179,6 +199,16 @@ struct Block: public Node, public Type {
     }
 
     virtual Type &buildOut(Instance &instance, Output &output) {
+        // render
+
+        uintptr_t id {tuid()};
+
+        output.at(instance.tuid()).content
+            << "    " << util::cType("result_" + std::to_string(nuid()), id)
+            << " = " << util::cCode(id) << ";\n";
+
+        // get type
+
         return *this;
     }
 
@@ -207,6 +237,7 @@ struct NodeCall: public Node {
     template <class Before, class After>
     void build(Instance &instance, Output &output, Before before, After after) {
         // TODO: special args: input, result, self, parent
+        // TODO: render
 
         Type &callee_type {callee->buildOut(instance, output)};
 
