@@ -25,5 +25,5 @@ std::string Instance::typeName() {
 }
 
 std::string Block::typeName() {
-    return "block" + std::to_string(tuid());
+    return "block_" + std::to_string(tuid());
 }

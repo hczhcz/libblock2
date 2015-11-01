@@ -10,13 +10,11 @@ int main() {
 
     Block root {
         {},
-        {tmp("c")},
         call(
             $(";"),
             call(
                 $("="), $("c"), block(
-                    {"a", "b"},
-                    {in("a"), in("b"), tmp("t")},
+                    {in("a"), in("b")},
                     call(
                         $(";"),
                         call(

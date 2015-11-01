@@ -25,11 +25,9 @@ void NodeCall::build(Instance &instance, Output &output, Before before, After af
 
         // input arguments
         for (size_t i = 0; i < args.size(); ++i) {
-            std::string &param {block_p->params[i]};
-
-            if (block_p->symbols.at(param).in) {
+            if (block_p->params[i].second != SymbolMode::out) { // mode: in, var
                 a_instance.symbol_types.insert({
-                    param, args[i]->buildOut(instance, output)
+                    block_p->params[i].first, args[i]->buildOut(instance, output)
                 });
             }
         }
@@ -40,10 +38,10 @@ void NodeCall::build(Instance &instance, Output &output, Before before, After af
 
         // output arguments
         for (size_t i = 0; i < args.size(); ++i) {
-            std::string &param {block_p->params[i]};
-
-            if (block_p->symbols.at(param).out) {
-                const auto &symbol = f_instance.symbol_types.find(param);
+            if (block_p->params[i].second != SymbolMode::in) { // mode: out, var
+                const auto &symbol = f_instance.symbol_types.find(
+                    block_p->params[i].first
+                );
 
                 if (symbol != f_instance.symbol_types.end()) {
                     args[i]->buildIn(
@@ -86,7 +84,6 @@ Type &NodeCall::buildOut(Instance &instance, Output &output) {
             const auto &symbol = instance.symbol_types.find("result");
 
             if (symbol != instance.symbol_types.end()) {
-                // TODO: instance.block.symbols.at("result").out ?
                 type_p = &symbol->second;
             } else {
                 throw std::exception {};
@@ -101,7 +98,6 @@ void NodeCall::buildIn(Instance &instance, Type &type, Output &output) {
     build(
         instance, output,
         [&](Instance &instance) {
-            // TODO: instance.block.symbols.at("input").in ?
             instance.symbol_types.insert({"input", type});
         },
         [](Instance &instance) {

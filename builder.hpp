@@ -36,29 +36,22 @@ inline NodeCall *call(Node *callee, Args... args) {
 }
 
 inline Block *block(
-    std::vector<std::string> &&params,
-    std::map<std::string, SymbolInfo> &&symbols,
+    std::vector<std::pair<std::string, SymbolMode>> &&params,
     Node *ast
 ) {
-    return new Block {std::move(params), std::move(symbols), ast};
+    return new Block {std::move(params), ast};
 }
 
-using symbol_pair_t = std::pair<std::string, SymbolInfo>;
-
-inline symbol_pair_t var(std::string &&name) {
-    return {std::move(name), {true, true}};
+inline std::pair<std::string, SymbolMode> var(std::string &&name) {
+    return {std::move(name), SymbolMode::var};
 }
 
-inline symbol_pair_t in(std::string &&name) {
-    return {std::move(name), {true, false}};
+inline std::pair<std::string, SymbolMode> in(std::string &&name) {
+    return {std::move(name), SymbolMode::in};
 }
 
-inline symbol_pair_t out(std::string &&name) {
-    return {std::move(name), {false, true}};
-}
-
-inline symbol_pair_t tmp(std::string &&name) {
-    return {std::move(name), {false, false}};
+inline std::pair<std::string, SymbolMode> out(std::string &&name) {
+    return {std::move(name), SymbolMode::out};
 }
 
 }

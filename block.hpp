@@ -3,9 +3,8 @@
 #include "type.hpp"
 #include "node.hpp"
 
-struct SymbolInfo {
-    bool in;
-    bool out;
+enum class SymbolMode {
+    in, out, var
 };
 
 struct Instance: public Type {
@@ -21,19 +20,16 @@ struct Instance: public Type {
 
 struct Block: public Node, public Type {
     // TODO: multiple signature (overloading and SFINAE)
-    std::vector<std::string> params;
-    std::map<std::string, SymbolInfo> symbols;
+    std::vector<std::pair<std::string, SymbolMode>> params;
     NodeRef ast;
 
     std::vector<Instance> instances;
 
     inline Block(
-        std::vector<std::string> &&_params,
-        std::map<std::string, SymbolInfo> &&_symbols,
+        std::vector<std::pair<std::string, SymbolMode>> &&_params,
         Node *_ast
     ):
         params {std::move(_params)},
-        symbols {std::move(_symbols)},
         ast {_ast} {}
 
     Instance &getInstance(Instance &&instance, Output &output);
