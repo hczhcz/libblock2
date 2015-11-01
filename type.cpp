@@ -20,10 +20,10 @@ std::string TypeNative<std::string>::typeName() {
     return "str";
 }
 
-std::string Block::typeName() {
-    return "block" + std::to_string(tuid());
-}
-
 std::string Instance::typeName() {
     return "instance_" + std::to_string(tuid());
+}
+
+std::string Block::typeName() {
+    return "block" + std::to_string(tuid());
 }
