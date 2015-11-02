@@ -62,7 +62,7 @@ struct NodeCall: public Node {
         }
 
     template <class Before, class After>
-    void build(Instance &instance, Output &output, Before before, After after);
+    void build(Instance &instance, Output &output, Before &&before, After &&after);
 
     virtual void buildProc(Instance &instance, Output &output);
     virtual Type &buildOut(Instance &instance, Output &output);

@@ -15,6 +15,7 @@ struct Instance: public Type {
     inline Instance(Block &_block):
         block {_block} {}
 
+    // as type
     virtual std::string typeName();
 };
 
@@ -34,9 +35,11 @@ struct Block: public Node, public Type {
 
     Instance &getInstance(Instance &&instance, Output &output);
 
+    // as node
     virtual void buildProc(Instance &instance, Output &output);
     virtual Type &buildOut(Instance &instance, Output &output);
     virtual void buildIn(Instance &instance, Type &type, Output &output);
 
+    // as type
     virtual std::string typeName();
 };
