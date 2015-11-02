@@ -17,6 +17,7 @@ struct Instance: public Type {
 
     Type &at(const std::string &name);
     void insert(const std::string &name, Type &type);
+    Instance &lookup(const std::vector<std::string> &path);
 
     // as type
     virtual std::string typeName();

@@ -3,32 +3,19 @@
 #include "block.hpp"
 
 void NodeSymbol::buildProc(Instance &instance, Output &output) {
-    // TODO: lookup?
     // TODO: render
 
-    instance.lookup(path[0]); // TODO
+    instance.lookup(path).at(name);
 }
 
 Type &NodeSymbol::buildOut(Instance &instance, Output &output) {
-    // TODO: lookup?
     // TODO: render
 
-    return instance.lookup(path[0]);
+    return instance.lookup(path).at(name);
 }
 
 void NodeSymbol::buildIn(Instance &instance, Type &type, Output &output) {
-    // TODO: lookup?
     // TODO: render
 
-    instance.lookup(
-        path[0],
-        [&](Type &symbol_type) {
-            if (symbol_type != type) {
-                throw std::exception {};
-            }
-        },
-        [&]() {
-            instance.symbol_types.insert({path[0], type}); // TODO
-        }
-    );
+    instance.lookup(path).insert(name, type);
 }

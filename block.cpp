@@ -24,6 +24,22 @@ void Instance::insert(const std::string &name, Type &type) {
     }
 }
 
+Instance &Instance::lookup(const std::vector<std::string> &path) {
+    Instance *instance_p {this};
+
+    for (const std::string &name: path) {
+        instance_p = dynamic_cast<Instance *>(
+            &instance_p->at(name)
+        );
+
+        if (!instance_p) {
+            throw std::exception {};
+        }
+    }
+
+    return *instance_p;
+}
+
 Instance &Block::getInstance(Instance &&instance, Output &output) {
     for (Instance &target: instances) {
         bool ok {true};

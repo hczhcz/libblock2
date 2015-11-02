@@ -37,9 +37,13 @@ using NodeLiteralStr = NodeLiteral<std::string>;
 
 struct NodeSymbol: public Node {
     std::vector<std::string> path;
+    std::string name;
 
     inline NodeSymbol(std::vector<std::string> &&_path):
-        path {std::move(_path)} {}
+        path {std::move(_path)},
+        name {path.back()} {
+            path.pop_back();
+        }
 
     virtual void buildProc(Instance &instance, Output &output);
     virtual Type &buildOut(Instance &instance, Output &output);
