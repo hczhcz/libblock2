@@ -37,11 +37,11 @@ inline NodeCall *call(Node *callee, Args... args) {
     return new NodeCall {callee, args...};
 }
 
-inline Block *block(
+inline BlockUser *block(
     std::vector<std::pair<std::string, SymbolMode>> &&params,
     Node *ast
 ) {
-    return new Block {std::move(params), ast};
+    return new BlockUser {std::move(params), ast};
 }
 
 inline std::pair<std::string, SymbolMode> in(std::string &&name) {

@@ -83,21 +83,42 @@ enum class SymbolMode {
 struct Block: public Node {
     // TODO: multiple signature (overloading and SFINAE)
     std::vector<std::pair<std::string, SymbolMode>> params;
-    NodeRef ast;
 
     std::vector<Instance> instances;
 
-    inline Block(
-        std::vector<std::pair<std::string, SymbolMode>> &&_params,
-        Node *_ast
-    ):
-        params {std::move(_params)},
-        ast {_ast} {}
+    inline Block(std::vector<std::pair<std::string, SymbolMode>> &&_params):
+        params {std::move(_params)} {}
 
     Instance &getInstance(Instance &&instance, Output &output);
+
+    virtual void buildInner(Instance &instance, Output &output) = 0;
 
     // as node
     virtual void buildProc(Instance &instance, Output &output);
     virtual Type &buildOut(Instance &instance, Output &output);
     virtual void buildIn(Instance &instance, Type &type, Output &output);
+};
+
+struct BlockBuiltin: public Block {
+    inline BlockBuiltin(
+        std::vector<std::pair<std::string, SymbolMode>> &&_params
+    ):
+        Block {std::move(_params)} {}
+
+    // as block
+    virtual void buildInner(Instance &instance, Output &output);
+};
+
+struct BlockUser: public Block {
+    NodeRef ast;
+
+    inline BlockUser(
+        std::vector<std::pair<std::string, SymbolMode>> &&_params,
+        Node *_ast
+    ):
+        Block {std::move(_params)},
+        ast {_ast} {}
+
+    // as block
+    virtual void buildInner(Instance &instance, Output &output);
 };
