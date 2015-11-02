@@ -1,5 +1,9 @@
 #include "block.hpp"
 
+uintptr_t Type::tuid() const {
+    return (uintptr_t) this;
+}
+
 template <>
 std::string TypeNative<bool>::typeName() {
     return "bool";

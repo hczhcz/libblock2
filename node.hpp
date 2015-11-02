@@ -9,15 +9,9 @@ struct Type;
 struct Instance;
 
 struct Node {
-    inline uintptr_t nuid() const {
-        return (uintptr_t) this;
-    }
-    inline std::string nuidOut() const {
-        return "result_" + std::to_string(nuid());
-    }
-    inline std::string nuidIn() const {
-        return "input_" + std::to_string(nuid());
-    }
+    uintptr_t nuid() const;
+    std::string nuidOut() const;
+    std::string nuidIn() const;
 
     virtual void buildProc(Instance &instance, Output &output) = 0;
     virtual Type &buildOut(Instance &instance, Output &output) = 0;

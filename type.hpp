@@ -6,9 +6,7 @@
 struct Block;
 
 struct Type {
-    inline uintptr_t tuid() const {
-        return (uintptr_t) this;
-    }
+    uintptr_t tuid() const;
 
     virtual std::string typeName() = 0;
 };
