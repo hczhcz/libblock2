@@ -5,29 +5,29 @@ uintptr_t Type::tuid() const {
 }
 
 template <>
-std::string TypeNative<bool>::typeName() {
-    return "bool";
+std::string TypeNative<bool>::renderDecl(std::string &&name) const {
+    return "bool " + name;
 }
 
 template <>
-std::string TypeNative<int64_t>::typeName() {
-    return "int";
+std::string TypeNative<int64_t>::renderDecl(std::string &&name) const {
+    return "int64_t " + name;
 }
 
 template <>
-std::string TypeNative<double>::typeName() {
-    return "real";
+std::string TypeNative<double>::renderDecl(std::string &&name) const {
+    return "double " + name;
 }
 
 template <>
-std::string TypeNative<std::string>::typeName() {
-    return "str";
+std::string TypeNative<std::string>::renderDecl(std::string &&name) const {
+    return "const char " + name + "[]"; // TODO: ptr?
 }
 
-std::string Instance::typeName() {
-    return "instance_" + std::to_string(tuid());
+std::string Instance::renderDecl(std::string &&name) const {
+    return "instance_" + std::to_string(tuid()) + " " + name;
 }
 
-std::string Block::typeName() {
-    return "block_" + std::to_string(tuid());
+std::string Block::renderDecl(std::string &&name) const {
+    return "block_" + std::to_string(tuid()) + " " + name;
 }

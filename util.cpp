@@ -32,24 +32,4 @@ std::string cCode(uintptr_t &value) {
     return std::to_string(value);
 }
 
-std::string cType(std::string &&name, bool &value) {
-    return "bool " + name;
-}
-
-std::string cType(std::string &&name, int64_t &value) {
-    return "int64_t " + name;
-}
-
-std::string cType(std::string &&name, double &value) {
-    return "double " + name;
-}
-
-std::string cType(std::string &&name, std::string &value) {
-    return "const char " + name + "[]";
-}
-
-std::string cType(std::string &&name, uintptr_t &value) {
-    return "uintptr_t " + name;
-}
-
 }

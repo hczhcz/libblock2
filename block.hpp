@@ -20,7 +20,7 @@ struct Instance: public Type {
     Instance &lookup(const std::vector<std::string> &path);
 
     // as type
-    virtual std::string typeName();
+    virtual std::string renderDecl(std::string &&name) const;
 };
 
 struct Block: public Node, public Type {
@@ -45,5 +45,5 @@ struct Block: public Node, public Type {
     virtual void buildIn(Instance &instance, Type &type, Output &output);
 
     // as type
-    virtual std::string typeName();
+    virtual std::string renderDecl(std::string &&name) const;
 };
