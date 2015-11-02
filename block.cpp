@@ -1,4 +1,3 @@
-#include "util.hpp"
 #include "output.hpp"
 #include "block.hpp"
 
@@ -63,7 +62,7 @@ Instance &Block::getInstance(Instance &&instance, Output &output) {
     // render
 
     std::ostringstream &os {
-        output.insert(tuid()).header
+        output.insert(instance.tuid()).header
     };
 
     // build
