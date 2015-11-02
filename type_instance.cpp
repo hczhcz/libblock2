@@ -1,24 +1,32 @@
 #include "type.hpp"
 
 Type &Instance::at(const std::string &name) {
-    const auto &symbol = symbol_types.find(name);
-
-    if (symbol != symbol_types.end()) {
-        return symbol->second;
+    if (name == "self") {
+        return *this;
     } else {
-        throw std::exception {};
+        const auto &symbol = symbol_types.find(name);
+
+        if (symbol != symbol_types.end()) {
+            return symbol->second;
+        } else {
+            throw std::exception {};
+        }
     }
 }
 
 void Instance::insert(const std::string &name, Type &type) {
-    const auto &symbol = symbol_types.find(name);
-
-    if (symbol != symbol_types.end()) {
-        if (symbol->second != type) {
-            throw std::exception {};
-        }
+    if (name == "self") {
+        throw std::exception {};
     } else {
-        symbol_types.insert({name, type});
+        const auto &symbol = symbol_types.find(name);
+
+        if (symbol != symbol_types.end()) {
+            if (symbol->second != type) {
+                throw std::exception {};
+            }
+        } else {
+            symbol_types.insert({name, type});
+        }
     }
 }
 
