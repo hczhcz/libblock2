@@ -25,9 +25,10 @@ std::string TypeNative<std::string>::renderDecl(std::string &&name) const {
 }
 
 std::string Instance::renderDecl(std::string &&name) const {
-    return "instance_" + std::to_string(tuid()) + " " + name;
+    return "obj_" + std::to_string(tuid()) + " *" + name;
 }
 
-std::string Block::renderDecl(std::string &&name) const {
-    return "block_" + std::to_string(tuid()) + " " + name;
+std::string TypeBlock::renderDecl(std::string &&name) const {
+    // return "block_" + std::to_string(tuid()) + " " + name;
+    return "obj_" + std::to_string(parent.tuid()) + " *" + name;
 }

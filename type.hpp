@@ -4,6 +4,7 @@
 #include <map>
 
 struct Block;
+struct Instance;
 
 struct Type {
     uintptr_t tuid() const;
@@ -13,6 +14,17 @@ struct Type {
 
 template <class T>
 struct TypeNative: public Type {
+    virtual std::string renderDecl(std::string &&name) const;
+};
+
+struct TypeBlock: public Type {
+    Instance &parent;
+    Block &block;
+
+    inline TypeBlock(Instance &_parent, Block &_block):
+        parent {_parent},
+        block {_block} {}
+
     virtual std::string renderDecl(std::string &&name) const;
 };
 

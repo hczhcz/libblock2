@@ -9,15 +9,14 @@ void Block::buildProc(Instance &instance, Output &output) {
 Type &Block::buildOut(Instance &instance, Output &output) {
     // get type
 
-    Type &type {*this};
+    instance.children.push_back({instance, *this});
+    Type &type {instance.children.back()};
 
     // render
 
-    uintptr_t id {tuid()};
-
     output.at(instance.tuid()).content
         << "    " << type.renderDecl(nuidOut())
-        << " = " << util::cCode(id) << ";\n";
+        << " = self;\n";
 
     // return
 

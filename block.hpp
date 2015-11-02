@@ -10,6 +10,7 @@ enum class SymbolMode {
 struct Instance: public Type {
     Block &block;
 
+    std::vector<TypeBlock> children;
     std::map<std::string, Type &> symbol_types;
 
     inline Instance(Block &_block):
@@ -23,7 +24,7 @@ struct Instance: public Type {
     virtual std::string renderDecl(std::string &&name) const;
 };
 
-struct Block: public Node, public Type {
+struct Block: public Node {
     // TODO: multiple signature (overloading and SFINAE)
     std::vector<std::pair<std::string, SymbolMode>> params;
     NodeRef ast;
@@ -43,7 +44,4 @@ struct Block: public Node, public Type {
     virtual void buildProc(Instance &instance, Output &output);
     virtual Type &buildOut(Instance &instance, Output &output);
     virtual void buildIn(Instance &instance, Type &type, Output &output);
-
-    // as type
-    virtual std::string renderDecl(std::string &&name) const;
 };
