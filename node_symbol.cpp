@@ -3,6 +3,10 @@
 #include "block.hpp"
 
 void NodeSymbol::buildProc(Instance &instance, Output &output) {
+    // get type
+
+    instance.lookup(path).at(name);
+
     // render
 
     std::ostringstream &os {output.at(instance.tuid()).content};
@@ -14,18 +18,18 @@ void NodeSymbol::buildProc(Instance &instance, Output &output) {
     }
 
     os << name << ";\n";
-
-    // get type
-
-    instance.lookup(path).at(name);
 }
 
 Type &NodeSymbol::buildOut(Instance &instance, Output &output) {
+    // get type
+
+    Type &type {instance.lookup(path).at(name)};
+
     // render
 
     std::ostringstream &os {output.at(instance.tuid()).content};
 
-    os << "    " << nuidOut() << " = self->"; // TODO: type?
+    os << "    " << type.renderDecl(nuidOut()) << " = self->";
 
     for (std::string &i: path) {
         os << i << "->";
@@ -33,12 +37,16 @@ Type &NodeSymbol::buildOut(Instance &instance, Output &output) {
 
     os << name << ";\n";
 
-    // get type
+    // return
 
-    return instance.lookup(path).at(name);
+    return type;
 }
 
 void NodeSymbol::buildIn(Instance &instance, Type &type, Output &output) {
+    // set type
+
+    instance.lookup(path).insert(name, type);
+
     // render
 
     std::ostringstream &os {output.at(instance.tuid()).content};
@@ -49,9 +57,5 @@ void NodeSymbol::buildIn(Instance &instance, Type &type, Output &output) {
         os << i << "->";
     }
 
-    os << name << " = " << nuidIn() << ";\n"; // TODO: type?
-
-    // set type
-
-    instance.lookup(path).insert(name, type);
+    os << name << " = " << nuidIn() << ";\n";
 }

@@ -7,17 +7,21 @@ void Block::buildProc(Instance &instance, Output &output) {
 }
 
 Type &Block::buildOut(Instance &instance, Output &output) {
+    // get type
+
+    Type &type {*this};
+
     // render
 
     uintptr_t id {tuid()};
 
     output.at(instance.tuid()).content
-        << "    " << util::cType(nuidOut(), id)
+        << "    " << type.renderDecl(nuidOut())
         << " = " << util::cCode(id) << ";\n";
 
-    // get type
+    // return
 
-    return *this;
+    return type;
 }
 
 void Block::buildIn(Instance &instance, Type &type, Output &output) {

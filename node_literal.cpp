@@ -9,15 +9,18 @@ void NodeLiteral<T>::buildProc(Instance &instance, Output &output) {
 
 template <class T>
 Type &NodeLiteral<T>::buildOut(Instance &instance, Output &output) {
-    // render
-
-    output.at(instance.tuid()).content
-        << "    " << util::cType(nuidOut(), value)
-        << " = " << util::cCode(value) << ";\n";
-
     // get type
 
     static TypeNative<T> type {};
+
+    // render
+
+    output.at(instance.tuid()).content
+        << "    " << type.renderDecl(nuidOut())
+        << " = " << util::cCode(value) << ";\n";
+
+    // return
+
     return type;
 }
 
