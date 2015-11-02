@@ -60,7 +60,13 @@ Instance &Block::getInstance(Instance &&instance, Output &output) {
 
     // not found
 
-    // TODO: render
+    // render
+
+    std::ostringstream &os {
+        output.insert(tuid()).header
+    };
+
+    // build
 
     instances.push_back(std::move(instance));
     ast->buildProc(instances.back(), output);

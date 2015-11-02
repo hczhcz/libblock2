@@ -8,6 +8,11 @@ struct OutputContext {
     std::ostringstream content;
 };
 
-struct Output: public std::map<uintptr_t, OutputContext> {
-    //
+struct Output {
+    std::map<uintptr_t, OutputContext &> map;
+
+    ~Output();
+
+    OutputContext &at(uintptr_t key);
+    OutputContext &insert(uintptr_t key);
 };
