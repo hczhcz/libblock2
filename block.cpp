@@ -7,7 +7,7 @@ Instance &Block::getInstance(Instance &&instance, Output &output) {
         bool ok {true};
 
         for (const auto &symbol: instance.symbol_types) {
-            if (symbol.second != target.symbol_types.at(symbol.first)) {
+            if (symbol.second != target.lookup(symbol.first)) {
                 ok = false;
                 break;
             }

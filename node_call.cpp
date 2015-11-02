@@ -27,7 +27,8 @@ void NodeCall::build(Instance &instance, Output &output, Before &&before, After 
         for (size_t i = 0; i < args.size(); ++i) {
             if (block_p->params[i].second != SymbolMode::out) { // mode: in, var
                 a_instance.symbol_types.insert({
-                    block_p->params[i].first, args[i]->buildOut(instance, output)
+                    block_p->params[i].first,
+                    args[i]->buildOut(instance, output)
                 });
             }
         }
@@ -39,17 +40,11 @@ void NodeCall::build(Instance &instance, Output &output, Before &&before, After 
         // output arguments
         for (size_t i = 0; i < args.size(); ++i) {
             if (block_p->params[i].second != SymbolMode::in) { // mode: out, var
-                const auto &symbol = f_instance.symbol_types.find(
-                    block_p->params[i].first
+                args[i]->buildIn(
+                    instance,
+                    f_instance.lookup(block_p->params[i].first),
+                    output
                 );
-
-                if (symbol != f_instance.symbol_types.end()) {
-                    args[i]->buildIn(
-                        instance, symbol->second, output
-                    );
-                } else {
-                    throw std::exception {};
-                }
             }
         }
 
@@ -81,13 +76,7 @@ Type &NodeCall::buildOut(Instance &instance, Output &output) {
             // nothing
         },
         [&](Instance &instance) {
-            const auto &symbol = instance.symbol_types.find("result");
-
-            if (symbol != instance.symbol_types.end()) {
-                type_p = &symbol->second;
-            } else {
-                throw std::exception {};
-            }
+            type_p = &instance.lookup("result");
         }
     );
 
