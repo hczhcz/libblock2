@@ -42,7 +42,6 @@ struct Instance: public Type {
     void insert(const std::string &name, Type &type);
     Instance &lookup(const std::vector<std::string> &path);
 
-    // as type
     virtual std::string renderDecl(std::string &&name) const;
 };
 

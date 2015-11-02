@@ -24,6 +24,11 @@ std::string TypeNative<std::string>::renderDecl(std::string &&name) const {
     return "const char " + name + "[]"; // TODO: ptr?
 }
 
+std::string TypeBlock::renderDecl(std::string &&name) const {
+    // return "block_" + std::to_string(tuid()) + " " + name;
+    return "obj_" + std::to_string(parent.tuid()) + " *" + name;
+}
+
 Type &Instance::at(const std::string &name) {
     const auto &symbol = symbol_types.find(name);
 
@@ -64,9 +69,4 @@ Instance &Instance::lookup(const std::vector<std::string> &path) {
 
 std::string Instance::renderDecl(std::string &&name) const {
     return "obj_" + std::to_string(tuid()) + " *" + name;
-}
-
-std::string TypeBlock::renderDecl(std::string &&name) const {
-    // return "block_" + std::to_string(tuid()) + " " + name;
-    return "obj_" + std::to_string(parent.tuid()) + " *" + name;
 }
