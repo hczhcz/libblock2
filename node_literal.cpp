@@ -1,23 +1,25 @@
 #include "output.hpp"
 #include "node.hpp"
 
-namespace util {
-
-std::string cCode(bool &value) {
+template <>
+std::string NodeLiteral<bool>::renderValue() {
     return value ? "true" : "false";
 }
 
-std::string cCode(int64_t &value) {
+template <>
+std::string NodeLiteral<int64_t>::renderValue() {
     return std::to_string(value);
 }
 
-std::string cCode(double &value) {
+template <>
+std::string NodeLiteral<double>::renderValue() {
     // return std::to_string(value);
     return "*(double *) (uint64_t []) {"
         + std::to_string(*(uint64_t *) &value) + "}";
 }
 
-std::string cCode(std::string &value) {
+template <>
+std::string NodeLiteral<std::string>::renderValue() {
     std::string result;
 
     result += "(const char []) {";
@@ -27,8 +29,6 @@ std::string cCode(std::string &value) {
     result += "}";
 
     return result;
-}
-
 }
 
 template <class T>
@@ -46,7 +46,7 @@ Type &NodeLiteral<T>::buildOut(Instance &instance, Output &output) {
 
     output.at(instance.tuid()).content
         << "    " << type.renderDecl(nuidOut())
-        << " = " << util::cCode(value) << ";\n";
+        << " = " << renderValue() << ";\n";
 
     // return
 

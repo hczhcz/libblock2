@@ -3,6 +3,7 @@
 #include "type.hpp"
 
 #include <memory>
+#include <sstream>
 
 struct Output;
 
@@ -24,6 +25,8 @@ struct NodeLiteral: public Node {
     inline NodeLiteral(T &&_value):
         value {std::move(_value)} {}
 
+    std::string renderValue();
+
     virtual void buildProc(Instance &instance, Output &output);
     virtual Type &buildOut(Instance &instance, Output &output);
     virtual void buildIn(Instance &instance, Type &type, Output &output);
@@ -42,6 +45,8 @@ struct NodeSymbol: public Node {
         name {path.back()} {
             path.pop_back();
         }
+
+    void renderPath(std::ostringstream &os);
 
     virtual void buildProc(Instance &instance, Output &output);
     virtual Type &buildOut(Instance &instance, Output &output);
