@@ -1,10 +1,11 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <map>
 
-struct Block;
 struct Instance;
+struct Block;
 
 struct Type {
     uintptr_t tuid() const;
@@ -25,6 +26,23 @@ struct TypeBlock: public Type {
         parent {_parent},
         block {_block} {}
 
+    virtual std::string renderDecl(std::string &&name) const;
+};
+
+struct Instance: public Type {
+    Block &block;
+
+    std::vector<TypeBlock> children;
+    std::map<std::string, Type &> symbol_types;
+
+    inline Instance(Block &_block):
+        block {_block} {}
+
+    Type &at(const std::string &name);
+    void insert(const std::string &name, Type &type);
+    Instance &lookup(const std::vector<std::string> &path);
+
+    // as type
     virtual std::string renderDecl(std::string &&name) const;
 };
 

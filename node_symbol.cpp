@@ -1,5 +1,5 @@
 #include "output.hpp"
-#include "block.hpp"
+#include "node.hpp"
 
 void NodeSymbol::buildProc(Instance &instance, Output &output) {
     // get type

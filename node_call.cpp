@@ -1,5 +1,5 @@
 #include "output.hpp"
-#include "block.hpp"
+#include "node.hpp"
 
 template <class Before, class After>
 void NodeCall::build(Instance &instance, Output &output, Before &&before, After &&after) {

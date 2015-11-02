@@ -1,4 +1,6 @@
-#include "block.hpp"
+#pragma once
+
+#include "node.hpp"
 
 namespace builder {
 

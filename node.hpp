@@ -1,12 +1,10 @@
 #pragma once
 
-#include <string>
+#include "type.hpp"
+
 #include <memory>
-#include <vector>
 
 struct Output;
-struct Type;
-struct Instance;
 
 struct Node {
     uintptr_t nuid() const;
@@ -68,6 +66,32 @@ struct NodeCall: public Node {
     template <class Before, class After>
     void build(Instance &instance, Output &output, Before &&before, After &&after);
 
+    virtual void buildProc(Instance &instance, Output &output);
+    virtual Type &buildOut(Instance &instance, Output &output);
+    virtual void buildIn(Instance &instance, Type &type, Output &output);
+};
+
+enum class SymbolMode {
+    in, out, var
+};
+
+struct Block: public Node {
+    // TODO: multiple signature (overloading and SFINAE)
+    std::vector<std::pair<std::string, SymbolMode>> params;
+    NodeRef ast;
+
+    std::vector<Instance> instances;
+
+    inline Block(
+        std::vector<std::pair<std::string, SymbolMode>> &&_params,
+        Node *_ast
+    ):
+        params {std::move(_params)},
+        ast {_ast} {}
+
+    Instance &getInstance(Instance &&instance, Output &output);
+
+    // as node
     virtual void buildProc(Instance &instance, Output &output);
     virtual Type &buildOut(Instance &instance, Output &output);
     virtual void buildIn(Instance &instance, Type &type, Output &output);

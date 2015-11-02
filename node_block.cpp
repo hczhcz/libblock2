@@ -1,6 +1,40 @@
 #include "util.hpp"
 #include "output.hpp"
-#include "block.hpp"
+#include "node.hpp"
+
+Instance &Block::getInstance(Instance &&instance, Output &output) {
+    for (Instance &target: instances) {
+        bool ok {true};
+
+        for (const auto &symbol: instance.symbol_types) {
+            if (symbol.second != target.at(symbol.first)) {
+                ok = false;
+                break;
+            }
+        }
+
+        if (ok) {
+            // found
+
+            return target;
+        }
+    }
+
+    // not found
+
+    // render
+
+    std::ostringstream &os {
+        output.insert(instance.tuid()).header
+    };
+
+    // build
+
+    instances.push_back(std::move(instance));
+    ast->buildProc(instances.back(), output);
+
+    return instances.back();
+}
 
 void Block::buildProc(Instance &instance, Output &output) {
     // nothing

@@ -1,6 +1,6 @@
 #include "util.hpp"
 #include "output.hpp"
-#include "block.hpp"
+#include "node.hpp"
 
 template <class T>
 void NodeLiteral<T>::buildProc(Instance &instance, Output &output) {
