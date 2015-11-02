@@ -12,7 +12,7 @@ Type &NodeLiteral<T>::buildOut(Instance &instance, Output &output) {
     // render
 
     output.at(instance.tuid()).content
-        << "    " << util::cType("result_" + std::to_string(nuid()), value)
+        << "    " << util::cType(nuidOut(), value)
         << " = " << util::cCode(value) << ";\n";
 
     // get type
