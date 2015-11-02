@@ -26,10 +26,10 @@ void NodeCall::build(Instance &instance, Output &output, Before &&before, After 
         // input arguments
         for (size_t i = 0; i < args.size(); ++i) {
             if (block_p->params[i].second != SymbolMode::out) { // mode: in, var
-                a_instance.symbol_types.insert({
+                a_instance.insert(
                     block_p->params[i].first,
                     args[i]->buildOut(instance, output)
-                });
+                );
             }
         }
 
@@ -42,7 +42,7 @@ void NodeCall::build(Instance &instance, Output &output, Before &&before, After 
             if (block_p->params[i].second != SymbolMode::in) { // mode: out, var
                 args[i]->buildIn(
                     instance,
-                    f_instance.lookup(block_p->params[i].first),
+                    f_instance.at(block_p->params[i].first),
                     output
                 );
             }
@@ -76,7 +76,7 @@ Type &NodeCall::buildOut(Instance &instance, Output &output) {
             // nothing
         },
         [&](Instance &instance) {
-            type_p = &instance.lookup("result");
+            type_p = &instance.at("result");
         }
     );
 
@@ -87,7 +87,7 @@ void NodeCall::buildIn(Instance &instance, Type &type, Output &output) {
     build(
         instance, output,
         [&](Instance &instance) {
-            instance.symbol_types.insert({"input", type});
+            instance.insert("input", type);
         },
         [](Instance &instance) {
             // nothing

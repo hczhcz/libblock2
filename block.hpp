@@ -15,26 +15,8 @@ struct Instance: public Type {
     inline Instance(Block &_block):
         block {_block} {}
 
-    inline Type &lookup(const std::string &name) {
-        const auto &symbol = symbol_types.find(name);
-
-        if (symbol != symbol_types.end()) {
-            return symbol->second;
-        } else {
-            throw std::exception {};
-        }
-    }
-
-    template <class Callback, class Fail>
-    inline void lookup(const std::string &name, Callback &&callback, Fail &&fail) {
-        const auto &symbol = symbol_types.find(name);
-
-        if (symbol != symbol_types.end()) {
-            callback(symbol->second);
-        } else {
-            fail();
-        }
-    }
+    Type &at(const std::string &name);
+    void insert(const std::string &name, Type &type);
 
     // as type
     virtual std::string typeName();
