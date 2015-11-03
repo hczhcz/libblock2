@@ -58,7 +58,7 @@ Type &Block::buildOut(Instance &instance, Output &output) {
 }
 
 void Block::buildIn(Instance &instance, Type &type, Output &output) {
-    throw ErrorSymbolNotWriteable {};
+    throw ErrorWriteNotAllowed {};
 }
 
 std::map<std::string, void (*)(Instance &)> BlockBuiltin::builtins;
@@ -71,6 +71,14 @@ void BlockBuiltin::buildContent(Instance &instance, Output &output) {
     // gen type
 
     builtins.at(name)(instance);
+
+    // render
+
+    std::ostringstream &os {output.at(instance.tuid()).content};
+
+    os << "    builtin_" << name << "(";
+    // TODO
+    os << ");\n";
 }
 
 void BlockUser::buildContent(Instance &instance, Output &output) {

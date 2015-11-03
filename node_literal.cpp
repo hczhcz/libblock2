@@ -56,7 +56,7 @@ Type &NodeLiteral<T>::buildOut(Instance &instance, Output &output) {
 
 template <class T>
 void NodeLiteral<T>::buildIn(Instance &instance, Type &type, Output &output) {
-    throw ErrorSymbolNotWriteable {};
+    throw ErrorWriteNotAllowed {};
 }
 
 template class NodeLiteral<bool>;

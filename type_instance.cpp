@@ -17,7 +17,7 @@ Type &Instance::at(const std::string &name) {
 
 void Instance::insert(const std::string &name, Type &type) {
     if (name == "self") {
-        throw ErrorSymbolNotWriteable {}; // TODO: really?
+        throw ErrorWriteNotAllowed {}; // TODO: really?
     } else {
         const auto &symbol = symbol_types.find(name);
 
@@ -40,7 +40,7 @@ Instance &Instance::lookup(const std::vector<std::string> &path) {
         );
 
         if (!instance_p) {
-            throw ErrorSymbolNotFound {};
+            throw ErrorLookupNotAllowed {};
         }
     }
 
