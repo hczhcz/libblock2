@@ -40,7 +40,7 @@ template <class T>
 Type &NodeLiteral<T>::buildOut(Instance &instance, Output &output) {
     // get type
 
-    static TypeNative<T> type {};
+    static TypeNative<T> type;
 
     // render
 

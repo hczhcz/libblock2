@@ -30,7 +30,7 @@ Instance &Block::getInstance(Instance &&instance, Output &output) {
     // build
 
     instances.push_back(std::move(instance));
-    buildInner(instances.back(), output);
+    buildContent(instances.back(), output);
 
     return instances.back();
 }
@@ -60,6 +60,9 @@ void Block::buildIn(Instance &instance, Type &type, Output &output) {
     throw std::exception {};
 }
 
-void BlockUser::buildInner(Instance &instance, Output &output) {
+void BlockBuiltin::buildContent(Instance &instance, Output &output) {
+}
+
+void BlockUser::buildContent(Instance &instance, Output &output) {
     ast->buildProc(instance, output);
 }

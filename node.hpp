@@ -91,7 +91,7 @@ struct Block: public Node {
 
     Instance &getInstance(Instance &&instance, Output &output);
 
-    virtual void buildInner(Instance &instance, Output &output) = 0;
+    virtual void buildContent(Instance &instance, Output &output) = 0;
 
     // as node
     virtual void buildProc(Instance &instance, Output &output);
@@ -100,13 +100,17 @@ struct Block: public Node {
 };
 
 struct BlockBuiltin: public Block {
+    std::string name;
+
     inline BlockBuiltin(
-        std::vector<std::pair<std::string, SymbolMode>> &&_params
+        std::vector<std::pair<std::string, SymbolMode>> &&_params,
+        std::string &&_name
     ):
-        Block {std::move(_params)} {}
+        Block {std::move(_params)},
+        name {_name} {}
 
     // as block
-    virtual void buildInner(Instance &instance, Output &output);
+    virtual void buildContent(Instance &instance, Output &output);
 };
 
 struct BlockUser: public Block {
@@ -120,5 +124,5 @@ struct BlockUser: public Block {
         ast {_ast} {}
 
     // as block
-    virtual void buildInner(Instance &instance, Output &output);
+    virtual void buildContent(Instance &instance, Output &output);
 };
