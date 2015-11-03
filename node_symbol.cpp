@@ -4,6 +4,10 @@
 void NodeSymbol::renderPath(std::ostringstream &os) {
     os << "self";
 
+    for (size_t i = 0; i < level; ++i) {
+        os << "->parent";
+    }
+
     for (std::string &i: path) {
         if (i != "self") {
             os << "->" << i;
@@ -18,7 +22,7 @@ void NodeSymbol::renderPath(std::ostringstream &os) {
 void NodeSymbol::buildProc(Instance &instance, Output &output) {
     // gen type
 
-    instance.lookup(path).at(name);
+    instance.fullLookup(path, name, level);
 
     // render
 
@@ -32,7 +36,7 @@ void NodeSymbol::buildProc(Instance &instance, Output &output) {
 Type &NodeSymbol::buildOut(Instance &instance, Output &output) {
     // get type
 
-    Type &type {instance.lookup(path).at(name)};
+    Type &type {instance.fullLookup(path, name, level)};
 
     // render
 

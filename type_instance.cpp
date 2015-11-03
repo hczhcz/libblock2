@@ -46,3 +46,28 @@ Instance &Instance::lookup(const std::vector<std::string> &path) {
 
     return *instance_p;
 }
+
+Type &Instance::fullLookup(
+    const std::vector<std::string> &path,
+    const std::string &name,
+    size_t &level
+) {
+    try {
+        return lookup(path).at(name);
+    } catch (const ErrorSymbolNotFound &e) {
+        try {
+            Instance *instance_p {
+                dynamic_cast<Instance *>(&at("parent"))
+            };
+
+            if (!instance_p) {
+                throw ErrorLookupNotAllowed {};
+            } else {
+                level += 1;
+                return instance_p->fullLookup(path, name, level);
+            }
+        } catch (const ErrorSymbolNotFound &e1) {
+            throw e;
+        }
+    }
+}
