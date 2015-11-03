@@ -1,3 +1,4 @@
+#include "exception.hpp"
 #include "output.hpp"
 #include "node.hpp"
 
@@ -57,7 +58,7 @@ Type &Block::buildOut(Instance &instance, Output &output) {
 }
 
 void Block::buildIn(Instance &instance, Type &type, Output &output) {
-    throw std::exception {};
+    throw ErrorSymbolNotWriteable {};
 }
 
 std::map<std::string, void (*)(Instance &)> BlockBuiltin::builtins;

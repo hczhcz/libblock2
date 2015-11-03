@@ -1,3 +1,4 @@
+#include "exception.hpp"
 #include "output.hpp"
 #include "node.hpp"
 
@@ -55,7 +56,7 @@ Type &NodeLiteral<T>::buildOut(Instance &instance, Output &output) {
 
 template <class T>
 void NodeLiteral<T>::buildIn(Instance &instance, Type &type, Output &output) {
-    throw std::exception {};
+    throw ErrorSymbolNotWriteable {};
 }
 
 template class NodeLiteral<bool>;

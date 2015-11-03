@@ -1,3 +1,4 @@
+#include "exception.hpp"
 #include "type.hpp"
 
 Type &Instance::at(const std::string &name) {
@@ -9,20 +10,20 @@ Type &Instance::at(const std::string &name) {
         if (symbol != symbol_types.end()) {
             return symbol->second;
         } else {
-            throw std::exception {};
+            throw ErrorSymbolNotFound {};
         }
     }
 }
 
 void Instance::insert(const std::string &name, Type &type) {
     if (name == "self") {
-        throw std::exception {};
+        throw ErrorSymbolNotWriteable {}; // TODO: really?
     } else {
         const auto &symbol = symbol_types.find(name);
 
         if (symbol != symbol_types.end()) {
             if (symbol->second != type) {
-                throw std::exception {};
+                throw ErrorTypeCollision {};
             }
         } else {
             symbol_types.insert({name, type});
@@ -39,7 +40,7 @@ Instance &Instance::lookup(const std::vector<std::string> &path) {
         );
 
         if (!instance_p) {
-            throw std::exception {};
+            throw ErrorSymbolNotFound {};
         }
     }
 

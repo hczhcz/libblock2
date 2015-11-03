@@ -1,10 +1,10 @@
+#include "exception.hpp"
 #include "output.hpp"
 #include "node.hpp"
 
 template <class Before, class After>
 void NodeCall::build(Instance &instance, Output &output, Before &&before, After &&after) {
-    // special args: input, result, self, parent, caller
-    // TODO: parent, caller
+    // special args: input, result, self, parent
     // TODO: render
 
     Type &callee_type {callee->buildOut(instance, output)};
@@ -16,7 +16,7 @@ void NodeCall::build(Instance &instance, Output &output, Before &&before, After 
     ) {
         if (args.size() != callee_p->block.params.size()) {
             // error: arg size != param size
-            throw std::exception {};
+            throw ErrorCallNotConsistent {};
         }
 
         Instance a_instance {callee_p->block};
@@ -53,7 +53,7 @@ void NodeCall::build(Instance &instance, Output &output, Before &&before, After 
         after(f_instance);
     } else {
         // error: value as callee
-        throw std::exception {};
+        throw ErrorCallNotAllowed {};
     }
 }
 
