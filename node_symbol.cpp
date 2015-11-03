@@ -16,7 +16,7 @@ void NodeSymbol::renderPath(std::ostringstream &os) {
 }
 
 void NodeSymbol::buildProc(Instance &instance, Output &output) {
-    // get type
+    // gen type
 
     instance.lookup(path).at(name);
 

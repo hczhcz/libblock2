@@ -100,6 +100,10 @@ struct Block: public Node {
 };
 
 struct BlockBuiltin: public Block {
+    static std::map<std::string, void (*)(Instance &)> builtins;
+
+    static bool regBuiltin(std::string &&name, void (*func)(Instance &));
+
     std::string name;
 
     inline BlockBuiltin(

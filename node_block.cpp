@@ -60,7 +60,16 @@ void Block::buildIn(Instance &instance, Type &type, Output &output) {
     throw std::exception {};
 }
 
+std::map<std::string, void (*)(Instance &)> BlockBuiltin::builtins;
+
+bool BlockBuiltin::regBuiltin(std::string &&name, void (*func)(Instance &)) {
+    return builtins.insert({name, func}).second;
+}
+
 void BlockBuiltin::buildContent(Instance &instance, Output &output) {
+    // gen type
+
+    builtins.at(name)(instance);
 }
 
 void BlockUser::buildContent(Instance &instance, Output &output) {
