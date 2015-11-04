@@ -83,7 +83,8 @@ void BlockBuiltin::buildContent(Instance &instance, Output &output) {
     // render (before body)
 
     output.at(instance).header
-        << "builtin_" << name << "(block_" << instance.tuid() << " *self);\n";
+        << "builtin_" << name
+        << "(block_" << instance.tuid() << " *self);\n";
 
     // gen type
 

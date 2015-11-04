@@ -3,7 +3,10 @@
 #include "node.hpp"
 
 template <class Before, class After>
-void NodeCall::build(Instance &instance, Output &output, Before &&before, After &&after) {
+void NodeCall::build(
+    Instance &instance, Output &output,
+    Before &&before, After &&after
+) {
     // special args: input, result, self, parent
     // TODO: render
 
@@ -27,7 +30,8 @@ void NodeCall::build(Instance &instance, Output &output, Before &&before, After 
 
         // input arguments
         for (size_t i = 0; i < args.size(); ++i) {
-            if (callee_p->block.params[i].second != SymbolMode::out) { // mode: in, var
+            // mode: in, var
+            if (callee_p->block.params[i].second != SymbolMode::out) {
                 a_instance.insert(
                     callee_p->block.params[i].first,
                     args[i]->buildOut(instance, output)
@@ -36,12 +40,15 @@ void NodeCall::build(Instance &instance, Output &output, Before &&before, After 
         }
 
         Instance &f_instance {
-            callee_p->block.getInstance(std::move(a_instance), output)
+            callee_p->block.getInstance(
+                std::move(a_instance), output
+            )
         };
 
         // output arguments
         for (size_t i = 0; i < args.size(); ++i) {
-            if (callee_p->block.params[i].second != SymbolMode::in) { // mode: out, var
+            // mode: out, var
+            if (callee_p->block.params[i].second != SymbolMode::in) {
                 args[i]->buildIn(
                     instance,
                     f_instance.at(callee_p->block.params[i].first),

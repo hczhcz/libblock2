@@ -3,23 +3,31 @@
 #include "node.hpp"
 
 template <>
-void NodeLiteral<bool>::renderValue(std::ostringstream &os) const {
+void NodeLiteral<bool>::renderValue(
+    std::ostringstream &os
+) const {
     os << (value ? "true" : "false");
 }
 
 template <>
-void NodeLiteral<int64_t>::renderValue(std::ostringstream &os) const {
+void NodeLiteral<int64_t>::renderValue(
+    std::ostringstream &os
+) const {
     os << value;
 }
 
 template <>
-void NodeLiteral<double>::renderValue(std::ostringstream &os) const {
+void NodeLiteral<double>::renderValue(
+    std::ostringstream &os
+) const {
     // return std::to_string(value);
     os << "*(double *) (uint64_t []) {" << *(uint64_t *) &value << "}";
 }
 
 template <>
-void NodeLiteral<std::string>::renderValue(std::ostringstream &os) const {
+void NodeLiteral<std::string>::renderValue(
+    std::ostringstream &os
+) const {
     os << "(const char []) {";
 
     for (char i: value) {

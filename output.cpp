@@ -12,5 +12,7 @@ OutputContext &Output::at(Instance &instance) {
 }
 
 OutputContext &Output::insert(Instance &instance) {
-    return map.insert({instance.tuid(), *new OutputContext}).first->second;
+    return map.insert({
+        instance.tuid(), *new OutputContext
+    }).first->second;
 }

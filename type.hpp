@@ -13,12 +13,18 @@ struct Block;
 struct Type {
     uintptr_t tuid() const;
 
-    virtual void renderDecl(std::ostringstream &os, std::string &&name) const = 0;
+    virtual void renderDecl(
+        std::ostringstream &os,
+        std::string &&name
+    ) const = 0;
 };
 
 template <class T>
 struct TypeNative: public Type {
-    virtual void renderDecl(std::ostringstream &os, std::string &&name) const;
+    virtual void renderDecl(
+        std::ostringstream &os,
+        std::string &&name
+    ) const;
 };
 
 struct TypeBlock: public Type {
@@ -29,7 +35,10 @@ struct TypeBlock: public Type {
         parent {_parent},
         block {_block} {}
 
-    virtual void renderDecl(std::ostringstream &os, std::string &&name) const;
+    virtual void renderDecl(
+        std::ostringstream &os,
+        std::string &&name
+    ) const;
 };
 
 struct Instance: public Type {
@@ -53,7 +62,10 @@ struct Instance: public Type {
     void renderFuncDecl(std::ostringstream &os) const;
     void renderStruct(std::ostringstream &os) const;
 
-    virtual void renderDecl(std::ostringstream &os, std::string &&name) const;
+    virtual void renderDecl(
+        std::ostringstream &os,
+        std::string &&name
+    ) const;
 };
 
 inline bool operator==(const Type &a, const Type &b) {

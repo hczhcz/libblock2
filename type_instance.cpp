@@ -83,3 +83,10 @@ void Instance::renderStruct(std::ostringstream &os) const {
     // TODO
     os << "}\n\n";
 }
+
+void Instance::renderDecl(
+    std::ostringstream &os,
+    std::string &&name
+) const {
+    os << "struct obj_" << tuid() << " *" << name;
+}

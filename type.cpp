@@ -42,10 +42,3 @@ void TypeBlock::renderDecl(
 ) const {
     os << "struct obj_" << parent.tuid() << " *" << name;
 }
-
-void Instance::renderDecl(
-    std::ostringstream &os,
-    std::string &&name
-) const {
-    os << "struct obj_" << tuid() << " *" << name;
-}
