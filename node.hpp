@@ -104,18 +104,34 @@ struct Block: public Node {
 };
 
 struct BlockBuiltin: public Block {
-    static std::map<std::string, void (*)(Instance &)> builtins;
+    static std::map<std::string, BlockBuiltin &> builtins;
 
-    static bool regBuiltin(std::string &&name, void (*func)(Instance &));
+    template <void (*Func)(Instance &)>
+    static bool regBuiltin(
+        std::vector<std::pair<std::string, SymbolMode>> &&params,
+        std::string &&name,
+        void (*func)(Instance &)
+    ) {
+        static BlockBuiltin builtin {
+            std::move(params), std::move(name), func
+        };
+
+        return builtins.insert({name, builtin}).second;
+    }
+
+    static void applyBuiltin(Instance &instance);
 
     std::string name;
+    void (*func)(Instance &);
 
     inline BlockBuiltin(
         std::vector<std::pair<std::string, SymbolMode>> &&_params,
-        std::string &&_name
+        std::string &&_name,
+        void (*_func)(Instance &)
     ):
         Block {std::move(_params)},
-        name {_name} {}
+        name {_name},
+        func {_func} {}
 
     // as block
     virtual void buildContent(Instance &instance, Output &output);

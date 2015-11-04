@@ -57,26 +57,43 @@ void Block::buildIn(Instance &, Type &, Output &) {
     throw ErrorWriteNotAllowed {};
 }
 
-std::map<std::string, void (*)(Instance &)> BlockBuiltin::builtins;
+std::map<std::string, BlockBuiltin &> BlockBuiltin::builtins;
 
-bool BlockBuiltin::regBuiltin(std::string &&name, void (*func)(Instance &)) {
-    return builtins.insert({name, func}).second;
+void BlockBuiltin::applyBuiltin(Instance &instance) {
+    for (const auto &builtin: builtins) {
+        instance.children.push_back({instance, builtin.second});
+        Type &type {instance.children.back()};
+
+        instance.insert(builtin.first, type);
+    }
 }
 
 void BlockBuiltin::buildContent(Instance &instance, Output &output) {
+    // render (before body)
+
+    output.at(instance).header
+        << "builtin_" << name << "(block_" << instance.tuid() << " *self);\n";
+
     // gen type
 
-    builtins.at(name)(instance);
-
-    // render
-
-    std::ostringstream &os {output.at(instance).content};
-
-    os << "    builtin_" << name << "(";
-    // TODO
-    os << ");\n";
+    func(instance);
 }
 
 void BlockUser::buildContent(Instance &instance, Output &output) {
+    // render (before body)
+
+    output.at(instance).header
+        << "func_" << instance.tuid() << "(block_" << instance.tuid() << " *self);\n";
+
+    std::ostringstream &os {output.at(instance).content};
+
+    os << "func_" << instance.tuid() << "(block_" << instance.tuid() << " *self) {\n";
+
+    // gen type
+
     ast->buildProc(instance, output);
+
+    // render (after body)
+
+    os << "}\n\n";
 }
