@@ -1,8 +1,10 @@
 #pragma once
 
+#ifndef NO_STD_LIB
 #include <string>
 #include <vector>
 #include <map>
+#endif
 
 struct Instance;
 struct Block;

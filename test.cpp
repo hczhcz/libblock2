@@ -1,12 +1,35 @@
 #include "output.hpp"
 #include "builder.hpp"
 
+#ifndef NO_STD_LIB
 #include <iostream>
+#endif
 
 int main() {
     using namespace builder;
 
-    Block root {
+    // BlockUser root {
+    //     {},
+    //     call(
+    //         $(";"),
+    //         call(
+    //             $("="), $("c"), block(
+    //                 {in("a"), in("b")},
+    //                 call(
+    //                     $(";"),
+    //                     call(
+    //                         $("="), $("t"), call($("*"), _(2), $("b"))
+    //                     ),
+    //                     call(
+    //                         $("="), $("result"), call($("+"), $("a"), $("t"))
+    //                     )
+    //                 )
+    //             )
+    //         ),
+    //         call($("c"), _("xx"), _("yy"))
+    //     )
+    // };
+    BlockUser root {
         {},
         call(
             $(";"),
@@ -16,10 +39,10 @@ int main() {
                     call(
                         $(";"),
                         call(
-                            $("="), $("t"), call($("*"), _(2), $("b"))
+                            $("="), $("t"), $("b")
                         ),
                         call(
-                            $("="), $("result"), call($("+"), $("a"), $("t"))
+                            $("="), $("result"), $("t")
                         )
                     )
                 )

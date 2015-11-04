@@ -2,7 +2,10 @@
 
 #include "type.hpp"
 
+#ifndef NO_STD_LIB
+#include <memory>
 #include <sstream>
+#endif
 
 struct Output;
 

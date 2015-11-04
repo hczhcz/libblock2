@@ -1,7 +1,9 @@
 #pragma once
 
+#ifndef NO_STD_LIB
 #include <map>
 #include <sstream>
+#endif
 
 struct Instance;
 

@@ -59,7 +59,7 @@ void NodeLiteral<T>::buildIn(Instance &instance, Type &type, Output &output) {
     throw ErrorWriteNotAllowed {};
 }
 
-template class NodeLiteral<bool>;
-template class NodeLiteral<int64_t>;
-template class NodeLiteral<double>;
-template class NodeLiteral<std::string>;
+template struct NodeLiteral<bool>;
+template struct NodeLiteral<int64_t>;
+template struct NodeLiteral<double>;
+template struct NodeLiteral<std::string>;
