@@ -2,12 +2,14 @@
 #include "output.hpp"
 #include "node.hpp"
 
-Instance Block::initInstance(Instance &parent) {
-    Instance instance {*this};
+std::unique_ptr<Instance> Block::initInstance(Instance &parent) {
+    std::unique_ptr<Instance> instance {
+        new Instance {*this}
+    };
 
-    instance.insert("parent", parent);
+    instance->insert("parent", parent);
 
-    return instance;
+    return std::move(instance);
 }
 
 void Block::inArg(
@@ -31,12 +33,15 @@ void Block::inArg(
     }
 }
 
-Instance &Block::matchInstance(Instance &&instance, Output &output) {
-    for (Instance &target: instances) {
+Instance &Block::matchInstance(
+    std::unique_ptr<Instance> &&instance,
+    Output &output
+) {
+    for (std::unique_ptr<Instance> &target: instances) {
         bool ok {true};
 
-        for (const auto &symbol: instance.symbol_types) {
-            if (symbol.second != target.at(symbol.first)) {
+        for (const auto &symbol: instance->symbol_types) {
+            if (symbol.second != target->at(symbol.first)) {
                 ok = false;
                 break;
             }
@@ -45,14 +50,14 @@ Instance &Block::matchInstance(Instance &&instance, Output &output) {
         if (ok) {
             // found
 
-            return target;
+            return *target;
         }
     }
 
     // not found
 
     instances.push_back(std::move(instance));
-    Instance &new_instance {instances.back()};
+    Instance &new_instance {*instances.back()};
 
     // build
 

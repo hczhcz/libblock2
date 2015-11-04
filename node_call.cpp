@@ -17,15 +17,15 @@ void NodeCall::build(
             dynamic_cast<TypeBlock *>(&callee_type)
         }
     ) {
-        Instance a_instance {
+        std::unique_ptr<Instance> a_instance {
             callee_p->block.initInstance(
                 callee_p->parent
             )
         };
 
-        before(a_instance);
+        before(*a_instance);
         for (size_t i = 0; i < args.size(); ++i) {
-            callee_p->block.inArg(instance, a_instance, i, args[i], output);
+            callee_p->block.inArg(instance, *a_instance, i, args[i], output);
         }
 
         Instance &f_instance {

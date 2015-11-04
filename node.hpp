@@ -89,18 +89,21 @@ struct Block: public Node {
     // TODO: multiple signature (overloading and SFINAE)
     std::vector<std::pair<std::string, SymbolMode>> params;
 
-    std::vector<Instance> instances;
+    std::vector<std::unique_ptr<Instance>> instances;
 
     inline Block(std::vector<std::pair<std::string, SymbolMode>> &&_params):
         params {std::move(_params)} {}
 
-    Instance initInstance(Instance &parent);
+    std::unique_ptr<Instance> initInstance(Instance &parent);
     void inArg(
         Instance &parent, Instance &instance,
         size_t index, std::unique_ptr<Node> &arg,
         Output &output
     );
-    Instance &matchInstance(Instance &&instance, Output &output);
+    Instance &matchInstance(
+        std::unique_ptr<Instance> &&instance,
+        Output &output
+    );
     void outArg(
         Instance &parent, Instance &instance,
         size_t index, std::unique_ptr<Node> &arg,
