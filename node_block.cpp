@@ -92,6 +92,22 @@ void Block::outArg(
     }
 }
 
+void Block::inSpecialArg(
+    Instance &, Instance &,
+    size_t, std::unique_ptr<Node> &,
+    Output &
+) {
+    throw ErrorTooManyArguments {}; // TODO: va_args?
+}
+
+void Block::outSpecialArg(
+    Instance &, Instance &,
+    size_t, std::unique_ptr<Node> &,
+    Output &
+) {
+    throw ErrorTooManyArguments {}; // TODO: va_args?
+}
+
 void Block::buildProc(Instance &, Output &) {
     // nothing
 }
@@ -117,76 +133,4 @@ Type &Block::buildOut(Instance &instance, Output &output) {
 
 void Block::buildIn(Instance &, Type &, Output &) {
     throw ErrorWriteNotAllowed {};
-}
-
-std::map<std::string, BlockBuiltin &> BlockBuiltin::builtins;
-
-void BlockBuiltin::applyBuiltin(Instance &instance) {
-    for (const auto &builtin: builtins) {
-        instance.children.push_back({instance, builtin.second});
-        Type &type {instance.children.back()};
-
-        instance.insert(builtin.first, type);
-    }
-}
-
-void BlockBuiltin::inSpecialArg(
-    Instance &parent, Instance &instance,
-    size_t index, std::unique_ptr<Node> &arg,
-    Output &output
-) {
-    // TODO
-}
-
-void BlockBuiltin::buildContent(Instance &instance, Output &output) {
-    // render (before body)
-
-    output.at(instance).header
-        << "builtin_" << name
-        << "(block_" << instance.tuid() << " *self);\n";
-
-    // gen type
-
-    func(instance);
-}
-
-void BlockBuiltin::outSpecialArg(
-    Instance &parent, Instance &instance,
-    size_t index, std::unique_ptr<Node> &arg,
-    Output &output
-) {
-    // TODO
-}
-
-void BlockUser::inSpecialArg(
-    Instance &parent, Instance &instance,
-    size_t index, std::unique_ptr<Node> &arg,
-    Output &output
-) {
-    throw ErrorTooManyArguments {}; // TODO: va_args?
-}
-
-void BlockUser::buildContent(Instance &instance, Output &output) {
-    // render (before body)
-
-    std::ostringstream &os {output.at(instance).content};
-
-    instance.renderFuncDecl(os);
-    os << " {\n";
-
-    // gen type
-
-    ast->buildProc(instance, output);
-
-    // render (after body)
-
-    os << "}\n\n";
-}
-
-void BlockUser::outSpecialArg(
-    Instance &parent, Instance &instance,
-    size_t index, std::unique_ptr<Node> &arg,
-    Output &output
-) {
-    throw ErrorTooManyArguments {}; // TODO: va_args?
 }

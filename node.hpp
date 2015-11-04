@@ -111,13 +111,13 @@ struct Block: public Node {
         Instance &parent, Instance &instance,
         size_t index, std::unique_ptr<Node> &arg,
         Output &output
-    ) = 0;
+    );
     virtual void buildContent(Instance &instance, Output &output) = 0;
     virtual void outSpecialArg(
         Instance &parent, Instance &instance,
         size_t index, std::unique_ptr<Node> &arg,
         Output &output
-    ) = 0;
+    );
 
     // as node
     virtual void buildProc(Instance &instance, Output &output);
@@ -128,45 +128,21 @@ struct Block: public Node {
 struct BlockBuiltin: public Block {
     static std::map<std::string, BlockBuiltin &> builtins;
 
-    template <class Func>
-    static bool regBuiltin(
-        std::string &&name,
-        std::vector<std::pair<std::string, SymbolMode>> &&params,
-        Func &&func
-    ) {
-        static BlockBuiltin builtin {
-            std::move(params), std::move(name), func
-        };
-
-        return builtins.insert({name, builtin}).second;
-    }
-
     static void applyBuiltin(Instance &instance);
 
     std::string name;
-    void (*func)(Instance &);
 
     inline BlockBuiltin(
         std::vector<std::pair<std::string, SymbolMode>> &&_params,
-        std::string &&_name,
-        void (*_func)(Instance &)
+        std::string &&_name
     ):
         Block {std::move(_params)},
-        name {_name},
-        func {_func} {}
+        name {std::move(_name)} {
+            builtins.insert({name, *this});
+        }
 
     // as block
-    virtual void inSpecialArg(
-        Instance &parent, Instance &instance,
-        size_t index, std::unique_ptr<Node> &arg,
-        Output &output
-    );
     virtual void buildContent(Instance &instance, Output &output);
-    virtual void outSpecialArg(
-        Instance &parent, Instance &instance,
-        size_t index, std::unique_ptr<Node> &arg,
-        Output &output
-    );
 };
 
 struct BlockUser: public Block {
@@ -180,15 +156,5 @@ struct BlockUser: public Block {
         ast {_ast} {}
 
     // as block
-    virtual void inSpecialArg(
-        Instance &parent, Instance &instance,
-        size_t index, std::unique_ptr<Node> &arg,
-        Output &output
-    );
     virtual void buildContent(Instance &instance, Output &output);
-    virtual void outSpecialArg(
-        Instance &parent, Instance &instance,
-        size_t index, std::unique_ptr<Node> &arg,
-        Output &output
-    );
 };
