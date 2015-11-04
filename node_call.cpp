@@ -30,8 +30,10 @@ void NodeCall::build(
 
         // input arguments
         for (size_t i = 0; i < args.size(); ++i) {
-            // mode: in, var
-            if (callee_p->block.params[i].second != SymbolMode::out) {
+            if (
+                callee_p->block.params[i].second == SymbolMode::in
+                || callee_p->block.params[i].second == SymbolMode::var
+            ) {
                 a_instance.insert(
                     callee_p->block.params[i].first,
                     args[i]->buildOut(instance, output)
@@ -47,8 +49,10 @@ void NodeCall::build(
 
         // output arguments
         for (size_t i = 0; i < args.size(); ++i) {
-            // mode: out, var
-            if (callee_p->block.params[i].second != SymbolMode::in) {
+            if (
+                callee_p->block.params[i].second == SymbolMode::out
+                || callee_p->block.params[i].second == SymbolMode::var
+            ) {
                 args[i]->buildIn(
                     instance,
                     f_instance.at(callee_p->block.params[i].first),

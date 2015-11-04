@@ -56,4 +56,8 @@ inline std::pair<std::string, SymbolMode> var(std::string &&name) {
     return {std::move(name), SymbolMode::var};
 }
 
+inline std::pair<std::string, SymbolMode> special(std::string &&name) {
+    return {std::move(name), SymbolMode::special};
+}
+
 }

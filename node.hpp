@@ -83,7 +83,7 @@ struct NodeCall: public Node {
 };
 
 enum class SymbolMode {
-    in, out, var
+    in, out, var, special
 };
 
 struct Block: public Node {
