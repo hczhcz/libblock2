@@ -36,7 +36,7 @@ Instance &Block::getInstance(Instance &&instance, Output &output) {
     return instances.back();
 }
 
-void Block::buildProc(Instance &instance, Output &output) {
+void Block::buildProc(Instance &, Output &) {
     // nothing
 }
 
@@ -57,7 +57,7 @@ Type &Block::buildOut(Instance &instance, Output &output) {
     return type;
 }
 
-void Block::buildIn(Instance &instance, Type &type, Output &output) {
+void Block::buildIn(Instance &, Type &, Output &) {
     throw ErrorWriteNotAllowed {};
 }
 

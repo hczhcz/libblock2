@@ -16,10 +16,11 @@ do
     echo $new | diff -q - ./build/$file 1> /dev/null 2> /dev/null
     if [ $? -eq 0 ]
     then
-        echo 'no change: '$file
+        echo 'not changed: '$file
     else
         echo 'changed: '$file
 
+        echo $cc $flags_obj $flags $file -o ./build/$file.o
         $cc $flags_obj $flags $file -o ./build/$file.o
         if [ $? -eq 0 ]
         then
@@ -33,4 +34,5 @@ do
     objs=$(echo $objs ./build/$file.o)
 done
 
-$cc $flags_out $flags $objs -o ./test && ./test
+echo $cc $flags_out $flags $objs -o ./build/test.out
+$cc $flags_out $flags $objs -o ./build/test.out && ./build/test.out

@@ -33,7 +33,7 @@ std::string NodeLiteral<std::string>::renderValue() {
 }
 
 template <class T>
-void NodeLiteral<T>::buildProc(Instance &instance, Output &output) {
+void NodeLiteral<T>::buildProc(Instance &, Output &) {
     // nothing
 }
 
@@ -55,7 +55,7 @@ Type &NodeLiteral<T>::buildOut(Instance &instance, Output &output) {
 }
 
 template <class T>
-void NodeLiteral<T>::buildIn(Instance &instance, Type &type, Output &output) {
+void NodeLiteral<T>::buildIn(Instance &, Type &, Output &) {
     throw ErrorWriteNotAllowed {};
 }
 

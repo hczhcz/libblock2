@@ -60,10 +60,10 @@ void NodeCall::build(Instance &instance, Output &output, Before &&before, After 
 void NodeCall::buildProc(Instance &instance, Output &output) {
     build(
         instance, output,
-        [](Instance &instance) {
+        [](Instance &) {
             // nothing
         },
-        [](Instance &instance) {
+        [](Instance &) {
             // nothing
         }
     );
@@ -74,7 +74,7 @@ Type &NodeCall::buildOut(Instance &instance, Output &output) {
 
     build(
         instance, output,
-        [](Instance &instance) {
+        [](Instance &) {
             // nothing
         },
         [&](Instance &instance) {
@@ -91,7 +91,7 @@ void NodeCall::buildIn(Instance &instance, Type &type, Output &output) {
         [&](Instance &instance) {
             instance.insert("input", type);
         },
-        [](Instance &instance) {
+        [](Instance &) {
             // nothing
         }
     );
