@@ -10,4 +10,4 @@ struct ErrorWriteNotAllowed: public Error {};
 struct ErrorLookupNotAllowed: public Error {};
 struct ErrorCallNotAllowed: public Error {};
 
-struct ErrorCallNotConsistent: public Error {};
+struct ErrorTooManyArguments: public Error {};

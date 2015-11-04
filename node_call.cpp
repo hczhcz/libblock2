@@ -24,7 +24,9 @@ void NodeCall::build(
         };
 
         before(a_instance);
-        callee_p->block.inArgs(instance, a_instance, args, output);
+        for (size_t i = 0; i < args.size(); ++i) {
+            callee_p->block.inArg(instance, a_instance, i, args[i], output);
+        }
 
         Instance &f_instance {
             callee_p->block.matchInstance(
@@ -32,7 +34,9 @@ void NodeCall::build(
             )
         };
 
-        callee_p->block.outArgs(instance, f_instance, args, output);
+        for (size_t i = 0; i < args.size(); ++i) {
+            callee_p->block.outArg(instance, f_instance, i, args[i], output);
+        }
         after(f_instance);
     } else {
         // error: value as callee

@@ -10,25 +10,24 @@ Instance Block::initInstance(Instance &parent) {
     return instance;
 }
 
-void Block::inArgs(
+void Block::inArg(
     Instance &parent, Instance &instance,
-    std::vector<NodeRef> &args,
+    size_t index, std::unique_ptr<Node> &arg,
     Output &output
 ) {
-    if (args.size() != params.size()) {
-        throw ErrorCallNotConsistent {};
-    }
-
-    for (size_t i = 0; i < params.size(); ++i) {
-        if (
-            params[i].second == SymbolMode::in
-            || params[i].second == SymbolMode::var
-        ) {
-            instance.insert(
-                params[i].first,
-                args[i]->buildOut(parent, output)
-            );
-        }
+    if (
+        index >= params.size()
+        || params[index].second == SymbolMode::special
+    ) {
+        inSpecialArg(parent, instance, index, arg, output);
+    } else if (
+        params[index].second == SymbolMode::in
+        || params[index].second == SymbolMode::var
+    ) {
+        instance.insert(
+            params[index].first,
+            arg->buildOut(parent, output)
+        );
     }
 }
 
@@ -71,24 +70,25 @@ Instance &Block::matchInstance(Instance &&instance, Output &output) {
     return new_instance;
 }
 
-void Block::outArgs(
+void Block::outArg(
     Instance &parent, Instance &instance,
-    std::vector<NodeRef> &args,
+    size_t index, std::unique_ptr<Node> &arg,
     Output &output
 ) {
-    // asserts: args.size() == params.size(), see Block::inArgs
-
-    for (size_t i = 0; i < params.size(); ++i) {
-        if (
-            params[i].second == SymbolMode::out
-            || params[i].second == SymbolMode::var
-        ) {
-            args[i]->buildIn(
-                parent,
-                instance.at(params[i].first),
-                output
-            );
-        }
+    if (
+        index >= params.size()
+        || params[index].second == SymbolMode::special
+    ) {
+        outSpecialArg(parent, instance, index, arg, output);
+    } else if (
+        params[index].second == SymbolMode::out
+        || params[index].second == SymbolMode::var
+    ) {
+        arg->buildIn(
+            parent,
+            instance.at(params[index].first),
+            output
+        );
     }
 }
 
@@ -130,6 +130,14 @@ void BlockBuiltin::applyBuiltin(Instance &instance) {
     }
 }
 
+void BlockBuiltin::inSpecialArg(
+    Instance &parent, Instance &instance,
+    size_t index, std::unique_ptr<Node> &arg,
+    Output &output
+) {
+    // TODO
+}
+
 void BlockBuiltin::buildContent(Instance &instance, Output &output) {
     // render (before body)
 
@@ -140,6 +148,22 @@ void BlockBuiltin::buildContent(Instance &instance, Output &output) {
     // gen type
 
     func(instance);
+}
+
+void BlockBuiltin::outSpecialArg(
+    Instance &parent, Instance &instance,
+    size_t index, std::unique_ptr<Node> &arg,
+    Output &output
+) {
+    // TODO
+}
+
+void BlockUser::inSpecialArg(
+    Instance &parent, Instance &instance,
+    size_t index, std::unique_ptr<Node> &arg,
+    Output &output
+) {
+    throw ErrorTooManyArguments {}; // TODO: va_args?
 }
 
 void BlockUser::buildContent(Instance &instance, Output &output) {
@@ -157,4 +181,12 @@ void BlockUser::buildContent(Instance &instance, Output &output) {
     // render (after body)
 
     os << "}\n\n";
+}
+
+void BlockUser::outSpecialArg(
+    Instance &parent, Instance &instance,
+    size_t index, std::unique_ptr<Node> &arg,
+    Output &output
+) {
+    throw ErrorTooManyArguments {}; // TODO: va_args?
 }
