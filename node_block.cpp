@@ -120,8 +120,10 @@ void Block::buildProc(Instance &, Output &) {
 Type &Block::buildOut(Instance &instance, Output &output) {
     // get type
 
-    instance.children.push_back({instance, *this});
-    Type &type {instance.children.back()};
+    instance.children.push_back(std::unique_ptr<TypeBlock> {
+        new TypeBlock {instance, *this}
+    });
+    Type &type {*instance.children.back()};
 
     // render
 

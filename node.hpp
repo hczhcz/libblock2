@@ -2,10 +2,6 @@
 
 #include "type.hpp"
 
-#ifndef NO_STD_LIB
-#include <memory>
-#endif
-
 struct Output;
 
 struct Node {

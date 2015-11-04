@@ -1,6 +1,7 @@
 #pragma once
 
 #ifndef NO_STD_LIB
+#include <memory>
 #include <string>
 #include <vector>
 #include <map>
@@ -44,7 +45,7 @@ struct TypeBlock: public Type {
 struct Instance: public Type {
     Block &block;
 
-    std::vector<TypeBlock> children;
+    std::vector<std::unique_ptr<TypeBlock>> children;
     std::map<std::string, Type &> symbol_types;
 
     inline Instance(Block &_block):
