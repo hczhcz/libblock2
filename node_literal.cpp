@@ -45,7 +45,7 @@ Type &NodeLiteral<T>::buildOut(Instance &instance, Output &output) {
 
     // render
 
-    output.at(instance.tuid()).content
+    output.at(instance).content
         << "    " << type.renderDecl(nuidOut())
         << " = " << renderValue() << ";\n";
 

@@ -25,7 +25,7 @@ Instance &Block::getInstance(Instance &&instance, Output &output) {
     // render
 
     std::ostringstream &os {
-        output.insert(instance.tuid()).header
+        output.insert(instance).header
     };
 
     // build
@@ -48,7 +48,7 @@ Type &Block::buildOut(Instance &instance, Output &output) {
 
     // render
 
-    output.at(instance.tuid()).content
+    output.at(instance).content
         << "    " << type.renderDecl(nuidOut())
         << " = self;\n";
 
@@ -74,7 +74,7 @@ void BlockBuiltin::buildContent(Instance &instance, Output &output) {
 
     // render
 
-    std::ostringstream &os {output.at(instance.tuid()).content};
+    std::ostringstream &os {output.at(instance).content};
 
     os << "    builtin_" << name << "(";
     // TODO

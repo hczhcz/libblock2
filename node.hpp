@@ -2,7 +2,6 @@
 
 #include "type.hpp"
 
-#include <memory>
 #include <sstream>
 
 struct Output;

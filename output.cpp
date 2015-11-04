@@ -1,4 +1,5 @@
 #include "output.hpp"
+#include "type.hpp"
 
 Output::~Output() {
     for (auto &i: map) {
@@ -6,10 +7,10 @@ Output::~Output() {
     }
 }
 
-OutputContext &Output::at(uintptr_t key) {
-    return map.at(key);
+OutputContext &Output::at(Instance &instance) {
+    return map.at(instance.tuid());
 }
 
-OutputContext &Output::insert(uintptr_t key) {
-    return map.insert({key, *new OutputContext}).first->second;
+OutputContext &Output::insert(Instance &instance) {
+    return map.insert({instance.tuid(), *new OutputContext}).first->second;
 }
