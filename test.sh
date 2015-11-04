@@ -1,3 +1,5 @@
+mkdir -p ./build
+
 cc='clang++'
 # flags='-std=c++11 -O0 -g -Wall -Wextra -pedantic -ferror-limit=3'
 flags='-std=c++11 -O0 -g -Wall -Wextra -ferror-limit=3'
