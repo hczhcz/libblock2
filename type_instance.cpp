@@ -80,13 +80,19 @@ void Instance::renderFuncDecl(std::ostringstream &os) const {
 
 void Instance::renderStruct(std::ostringstream &os) const {
     os << "struct obj_" << tuid() << " {";
-    // TODO
+
+    for (const auto &symbol: symbol_types) {
+        os << "    ";
+        symbol.second.renderDecl(os, symbol.first);
+        os << ";\n";
+    }
+
     os << "}\n\n";
 }
 
 void Instance::renderDecl(
     std::ostringstream &os,
-    std::string &&name
+    const std::string &name
 ) const {
     os << "struct obj_" << tuid() << " *" << name;
 }

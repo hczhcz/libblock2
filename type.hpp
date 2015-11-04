@@ -15,7 +15,7 @@ struct Type {
 
     virtual void renderDecl(
         std::ostringstream &os,
-        std::string &&name
+        const std::string &name
     ) const = 0;
 };
 
@@ -23,7 +23,7 @@ template <class T>
 struct TypeNative: public Type {
     virtual void renderDecl(
         std::ostringstream &os,
-        std::string &&name
+        const std::string &name
     ) const;
 };
 
@@ -37,7 +37,7 @@ struct TypeBlock: public Type {
 
     virtual void renderDecl(
         std::ostringstream &os,
-        std::string &&name
+        const std::string &name
     ) const;
 };
 
@@ -64,7 +64,7 @@ struct Instance: public Type {
 
     virtual void renderDecl(
         std::ostringstream &os,
-        std::string &&name
+        const std::string &name
     ) const;
 };
 
