@@ -42,7 +42,7 @@ struct NodeSymbol: public Node {
     std::vector<std::string> path;
     std::string name;
 
-    size_t level;
+    size_t level {0};
 
     inline NodeSymbol(std::vector<std::string> &&_path):
         path {std::move(_path)},

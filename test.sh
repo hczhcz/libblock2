@@ -17,6 +17,7 @@ do
     if [ $? -eq 0 ]
     then
         echo 'not changed: '$file
+        echo
     else
         echo 'changed: '$file
 
@@ -29,10 +30,14 @@ do
             echo '' > ./build/$file
             exit
         fi
+        echo
     fi
 
     objs=$(echo $objs ./build/$file.o)
 done
+
+cppcheck -q --std=c++11 --enable=all --inconclusive *.cpp
+echo
 
 echo $cc $flags_out $flags $objs -o ./build/test.out
 $cc $flags_out $flags $objs -o ./build/test.out && ./build/test.out

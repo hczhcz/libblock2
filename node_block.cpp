@@ -22,15 +22,11 @@ Instance &Block::getInstance(Instance &&instance, Output &output) {
 
     // not found
 
-    // render
-
-    std::ostringstream &os {
-        output.insert(instance).header
-    };
+    instances.push_back(std::move(instance));
 
     // build
 
-    instances.push_back(std::move(instance));
+    output.insert(instances.back());
     buildContent(instances.back(), output);
 
     return instances.back();
