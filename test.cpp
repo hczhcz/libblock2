@@ -53,7 +53,12 @@ int main() {
 
     Output output;
 
-    root.matchInstance(Instance {root}, output);
+    std::unique_ptr<Instance> instance {
+        new Instance{root}
+    };
+    BlockBuiltin::applyBuiltin(*instance);
+
+    root.matchInstance(std::move(instance), output);
 
     return 0;
 }

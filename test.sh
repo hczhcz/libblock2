@@ -40,4 +40,11 @@ cppcheck -q --std=c++11 --enable=all --inconclusive *.cpp
 echo
 
 echo $cc $flags_out $flags $objs -o ./build/test.out
-$cc $flags_out $flags $objs -o ./build/test.out && ./build/test.out
+$cc $flags_out $flags $objs -o ./build/test.out
+if [ $? -ne 0 ]
+then
+    exit
+fi
+echo
+
+./build/test.out
