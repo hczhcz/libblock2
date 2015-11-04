@@ -50,6 +50,9 @@ struct Instance: public Type {
         size_t &level
     ); // also lookup parent->path->name
 
+    void renderFuncDecl(std::ostringstream &os) const;
+    void renderStruct(std::ostringstream &os) const;
+
     virtual void renderDecl(std::ostringstream &os, std::string &&name) const;
 };
 

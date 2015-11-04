@@ -71,3 +71,15 @@ Type &Instance::fullLookup(
         }
     }
 }
+
+void Instance::renderFuncDecl(std::ostringstream &os) const {
+    os << "func_" << tuid() << "(";
+    renderDecl(os, "self");
+    os << ")";
+}
+
+void Instance::renderStruct(std::ostringstream &os) const {
+    os << "struct obj_" << tuid() << " {";
+    // TODO
+    os << "}\n\n";
+}

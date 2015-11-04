@@ -93,8 +93,6 @@ struct Block: public Node {
         params {std::move(_params)} {}
 
     Instance &getInstance(Instance &&instance, Output &output);
-    void renderFunc(std::ostringstream &os, std::string &&name) const;
-    void renderStruct(std::ostringstream &os) const;
 
     virtual void buildContent(Instance &instance, Output &output) = 0;
 

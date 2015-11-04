@@ -23,13 +23,22 @@ Instance &Block::getInstance(Instance &&instance, Output &output) {
     // not found
 
     instances.push_back(std::move(instance));
+    Instance &new_instance {instances.back()};
 
     // build
 
-    output.insert(instances.back());
-    buildContent(instances.back(), output);
+    output.insert(new_instance);
+    buildContent(new_instance, output);
 
-    return instances.back();
+    // render header
+
+    std::ostringstream &osh {output.at(new_instance).header};
+
+    new_instance.renderStruct(osh);
+    new_instance.renderFuncDecl(osh);
+    osh << ";\n";
+
+    return new_instance;
 }
 
 void Block::buildProc(Instance &, Output &) {
@@ -84,12 +93,10 @@ void BlockBuiltin::buildContent(Instance &instance, Output &output) {
 void BlockUser::buildContent(Instance &instance, Output &output) {
     // render (before body)
 
-    output.at(instance).header
-        << "func_" << instance.tuid() << "(block_" << instance.tuid() << " *self);\n";
-
     std::ostringstream &os {output.at(instance).content};
 
-    os << "func_" << instance.tuid() << "(block_" << instance.tuid() << " *self) {\n";
+    instance.renderFuncDecl(os);
+    os << " {\n";
 
     // gen type
 
