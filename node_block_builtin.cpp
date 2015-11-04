@@ -2,10 +2,14 @@
 #include "output.hpp"
 #include "node.hpp"
 
-std::map<std::string, BlockBuiltin &> BlockBuiltin::builtins;
+std::map<std::string, BlockBuiltin &> &BlockBuiltin::builtins() {
+    static std::map<std::string, BlockBuiltin &> map;
+
+    return map;
+}
 
 void BlockBuiltin::applyBuiltin(Instance &instance) {
-    for (const auto &builtin: builtins) {
+    for (const auto &builtin: builtins()) {
         instance.children.push_back({instance, builtin.second});
         Type &type {instance.children.back()};
 
@@ -13,5 +17,6 @@ void BlockBuiltin::applyBuiltin(Instance &instance) {
     }
 }
 
-void BlockBuiltin::buildContent(Instance &instance, Output &output) {
+void BlockBuiltin::buildContent(Instance &, Output &) {
+    // nothing, by default
 }

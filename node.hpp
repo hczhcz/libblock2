@@ -126,7 +126,7 @@ struct Block: public Node {
 };
 
 struct BlockBuiltin: public Block {
-    static std::map<std::string, BlockBuiltin &> builtins;
+    static std::map<std::string, BlockBuiltin &> &builtins();
 
     static void applyBuiltin(Instance &instance);
 
@@ -138,7 +138,7 @@ struct BlockBuiltin: public Block {
     ):
         Block {std::move(_params)},
         name {std::move(_name)} {
-            builtins.insert({name, *this});
+            builtins().insert({name, *this});
         }
 
     // as block
