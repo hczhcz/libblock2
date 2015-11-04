@@ -110,7 +110,7 @@ void Block::outSpecialArg(
     size_t, std::unique_ptr<Node> &,
     Output &
 ) {
-    throw ErrorTooManyArguments {}; // TODO: va_args?
+    // nothing, by default // TODO: va_args?
 }
 
 void Block::buildProc(Instance &, Output &) {

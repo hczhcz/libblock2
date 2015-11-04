@@ -22,6 +22,10 @@ struct Semicolon: public BlockBuiltin {
 
 struct Assign: public BlockBuiltin {
     using BlockBuiltin::BlockBuiltin;
+
+    virtual void buildContent(Instance &instance, Output &output) {
+        instance.insert("dest", instance.at("src"));
+    }
 } assign {
     {out("dest"), in("src")},
     "="
