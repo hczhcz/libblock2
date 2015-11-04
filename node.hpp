@@ -17,7 +17,6 @@ struct Node {
     virtual Type &buildOut(Instance &instance, Output &output) = 0;
     virtual void buildIn(Instance &instance, Type &type, Output &output) = 0;
 };
-using NodeRef = std::unique_ptr<Node>;
 
 template <class T>
 struct NodeLiteral: public Node {
@@ -57,8 +56,8 @@ struct NodeSymbol: public Node {
 };
 
 struct NodeCall: public Node {
-    NodeRef callee;
-    std::vector<NodeRef> args;
+    std::unique_ptr<Node> callee;
+    std::vector<std::unique_ptr<Node>> args;
 
     template <class... Args>
     inline NodeCall(Node *_callee, Args... _args):
@@ -67,7 +66,7 @@ struct NodeCall: public Node {
 
             args.reserve(sizeof...(_args));
             for (Node *i: init) {
-                args.push_back(NodeRef {i});
+                args.push_back(std::unique_ptr<Node> {i});
             }
         }
 
@@ -119,11 +118,11 @@ struct Block: public Node {
 struct BlockBuiltin: public Block {
     static std::map<std::string, BlockBuiltin &> builtins;
 
-    template <void (*Func)(Instance &)>
+    template <class Func>
     static bool regBuiltin(
         std::vector<std::pair<std::string, SymbolMode>> &&params,
         std::string &&name,
-        void (*func)(Instance &)
+        Func &&func
     ) {
         static BlockBuiltin builtin {
             std::move(params), std::move(name), func
@@ -151,7 +150,7 @@ struct BlockBuiltin: public Block {
 };
 
 struct BlockUser: public Block {
-    NodeRef ast;
+    std::unique_ptr<Node> ast;
 
     inline BlockUser(
         std::vector<std::pair<std::string, SymbolMode>> &&_params,
