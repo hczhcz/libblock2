@@ -1,14 +1,14 @@
 #include "output.hpp"
 #include "node.hpp"
 
-void NodeSymbol::renderPath(std::ostringstream &os) {
+void NodeSymbol::renderPath(std::ostringstream &os) const {
     os << "self";
 
     for (size_t i = 0; i < level; ++i) {
         os << "->parent";
     }
 
-    for (std::string &i: path) {
+    for (const std::string &i: path) {
         if (i != "self") {
             os << "->" << i;
         }
@@ -42,7 +42,9 @@ Type &NodeSymbol::buildOut(Instance &instance, Output &output) {
 
     std::ostringstream &os {output.at(instance).content};
 
-    os << "    " << type.renderDecl(nuidOut()) << " = ";
+    os << "    ";
+    type.renderDecl(os, nuidOut());
+    os << " = ";
     renderPath(os);
     os << ";\n";
 

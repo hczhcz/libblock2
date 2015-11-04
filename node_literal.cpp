@@ -3,33 +3,30 @@
 #include "node.hpp"
 
 template <>
-std::string NodeLiteral<bool>::renderValue() {
-    return value ? "true" : "false";
+void NodeLiteral<bool>::renderValue(std::ostringstream &os) const {
+    os << (value ? "true" : "false");
 }
 
 template <>
-std::string NodeLiteral<int64_t>::renderValue() {
-    return std::to_string(value);
+void NodeLiteral<int64_t>::renderValue(std::ostringstream &os) const {
+    os << value;
 }
 
 template <>
-std::string NodeLiteral<double>::renderValue() {
+void NodeLiteral<double>::renderValue(std::ostringstream &os) const {
     // return std::to_string(value);
-    return "*(double *) (uint64_t []) {"
-        + std::to_string(*(uint64_t *) &value) + "}";
+    os << "*(double *) (uint64_t []) {" << *(uint64_t *) &value << "}";
 }
 
 template <>
-std::string NodeLiteral<std::string>::renderValue() {
-    std::string result;
+void NodeLiteral<std::string>::renderValue(std::ostringstream &os) const {
+    os << "(const char []) {";
 
-    result += "(const char []) {";
     for (char i: value) {
-        result += std::to_string((int) i) + ",";
+        os << (int) i << ",";
     }
-    result += "}";
 
-    return result;
+    os << "}";
 }
 
 template <class T>
@@ -45,9 +42,13 @@ Type &NodeLiteral<T>::buildOut(Instance &instance, Output &output) {
 
     // render
 
-    output.at(instance).content
-        << "    " << type.renderDecl(nuidOut())
-        << " = " << renderValue() << ";\n";
+    std::ostringstream &os {output.at(instance).content};
+
+    os << "    ";
+    type.renderDecl(os, nuidOut());
+    os << " = ";
+    renderValue(os);
+    os << ";\n";
 
     // return
 

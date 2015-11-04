@@ -44,9 +44,11 @@ Type &Block::buildOut(Instance &instance, Output &output) {
 
     // render
 
-    output.at(instance).content
-        << "    " << type.renderDecl(nuidOut())
-        << " = self;\n";
+    std::ostringstream &os {output.at(instance).content};
+
+    os << "    ";
+    type.renderDecl(os, nuidOut());
+    os << " = self;\n";
 
     // return
 

@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <sstream>
 #endif
 
 struct Instance;
@@ -12,12 +13,12 @@ struct Block;
 struct Type {
     uintptr_t tuid() const;
 
-    virtual std::string renderDecl(std::string &&name) const = 0;
+    virtual void renderDecl(std::ostringstream &os, std::string &&name) const = 0;
 };
 
 template <class T>
 struct TypeNative: public Type {
-    virtual std::string renderDecl(std::string &&name) const;
+    virtual void renderDecl(std::ostringstream &os, std::string &&name) const;
 };
 
 struct TypeBlock: public Type {
@@ -28,7 +29,7 @@ struct TypeBlock: public Type {
         parent {_parent},
         block {_block} {}
 
-    virtual std::string renderDecl(std::string &&name) const;
+    virtual void renderDecl(std::ostringstream &os, std::string &&name) const;
 };
 
 struct Instance: public Type {
@@ -49,7 +50,7 @@ struct Instance: public Type {
         size_t &level
     ); // also lookup parent->path->name
 
-    virtual std::string renderDecl(std::string &&name) const;
+    virtual void renderDecl(std::ostringstream &os, std::string &&name) const;
 };
 
 inline bool operator==(const Type &a, const Type &b) {

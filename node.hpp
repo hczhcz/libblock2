@@ -4,7 +4,6 @@
 
 #ifndef NO_STD_LIB
 #include <memory>
-#include <sstream>
 #endif
 
 struct Output;
@@ -27,7 +26,7 @@ struct NodeLiteral: public Node {
     inline NodeLiteral(T &&_value):
         value {std::move(_value)} {}
 
-    std::string renderValue();
+    void renderValue(std::ostringstream &os) const;
 
     virtual void buildProc(Instance &instance, Output &output);
     virtual Type &buildOut(Instance &instance, Output &output);
@@ -50,7 +49,7 @@ struct NodeSymbol: public Node {
             path.pop_back();
         }
 
-    void renderPath(std::ostringstream &os);
+    void renderPath(std::ostringstream &os) const;
 
     virtual void buildProc(Instance &instance, Output &output);
     virtual Type &buildOut(Instance &instance, Output &output);
@@ -94,6 +93,8 @@ struct Block: public Node {
         params {std::move(_params)} {}
 
     Instance &getInstance(Instance &&instance, Output &output);
+    void renderFunc(std::ostringstream &os, std::string &&name) const;
+    void renderStruct(std::ostringstream &os) const;
 
     virtual void buildContent(Instance &instance, Output &output) = 0;
 

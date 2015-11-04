@@ -5,29 +5,47 @@ uintptr_t Type::tuid() const {
 }
 
 template <>
-std::string TypeNative<bool>::renderDecl(std::string &&name) const {
-    return "bool " + name;
+void TypeNative<bool>::renderDecl(
+    std::ostringstream &os,
+    std::string &&name
+) const {
+    os << "bool " << name;
 }
 
 template <>
-std::string TypeNative<int64_t>::renderDecl(std::string &&name) const {
-    return "int64_t " + name;
+void TypeNative<int64_t>::renderDecl(
+    std::ostringstream &os,
+    std::string &&name
+) const {
+    os << "int64_t " << name;
 }
 
 template <>
-std::string TypeNative<double>::renderDecl(std::string &&name) const {
-    return "double " + name;
+void TypeNative<double>::renderDecl(
+    std::ostringstream &os,
+    std::string &&name
+) const {
+    os << "double " << name;
 }
 
 template <>
-std::string TypeNative<std::string>::renderDecl(std::string &&name) const {
-    return "const char " + name + "[]"; // TODO: ptr?
+void TypeNative<std::string>::renderDecl(
+    std::ostringstream &os,
+    std::string &&name
+) const {
+    os << "const char " << name << "[]"; // TODO: ptr?
 }
 
-std::string TypeBlock::renderDecl(std::string &&name) const {
-    return "obj_" + std::to_string(parent.tuid()) + " *" + name;
+void TypeBlock::renderDecl(
+    std::ostringstream &os,
+    std::string &&name
+) const {
+    os << "obj_" << parent.tuid() << " *" << name;
 }
 
-std::string Instance::renderDecl(std::string &&name) const {
-    return "obj_" + std::to_string(tuid()) + " *" + name;
+void Instance::renderDecl(
+    std::ostringstream &os,
+    std::string &&name
+) const {
+    os << "obj_" << tuid() << " *" << name;
 }
