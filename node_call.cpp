@@ -17,50 +17,22 @@ void NodeCall::build(
             dynamic_cast<TypeBlock *>(&callee_type)
         }
     ) {
-        if (args.size() != callee_p->block.params.size()) {
-            // error: arg size != param size
-            throw ErrorCallNotConsistent {};
-        }
-
-        Instance a_instance {callee_p->block};
-
-        a_instance.insert("parent", callee_p->parent);
+        Instance a_instance {
+            callee_p->block.initInstance(
+                callee_p->parent
+            )
+        };
 
         before(a_instance);
-
-        // input arguments
-        for (size_t i = 0; i < args.size(); ++i) {
-            if (
-                callee_p->block.params[i].second == SymbolMode::in
-                || callee_p->block.params[i].second == SymbolMode::var
-            ) {
-                a_instance.insert(
-                    callee_p->block.params[i].first,
-                    args[i]->buildOut(instance, output)
-                );
-            }
-        }
+        callee_p->block.inArgs(instance, a_instance, args, output);
 
         Instance &f_instance {
-            callee_p->block.getInstance(
+            callee_p->block.matchInstance(
                 std::move(a_instance), output
             )
         };
 
-        // output arguments
-        for (size_t i = 0; i < args.size(); ++i) {
-            if (
-                callee_p->block.params[i].second == SymbolMode::out
-                || callee_p->block.params[i].second == SymbolMode::var
-            ) {
-                args[i]->buildIn(
-                    instance,
-                    f_instance.at(callee_p->block.params[i].first),
-                    output
-                );
-            }
-        }
-
+        callee_p->block.outArgs(instance, f_instance, args, output);
         after(f_instance);
     } else {
         // error: value as callee

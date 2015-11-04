@@ -53,7 +53,7 @@ int main() {
 
     Output output;
 
-    root.getInstance(Instance {root}, output);
+    root.matchInstance(Instance {root}, output);
 
     return 0;
 }

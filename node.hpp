@@ -95,7 +95,18 @@ struct Block: public Node {
     inline Block(std::vector<std::pair<std::string, SymbolMode>> &&_params):
         params {std::move(_params)} {}
 
-    Instance &getInstance(Instance &&instance, Output &output);
+    Instance initInstance(Instance &parent);
+    void inArgs(
+        Instance &parent, Instance &instance,
+        std::vector<NodeRef> &args,
+        Output &output
+    );
+    Instance &matchInstance(Instance &&instance, Output &output);
+    void outArgs(
+        Instance &parent, Instance &instance,
+        std::vector<NodeRef> &args,
+        Output &output
+    );
 
     virtual void buildContent(Instance &instance, Output &output) = 0;
 
