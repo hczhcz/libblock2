@@ -34,14 +34,14 @@ void Block::inArg(
 }
 
 Instance &Block::matchInstance(
-    std::unique_ptr<Instance> &&instance,
+    std::unique_ptr<Instance> &&instance_p,
     Output &output
 ) {
-    for (std::unique_ptr<Instance> &target: instances) {
+    for (std::unique_ptr<Instance> &target_p: instances) {
         bool ok {true};
 
-        for (const auto &symbol: instance->symbol_types) {
-            if (symbol.second != target->at(symbol.first)) {
+        for (const auto &symbol: instance_p->symbol_types) {
+            if (symbol.second != target_p->at(symbol.first)) {
                 ok = false;
                 break;
             }
@@ -50,29 +50,29 @@ Instance &Block::matchInstance(
         if (ok) {
             // found
 
-            return *target;
+            return *target_p;
         }
     }
 
     // not found
 
-    instances.push_back(std::move(instance));
-    Instance &new_instance {*instances.back()};
+    instances.push_back(std::move(instance_p));
+    Instance &instance {*instances.back()};
 
     // build
 
-    output.insert(new_instance);
-    buildContent(new_instance, output);
+    output.insert(instance);
+    buildContent(instance, output);
 
     // render header
 
-    std::ostream &osh {output.at(new_instance).header};
+    std::ostream &osh {output.at(instance).header};
 
-    new_instance.renderStruct(osh);
-    new_instance.renderFuncDecl(osh);
+    instance.renderStruct(osh);
+    instance.renderFuncDecl(osh);
     osh << ";\n\n";
 
-    return new_instance;
+    return instance;
 }
 
 void Block::outArg(

@@ -29,7 +29,7 @@ int main() {
     //         call($("c"), _("xx"), _("yy"))
     //     )
     // };
-    BlockUser *root {
+    BlockUser *root_p {
         block(
             {},
             call(
@@ -55,12 +55,12 @@ int main() {
 
     Output output;
 
-    std::unique_ptr<Instance> instance {
-        new Instance{*root}
+    std::unique_ptr<Instance> instance_p {
+        new Instance{*root_p}
     };
-    BlockBuiltin::applyBuiltin(*instance);
+    BlockBuiltin::applyBuiltin(*instance_p);
 
-    root->matchInstance(std::move(instance), output);
+    root_p->matchInstance(std::move(instance_p), output);
 
     std::cout << "======== header ========" << std::endl;
     output.getHeader(std::cout);

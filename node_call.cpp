@@ -2,13 +2,14 @@
 #include "output.hpp"
 #include "node.hpp"
 
-template <class Before, class After>
 void NodeCall::build(
     Instance &instance, Output &output,
-    Before &&before, After &&after
+    std::function<void (Instance &)> &&before,
+    std::function<void (Instance &)> &&after
 ) {
     // special args: input, result, self, parent
     // TODO: render
+    // get callee
 
     Type &callee_type {callee->buildOut(instance, output)};
 
@@ -17,27 +18,33 @@ void NodeCall::build(
             dynamic_cast<TypeBlock *>(&callee_type)
         }
     ) {
-        std::unique_ptr<Instance> a_instance {
+        // make call
+
+        std::unique_ptr<Instance> child_p {
             callee_p->block.initInstance(
                 callee_p->parent
             )
         };
 
-        before(*a_instance);
+        // in
+
+        before(*child_p);
         for (size_t i = 0; i < args.size(); ++i) {
-            callee_p->block.inArg(instance, *a_instance, i, args[i], output);
+            callee_p->block.inArg(instance, *child_p, i, args[i], output);
         }
 
-        Instance &f_instance {
+        Instance &child {
             callee_p->block.matchInstance(
-                std::move(a_instance), output
+                std::move(child_p), output
             )
         };
 
+        // out
+
         for (size_t i = 0; i < args.size(); ++i) {
-            callee_p->block.outArg(instance, f_instance, i, args[i], output);
+            callee_p->block.outArg(instance, child, i, args[i], output);
         }
-        after(f_instance);
+        after(child);
     } else {
         // error: value as callee
         throw ErrorCallNotAllowed {};
@@ -64,8 +71,8 @@ Type &NodeCall::buildOut(Instance &instance, Output &output) {
         [](Instance &) {
             // nothing
         },
-        [&](Instance &instance) {
-            type_p = &instance.at("result");
+        [&](Instance &child) {
+            type_p = &child.at("result");
         }
     );
 
@@ -75,8 +82,8 @@ Type &NodeCall::buildOut(Instance &instance, Output &output) {
 void NodeCall::buildIn(Instance &instance, Type &type, Output &output) {
     build(
         instance, output,
-        [&](Instance &instance) {
-            instance.insert("input", type);
+        [&](Instance &child) {
+            child.insert("input", type);
         },
         [](Instance &) {
             // nothing

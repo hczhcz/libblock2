@@ -66,10 +66,10 @@ struct NodeCall: public Node {
             }
         }
 
-    template <class Before, class After>
     void build(
         Instance &instance, Output &output,
-        Before &&before, After &&after
+        std::function<void (Instance &)> &&before,
+        std::function<void (Instance &)> &&after
     );
 
     virtual void buildProc(Instance &instance, Output &output);
