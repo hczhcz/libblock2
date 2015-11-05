@@ -11,17 +11,17 @@ int main() {
     // BlockUser root {
     //     {},
     //     call(
-    //         $(";"),
+    //         $("__then__"),
     //         call(
-    //             $("="), $("c"), block(
+    //             $("__set__"), $("c"), block(
     //                 {in("a"), in("b")},
     //                 call(
-    //                     $(";"),
+    //                     $("__then__"),
     //                     call(
-    //                         $("="), $("t"), call($("*"), _(2), $("b"))
+    //                         $("__set__"), $("t"), call($("*"), _(2), $("b"))
     //                     ),
     //                     call(
-    //                         $("="), $("result"), call($("+"), $("a"), $("t"))
+    //                         $("__set__"), $("result"), call($("+"), $("a"), $("t"))
     //                     )
     //                 )
     //             )
@@ -29,40 +29,42 @@ int main() {
     //         call($("c"), _("xx"), _("yy"))
     //     )
     // };
-    BlockUser root {
-        {},
-        call(
-            $(";"),
+    BlockUser *root {
+        block(
+            {},
             call(
-                $("="), $("c"), block(
-                    {in("a"), in("b")},
-                    call(
-                        $(";"),
+                $("__then__"),
+                call(
+                    $("__set__"), $("c"), block(
+                        {in("a"), in("b")},
                         call(
-                            $("="), $("t"), $("b")
-                        ),
-                        call(
-                            $("="), $("result"), $("t")
+                            $("__then__"),
+                            call(
+                                $("__set__"), $("t"), $("b")
+                            ),
+                            call(
+                                $("__set__"), $("result"), $("t")
+                            )
                         )
                     )
-                )
-            ),
-            call($("c"), _("xx"), _("yy"))
+                ),
+                call($("c"), _("xx"), _("yy"))
+            )
         )
     };
 
     Output output;
 
     std::unique_ptr<Instance> instance {
-        new Instance{root}
+        new Instance{*root}
     };
     BlockBuiltin::applyBuiltin(*instance);
 
-    root.matchInstance(std::move(instance), output);
+    root->matchInstance(std::move(instance), output);
 
-    std::cout << std::endl << "======== header ========" << std::endl;
+    std::cout << "======== header ========" << std::endl;
     output.getHeader(std::cout);
-    std::cout << std::endl << "======== content ========" << std::endl;
+    std::cout << "======== content ========" << std::endl;
     output.getContent(std::cout);
 
     return 0;

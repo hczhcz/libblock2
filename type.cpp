@@ -33,7 +33,7 @@ void TypeNative<std::string>::renderDecl(
     std::ostream &os,
     const std::string &name
 ) const {
-    os << "const char " << name << "[]"; // TODO: ptr?
+    os << "const char *" << name;
 }
 
 void TypeBlock::renderDecl(

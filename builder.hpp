@@ -4,8 +4,12 @@
 
 namespace builder {
 
-inline NodeLiteralBool *_(bool &&value) {
-    return new NodeLiteralBool {std::move(value)};
+inline NodeLiteralBool *_true() {
+    return new NodeLiteralBool {true};
+}
+
+inline NodeLiteralBool *_false() {
+    return new NodeLiteralBool {false};
 }
 
 inline NodeLiteralInt *_(int32_t &&value) {

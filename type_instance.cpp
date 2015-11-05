@@ -79,7 +79,7 @@ void Instance::renderFuncDecl(std::ostream &os) const {
 }
 
 void Instance::renderStruct(std::ostream &os) const {
-    os << "struct obj_" << tuid() << " {";
+    os << "struct obj_" << tuid() << " {\n";
 
     for (const auto &symbol: symbol_types) {
         os << "    ";
@@ -87,7 +87,7 @@ void Instance::renderStruct(std::ostream &os) const {
         os << ";\n";
     }
 
-    os << "}\n\n";
+    os << "}\n";
 }
 
 void Instance::renderDecl(

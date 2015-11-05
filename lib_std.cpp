@@ -5,7 +5,7 @@ namespace {
 
 using namespace builder;
 
-struct Semicolon: public BlockBuiltin {
+struct Then: public BlockBuiltin {
     using BlockBuiltin::BlockBuiltin;
 
     virtual void inSpecialArg(
@@ -15,20 +15,20 @@ struct Semicolon: public BlockBuiltin {
     ) {
         arg->buildProc(parent, output);
     }
-} semicolon {
+} then {
     {},
-    ";"
+    "__then__"
 };
 
-struct Assign: public BlockBuiltin {
+struct Set: public BlockBuiltin {
     using BlockBuiltin::BlockBuiltin;
 
     virtual void buildContent(Instance &instance, Output &) {
         instance.insert("dest", instance.at("src"));
     }
-} assign {
+} set {
     {out("dest"), in("src")},
-    "="
+    "__set__"
 };
 
 }

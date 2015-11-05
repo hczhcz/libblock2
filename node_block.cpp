@@ -70,7 +70,7 @@ Instance &Block::matchInstance(
 
     new_instance.renderStruct(osh);
     new_instance.renderFuncDecl(osh);
-    osh << ";\n";
+    osh << ";\n\n";
 
     return new_instance;
 }
