@@ -2,16 +2,6 @@
 #include "output.hpp"
 #include "node.hpp"
 
-std::unique_ptr<Instance> Block::initInstance(Instance &parent) {
-    std::unique_ptr<Instance> instance {
-        new Instance {*this}
-    };
-
-    instance->insert("parent", parent);
-
-    return std::move(instance);
-}
-
 void Block::inArg(
     Instance &parent, Instance &instance,
     size_t index, std::unique_ptr<Node> &arg,
@@ -111,6 +101,75 @@ void Block::outSpecialArg(
     Output &
 ) {
     // nothing, by default // TODO: va_args?
+}
+
+void Block::makeBoot(
+    Output &output,
+    std::function<void (Instance &)> &&before,
+    std::function<void (Instance &)> &&after
+) {
+    // init
+
+    std::unique_ptr<Instance> instance_p {
+        new Instance {}
+    };
+
+    // in args
+
+    before(*instance_p);
+
+    // find or create instance
+
+    Instance &instance {
+        matchInstance(std::move(instance_p), output)
+    };
+
+    // out
+
+    after(instance);
+}
+
+void Block::makeCall(
+    Instance &parent, Instance &caller,
+    std::vector<std::unique_ptr<Node>> &args,
+    Output &output,
+    std::function<void (Instance &)> &&before,
+    std::function<void (Instance &)> &&after
+) {
+    // init
+
+    std::unique_ptr<Instance> instance_p {
+        new Instance {}
+    };
+
+    instance_p->insert("parent", parent);
+
+    // in args
+
+    before(*instance_p);
+    for (size_t i = 0; i < args.size(); ++i) {
+        inArg(caller, *instance_p, i, args[i], output);
+    }
+
+    // find or create instance
+
+    Instance &instance {
+        matchInstance(std::move(instance_p), output)
+    };
+
+    // render
+
+    std::ostream &os {output.osContent(caller)};
+
+    os << "    ";
+    os << "<TODO: call>;\n"; // TODO
+
+    // out
+
+    for (size_t i = 0; i < args.size(); ++i) {
+        outArg(caller, instance, i, args[i], output);
+    }
+    after(instance);
 }
 
 void Block::buildProc(Instance &, Output &) {

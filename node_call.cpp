@@ -8,9 +8,8 @@ void NodeCall::build(
     std::function<void (Instance &)> &&after
 ) {
     // special args: input, result, self, parent
-    // TODO: render
-    // get callee
 
+    // get callee
     Type &callee_type {callee->buildOut(instance, output)};
 
     if (
@@ -18,33 +17,13 @@ void NodeCall::build(
             dynamic_cast<TypeBlock *>(&callee_type)
         }
     ) {
-        // make call
-
-        std::unique_ptr<Instance> child_p {
-            callee_p->block.initInstance(
-                callee_p->parent
-            )
-        };
-
-        // in
-
-        before(*child_p);
-        for (size_t i = 0; i < args.size(); ++i) {
-            callee_p->block.inArg(instance, *child_p, i, args[i], output);
-        }
-
-        Instance &child {
-            callee_p->block.matchInstance(
-                std::move(child_p), output
-            )
-        };
-
-        // out
-
-        for (size_t i = 0; i < args.size(); ++i) {
-            callee_p->block.outArg(instance, child, i, args[i], output);
-        }
-        after(child);
+        // call
+        callee_p->block.makeCall(
+            callee_p->parent, instance,
+            args, output,
+            std::move(before),
+            std::move(after)
+        );
     } else {
         // error: value as callee
         throw ErrorCallNotAllowed {};

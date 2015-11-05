@@ -51,8 +51,6 @@ public:
 
 class Instance: public Type {
 private:
-    Block &block;
-
     std::vector<std::unique_ptr<TypeBlock>> children;
     std::map<std::string, Type &> symbol_types;
 
@@ -60,9 +58,6 @@ private:
     friend class BlockBuiltin; // TODO: ?
 
 public:
-    inline Instance(Block &_block):
-        block {_block} {}
-
     Type &at(const std::string &name);
     void insert(const std::string &name, Type &type);
     Instance &lookup(const std::vector<std::string> &path);

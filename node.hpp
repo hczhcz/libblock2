@@ -97,6 +97,21 @@ private:
     std::vector<std::unique_ptr<Instance>> instances;
 
 protected:
+    void inArg(
+        Instance &parent, Instance &instance,
+        size_t index, std::unique_ptr<Node> &arg,
+        Output &output
+    );
+    Instance &matchInstance(
+        std::unique_ptr<Instance> &&instance,
+        Output &output
+    );
+    void outArg(
+        Instance &parent, Instance &instance,
+        size_t index, std::unique_ptr<Node> &arg,
+        Output &output
+    );
+
     virtual void inSpecialArg(
         Instance &parent, Instance &instance,
         size_t index, std::unique_ptr<Node> &arg,
@@ -113,20 +128,17 @@ public:
     inline Block(std::vector<std::pair<std::string, SymbolMode>> &&_params):
         params {std::move(_params)} {}
 
-    std::unique_ptr<Instance> initInstance(Instance &parent); // TODO
-    void inArg(
-        Instance &parent, Instance &instance,
-        size_t index, std::unique_ptr<Node> &arg,
-        Output &output
+    void makeBoot(
+        Output &output,
+        std::function<void (Instance &)> &&before,
+        std::function<void (Instance &)> &&after
     );
-    Instance &matchInstance(
-        std::unique_ptr<Instance> &&instance,
-        Output &output
-    );
-    void outArg(
-        Instance &parent, Instance &instance,
-        size_t index, std::unique_ptr<Node> &arg,
-        Output &output
+    void makeCall(
+        Instance &parent, Instance &caller,
+        std::vector<std::unique_ptr<Node>> &args,
+        Output &output,
+        std::function<void (Instance &)> &&before,
+        std::function<void (Instance &)> &&after
     );
 
     // as node

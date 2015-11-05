@@ -55,12 +55,15 @@ int main() {
 
     Output output;
 
-    std::unique_ptr<Instance> instance_p {
-        new Instance{*root_p}
-    };
-    BlockBuiltin::applyBuiltin(*instance_p);
-
-    root_p->matchInstance(std::move(instance_p), output);
+    root_p->makeBoot(
+        output,
+        [&](Instance &instance) {
+            BlockBuiltin::applyBuiltin(instance);
+        },
+        [](Instance &) {
+            //
+        }
+    );
 
     std::cout << "======== header ========" << std::endl;
     output.getHeader(std::cout);
