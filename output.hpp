@@ -1,6 +1,8 @@
 #pragma once
 
 #ifndef NO_STD_LIB
+#include <memory>
+#include <vector>
 #include <map>
 #include <sstream>
 #endif
@@ -13,9 +15,8 @@ struct OutputContext {
 };
 
 struct Output {
+    std::vector<std::unique_ptr<OutputContext>> members;
     std::map<uintptr_t, OutputContext &> map;
-
-    virtual ~Output();
 
     OutputContext &at(Instance &instance);
     OutputContext &insert(Instance &instance);
