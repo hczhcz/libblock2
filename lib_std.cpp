@@ -8,11 +8,11 @@ using namespace builder;
 class Then: public BlockBuiltin {
 protected:
     virtual void inSpecialArg(
-        Instance &parent, Instance &,
+        Instance &caller, Instance &,
         size_t, std::unique_ptr<Node> &arg,
         Output &output
     ) {
-        arg->buildProc(parent, output);
+        arg->buildProc(caller, output);
     }
 
 public:

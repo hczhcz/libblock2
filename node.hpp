@@ -98,7 +98,7 @@ private:
 
 protected:
     void inArg(
-        Instance &parent, Instance &instance,
+        Instance &caller, Instance &instance,
         size_t index, std::unique_ptr<Node> &arg,
         Output &output
     );
@@ -107,19 +107,19 @@ protected:
         Output &output
     );
     void outArg(
-        Instance &parent, Instance &instance,
+        Instance &caller, Instance &instance,
         size_t index, std::unique_ptr<Node> &arg,
         Output &output
     );
 
     virtual void inSpecialArg(
-        Instance &parent, Instance &instance,
+        Instance &caller, Instance &instance,
         size_t index, std::unique_ptr<Node> &arg,
         Output &output
     );
     virtual void buildContent(Instance &instance, Output &output) = 0;
     virtual void outSpecialArg(
-        Instance &parent, Instance &instance,
+        Instance &caller, Instance &instance,
         size_t index, std::unique_ptr<Node> &arg,
         Output &output
     );

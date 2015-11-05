@@ -3,7 +3,7 @@
 #include "node.hpp"
 
 void Block::inArg(
-    Instance &parent, Instance &instance,
+    Instance &caller, Instance &instance,
     size_t index, std::unique_ptr<Node> &arg,
     Output &output
 ) {
@@ -11,14 +11,14 @@ void Block::inArg(
         index >= params.size()
         || params[index].second == SymbolMode::special
     ) {
-        inSpecialArg(parent, instance, index, arg, output);
+        inSpecialArg(caller, instance, index, arg, output);
     } else if (
         params[index].second == SymbolMode::in
         || params[index].second == SymbolMode::var
     ) {
         instance.insert(
             params[index].first,
-            arg->buildOut(parent, output)
+            arg->buildOut(caller, output)
         );
     }
 }
@@ -66,7 +66,7 @@ Instance &Block::matchInstance(
 }
 
 void Block::outArg(
-    Instance &parent, Instance &instance,
+    Instance &caller, Instance &instance,
     size_t index, std::unique_ptr<Node> &arg,
     Output &output
 ) {
@@ -74,13 +74,13 @@ void Block::outArg(
         index >= params.size()
         || params[index].second == SymbolMode::special
     ) {
-        outSpecialArg(parent, instance, index, arg, output);
+        outSpecialArg(caller, instance, index, arg, output);
     } else if (
         params[index].second == SymbolMode::out
         || params[index].second == SymbolMode::var
     ) {
         arg->buildIn(
-            parent,
+            caller,
             instance.at(params[index].first),
             output
         );
