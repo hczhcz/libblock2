@@ -4,21 +4,21 @@
 
 template <>
 void NodeLiteral<bool>::renderValue(
-    std::ostringstream &os
+    std::ostream &os
 ) const {
     os << (value ? "true" : "false");
 }
 
 template <>
 void NodeLiteral<int64_t>::renderValue(
-    std::ostringstream &os
+    std::ostream &os
 ) const {
     os << value;
 }
 
 template <>
 void NodeLiteral<double>::renderValue(
-    std::ostringstream &os
+    std::ostream &os
 ) const {
     // return std::to_string(value);
     os << "*(double *) (uint64_t []) {" << *(uint64_t *) &value << "}";
@@ -26,7 +26,7 @@ void NodeLiteral<double>::renderValue(
 
 template <>
 void NodeLiteral<std::string>::renderValue(
-    std::ostringstream &os
+    std::ostream &os
 ) const {
     os << "(const char []) {";
 
@@ -50,7 +50,7 @@ Type &NodeLiteral<T>::buildOut(Instance &instance, Output &output) {
 
     // render
 
-    std::ostringstream &os {output.at(instance).content};
+    std::ostream &os {output.at(instance).content};
 
     os << "    ";
     type.renderDecl(os, nuidOut());

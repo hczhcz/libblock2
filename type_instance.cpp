@@ -72,13 +72,13 @@ Type &Instance::fullLookup(
     }
 }
 
-void Instance::renderFuncDecl(std::ostringstream &os) const {
+void Instance::renderFuncDecl(std::ostream &os) const {
     os << "func_" << tuid() << "(";
     renderDecl(os, "self");
     os << ")";
 }
 
-void Instance::renderStruct(std::ostringstream &os) const {
+void Instance::renderStruct(std::ostream &os) const {
     os << "struct obj_" << tuid() << " {";
 
     for (const auto &symbol: symbol_types) {
@@ -91,7 +91,7 @@ void Instance::renderStruct(std::ostringstream &os) const {
 }
 
 void Instance::renderDecl(
-    std::ostringstream &os,
+    std::ostream &os,
     const std::string &name
 ) const {
     os << "struct obj_" << tuid() << " *" << name;

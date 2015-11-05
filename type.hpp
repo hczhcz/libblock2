@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <sstream>
+#include <ostream>
 #endif
 
 struct Instance;
@@ -15,7 +15,7 @@ struct Type {
     uintptr_t tuid() const;
 
     virtual void renderDecl(
-        std::ostringstream &os,
+        std::ostream &os,
         const std::string &name
     ) const = 0;
 };
@@ -23,7 +23,7 @@ struct Type {
 template <class T>
 struct TypeNative: public Type {
     virtual void renderDecl(
-        std::ostringstream &os,
+        std::ostream &os,
         const std::string &name
     ) const;
 };
@@ -37,7 +37,7 @@ struct TypeBlock: public Type {
         block {_block} {}
 
     virtual void renderDecl(
-        std::ostringstream &os,
+        std::ostream &os,
         const std::string &name
     ) const;
 };
@@ -60,11 +60,11 @@ struct Instance: public Type {
         size_t &level
     ); // also lookup parent->path->name
 
-    void renderFuncDecl(std::ostringstream &os) const;
-    void renderStruct(std::ostringstream &os) const;
+    void renderFuncDecl(std::ostream &os) const;
+    void renderStruct(std::ostream &os) const;
 
     virtual void renderDecl(
-        std::ostringstream &os,
+        std::ostream &os,
         const std::string &name
     ) const;
 };

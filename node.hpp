@@ -21,7 +21,7 @@ struct NodeLiteral: public Node {
     inline NodeLiteral(T &&_value):
         value {std::move(_value)} {}
 
-    void renderValue(std::ostringstream &os) const;
+    void renderValue(std::ostream &os) const;
 
     virtual void buildProc(Instance &instance, Output &output);
     virtual Type &buildOut(Instance &instance, Output &output);
@@ -44,7 +44,7 @@ struct NodeSymbol: public Node {
             path.pop_back();
         }
 
-    void renderPath(std::ostringstream &os) const;
+    void renderPath(std::ostream &os) const;
 
     virtual void buildProc(Instance &instance, Output &output);
     virtual Type &buildOut(Instance &instance, Output &output);

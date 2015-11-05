@@ -1,7 +1,7 @@
 #include "output.hpp"
 #include "node.hpp"
 
-void NodeSymbol::renderPath(std::ostringstream &os) const {
+void NodeSymbol::renderPath(std::ostream &os) const {
     os << "self";
 
     for (size_t i = 0; i < level; ++i) {
@@ -26,7 +26,7 @@ void NodeSymbol::buildProc(Instance &instance, Output &output) {
 
     // render
 
-    std::ostringstream &os {output.at(instance).content};
+    std::ostream &os {output.at(instance).content};
 
     os << "    ";
     renderPath(os);
@@ -40,7 +40,7 @@ Type &NodeSymbol::buildOut(Instance &instance, Output &output) {
 
     // render
 
-    std::ostringstream &os {output.at(instance).content};
+    std::ostream &os {output.at(instance).content};
 
     os << "    ";
     type.renderDecl(os, nuidOut());
@@ -60,7 +60,7 @@ void NodeSymbol::buildIn(Instance &instance, Type &type, Output &output) {
 
     // render
 
-    std::ostringstream &os {output.at(instance).content};
+    std::ostream &os {output.at(instance).content};
 
     os << "    ";
     renderPath(os);

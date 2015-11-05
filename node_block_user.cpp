@@ -5,7 +5,7 @@
 void BlockUser::buildContent(Instance &instance, Output &output) {
     // render (before body)
 
-    std::ostringstream &os {output.at(instance).content};
+    std::ostream &os {output.at(instance).content};
 
     instance.renderFuncDecl(os);
     os << " {\n";
