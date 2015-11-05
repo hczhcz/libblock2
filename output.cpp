@@ -16,3 +16,15 @@ OutputContext &Output::insert(Instance &instance) {
         instance.tuid(), *new OutputContext
     }).first->second;
 }
+
+void Output::getHeader(std::ostream &os) const {
+    for (const auto &i: map) {
+        os << i.second.header.str();
+    }
+}
+
+void Output::getContent(std::ostream &os) const {
+    for (const auto &i: map) {
+        os << i.second.content.str();
+    }
+}

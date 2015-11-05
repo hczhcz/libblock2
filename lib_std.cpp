@@ -23,7 +23,7 @@ struct Semicolon: public BlockBuiltin {
 struct Assign: public BlockBuiltin {
     using BlockBuiltin::BlockBuiltin;
 
-    virtual void buildContent(Instance &instance, Output &output) {
+    virtual void buildContent(Instance &instance, Output &) {
         instance.insert("dest", instance.at("src"));
     }
 } assign {

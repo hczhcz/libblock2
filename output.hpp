@@ -19,4 +19,7 @@ struct Output {
 
     OutputContext &at(Instance &instance);
     OutputContext &insert(Instance &instance);
+
+    void getHeader(std::ostream &os) const;
+    void getContent(std::ostream &os) const;
 };

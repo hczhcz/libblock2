@@ -60,5 +60,10 @@ int main() {
 
     root.matchInstance(std::move(instance), output);
 
+    std::cout << std::endl << "======== header ========" << std::endl;
+    output.getHeader(std::cout);
+    std::cout << std::endl << "======== content ========" << std::endl;
+    output.getContent(std::cout);
+
     return 0;
 }
