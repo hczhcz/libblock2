@@ -26,7 +26,7 @@ void NodeSymbol::buildProc(Instance &instance, Output &output) {
 
     // render
 
-    std::ostream &os {output.at(instance).content};
+    std::ostream &os {output.osContent(instance)};
 
     os << "    ";
     renderPath(os);
@@ -40,7 +40,7 @@ Type &NodeSymbol::buildOut(Instance &instance, Output &output) {
 
     // render
 
-    std::ostream &os {output.at(instance).content};
+    std::ostream &os {output.osContent(instance)};
 
     os << "    ";
     type.renderDecl(os, nuidOut());
@@ -60,7 +60,7 @@ void NodeSymbol::buildIn(Instance &instance, Type &type, Output &output) {
 
     // render
 
-    std::ostream &os {output.at(instance).content};
+    std::ostream &os {output.osContent(instance)};
 
     os << "    ";
     renderPath(os);

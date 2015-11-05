@@ -50,7 +50,7 @@ Type &NodeLiteral<T>::buildOut(Instance &instance, Output &output) {
 
     // render
 
-    std::ostream &os {output.at(instance).content};
+    std::ostream &os {output.osContent(instance)};
 
     os << "    ";
     type.renderDecl(os, nuidOut());
@@ -68,7 +68,7 @@ void NodeLiteral<T>::buildIn(Instance &, Type &, Output &) {
     throw ErrorWriteNotAllowed {};
 }
 
-template struct NodeLiteral<bool>;
-template struct NodeLiteral<int64_t>;
-template struct NodeLiteral<double>;
-template struct NodeLiteral<std::string>;
+template class NodeLiteral<bool>;
+template class NodeLiteral<int64_t>;
+template class NodeLiteral<double>;
+template class NodeLiteral<std::string>;

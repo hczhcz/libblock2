@@ -7,19 +7,25 @@
 #include <sstream>
 #endif
 
-struct Instance;
+class Instance;
 
-struct OutputContext {
+class OutputContext {
+private:
     std::ostringstream header;
     std::ostringstream content;
+
+    friend class Output;
 };
 
-struct Output {
+class Output {
+private:
     std::vector<std::unique_ptr<OutputContext>> members;
     std::map<uintptr_t, OutputContext &> map;
 
-    OutputContext &at(Instance &instance);
-    OutputContext &insert(Instance &instance);
+public:
+    std::ostream &osHeader(Instance &instance);
+    std::ostream &osContent(Instance &instance);
+    void insert(Instance &instance);
 
     void getHeader(std::ostream &os) const;
     void getContent(std::ostream &os) const;

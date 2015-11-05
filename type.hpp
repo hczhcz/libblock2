@@ -8,10 +8,11 @@
 #include <ostream>
 #endif
 
-struct Instance;
-struct Block;
+class Instance;
+class Block;
 
-struct Type {
+class Type {
+public:
     uintptr_t tuid() const;
 
     virtual void renderDecl(
@@ -21,17 +22,23 @@ struct Type {
 };
 
 template <class T>
-struct TypeNative: public Type {
+class TypeNative: public Type {
+public:
     virtual void renderDecl(
         std::ostream &os,
         const std::string &name
     ) const;
 };
 
-struct TypeBlock: public Type {
+class TypeBlock: public Type {
+private:
     Instance &parent;
     Block &block;
 
+    friend class Block;
+    friend class NodeCall; // TODO: remove this
+
+public:
     inline TypeBlock(Instance &_parent, Block &_block):
         parent {_parent},
         block {_block} {}
@@ -42,12 +49,17 @@ struct TypeBlock: public Type {
     ) const;
 };
 
-struct Instance: public Type {
+class Instance: public Type {
+private:
     Block &block;
 
     std::vector<std::unique_ptr<TypeBlock>> children;
     std::map<std::string, Type &> symbol_types;
 
+    friend class Block;
+    friend class BlockBuiltin; // TODO: ?
+
+public:
     inline Instance(Block &_block):
         block {_block} {}
 

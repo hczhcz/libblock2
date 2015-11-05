@@ -66,7 +66,7 @@ Instance &Block::matchInstance(
 
     // render header
 
-    std::ostream &osh {output.at(instance).header};
+    std::ostream &osh {output.osHeader(instance)};
 
     instance.renderStruct(osh);
     instance.renderFuncDecl(osh);
@@ -127,7 +127,7 @@ Type &Block::buildOut(Instance &instance, Output &output) {
 
     // render
 
-    std::ostream &os {output.at(instance).content};
+    std::ostream &os {output.osContent(instance)};
 
     os << "    ";
     type.renderDecl(os, nuidOut());

@@ -2,26 +2,30 @@
 
 #include "type.hpp"
 
-struct Output;
+class Output;
 
-struct Node {
+class Node {
+protected:
     uintptr_t nuid() const;
     std::string nuidOut() const;
     std::string nuidIn() const;
 
+public:
     virtual void buildProc(Instance &instance, Output &output) = 0;
     virtual Type &buildOut(Instance &instance, Output &output) = 0;
     virtual void buildIn(Instance &instance, Type &type, Output &output) = 0;
 };
 
 template <class T>
-struct NodeLiteral: public Node {
+class NodeLiteral: public Node {
+private:
     T value;
 
+    void renderValue(std::ostream &os) const;
+
+public:
     inline NodeLiteral(T &&_value):
         value {std::move(_value)} {}
-
-    void renderValue(std::ostream &os) const;
 
     virtual void buildProc(Instance &instance, Output &output);
     virtual Type &buildOut(Instance &instance, Output &output);
@@ -32,29 +36,39 @@ using NodeLiteralInt = NodeLiteral<int64_t>;
 using NodeLiteralReal = NodeLiteral<double>;
 using NodeLiteralStr = NodeLiteral<std::string>;
 
-struct NodeSymbol: public Node {
+class NodeSymbol: public Node {
+private:
     std::vector<std::string> path;
     std::string name;
 
     size_t level {0};
 
+    void renderPath(std::ostream &os) const;
+
+public:
     inline NodeSymbol(std::vector<std::string> &&_path):
         path {std::move(_path)},
         name {path.back()} {
             path.pop_back();
         }
 
-    void renderPath(std::ostream &os) const;
-
     virtual void buildProc(Instance &instance, Output &output);
     virtual Type &buildOut(Instance &instance, Output &output);
     virtual void buildIn(Instance &instance, Type &type, Output &output);
 };
 
-struct NodeCall: public Node {
+class NodeCall: public Node {
+private:
     std::unique_ptr<Node> callee;
     std::vector<std::unique_ptr<Node>> args;
 
+    void build(
+        Instance &instance, Output &output,
+        std::function<void (Instance &)> &&before,
+        std::function<void (Instance &)> &&after
+    );
+
+public:
     template <class... Args>
     inline NodeCall(Node *_callee, Args... _args):
         callee {_callee} {
@@ -66,12 +80,6 @@ struct NodeCall: public Node {
             }
         }
 
-    void build(
-        Instance &instance, Output &output,
-        std::function<void (Instance &)> &&before,
-        std::function<void (Instance &)> &&after
-    );
-
     virtual void buildProc(Instance &instance, Output &output);
     virtual Type &buildOut(Instance &instance, Output &output);
     virtual void buildIn(Instance &instance, Type &type, Output &output);
@@ -81,16 +89,31 @@ enum class SymbolMode {
     in, out, var, special
 };
 
-struct Block: public Node {
+class Block: public Node {
+private:
     // TODO: multiple signature (overloading and SFINAE)
     std::vector<std::pair<std::string, SymbolMode>> params;
 
     std::vector<std::unique_ptr<Instance>> instances;
 
+protected:
+    virtual void inSpecialArg(
+        Instance &parent, Instance &instance,
+        size_t index, std::unique_ptr<Node> &arg,
+        Output &output
+    );
+    virtual void buildContent(Instance &instance, Output &output) = 0;
+    virtual void outSpecialArg(
+        Instance &parent, Instance &instance,
+        size_t index, std::unique_ptr<Node> &arg,
+        Output &output
+    );
+
+public:
     inline Block(std::vector<std::pair<std::string, SymbolMode>> &&_params):
         params {std::move(_params)} {}
 
-    std::unique_ptr<Instance> initInstance(Instance &parent);
+    std::unique_ptr<Instance> initInstance(Instance &parent); // TODO
     void inArg(
         Instance &parent, Instance &instance,
         size_t index, std::unique_ptr<Node> &arg,
@@ -106,31 +129,21 @@ struct Block: public Node {
         Output &output
     );
 
-    virtual void inSpecialArg(
-        Instance &parent, Instance &instance,
-        size_t index, std::unique_ptr<Node> &arg,
-        Output &output
-    );
-    virtual void buildContent(Instance &instance, Output &output) = 0;
-    virtual void outSpecialArg(
-        Instance &parent, Instance &instance,
-        size_t index, std::unique_ptr<Node> &arg,
-        Output &output
-    );
-
     // as node
     virtual void buildProc(Instance &instance, Output &output);
     virtual Type &buildOut(Instance &instance, Output &output);
     virtual void buildIn(Instance &instance, Type &type, Output &output);
 };
 
-struct BlockBuiltin: public Block {
-    static std::map<std::string, BlockBuiltin &> &builtins();
-
-    static void applyBuiltin(Instance &instance);
-
+class BlockBuiltin: public Block {
+private:
     std::string name;
 
+protected:
+    // as block
+    virtual void buildContent(Instance &instance, Output &output);
+
+public:
     inline BlockBuiltin(
         std::vector<std::pair<std::string, SymbolMode>> &&_params,
         std::string &&_name
@@ -140,20 +153,23 @@ struct BlockBuiltin: public Block {
             builtins().insert({name, *this});
         }
 
-    // as block
-    virtual void buildContent(Instance &instance, Output &output);
+    static std::map<std::string, BlockBuiltin &> &builtins();
+    static void applyBuiltin(Instance &instance);
 };
 
-struct BlockUser: public Block {
+class BlockUser: public Block {
+private:
     std::unique_ptr<Node> ast;
 
+protected:
+    // as block
+    virtual void buildContent(Instance &instance, Output &output);
+
+public:
     inline BlockUser(
         std::vector<std::pair<std::string, SymbolMode>> &&_params,
         Node *_ast
     ):
         Block {std::move(_params)},
         ast {_ast} {}
-
-    // as block
-    virtual void buildContent(Instance &instance, Output &output);
 };

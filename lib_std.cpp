@@ -5,9 +5,8 @@ namespace {
 
 using namespace builder;
 
-struct Then: public BlockBuiltin {
-    using BlockBuiltin::BlockBuiltin;
-
+class Then: public BlockBuiltin {
+protected:
     virtual void inSpecialArg(
         Instance &parent, Instance &,
         size_t, std::unique_ptr<Node> &arg,
@@ -15,17 +14,22 @@ struct Then: public BlockBuiltin {
     ) {
         arg->buildProc(parent, output);
     }
+
+public:
+    using BlockBuiltin::BlockBuiltin;
 } then {
     {},
     "__then__"
 };
 
-struct Set: public BlockBuiltin {
-    using BlockBuiltin::BlockBuiltin;
-
+class Set: public BlockBuiltin {
+protected:
     virtual void buildContent(Instance &instance, Output &) {
         instance.insert("dest", instance.at("src"));
     }
+
+public:
+    using BlockBuiltin::BlockBuiltin;
 } set {
     {out("dest"), in("src")},
     "__set__"
