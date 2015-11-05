@@ -103,7 +103,7 @@ void Block::outSpecialArg(
     // nothing, by default // TODO: va_args?
 }
 
-void Block::makeBoot(
+void Block::buildBoot(
     Output &output,
     std::function<void (Instance &)> &&before,
     std::function<void (Instance &)> &&after
@@ -129,7 +129,7 @@ void Block::makeBoot(
     after(instance);
 }
 
-void Block::makeCall(
+void Block::buildCall(
     Instance &parent, Instance &caller,
     std::vector<std::unique_ptr<Node>> &args,
     Output &output,

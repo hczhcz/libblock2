@@ -18,9 +18,8 @@ void NodeCall::build(
         }
     ) {
         // call
-        callee_p->block.makeCall(
-            callee_p->parent, instance,
-            args, output,
+        callee_p->call(
+            instance, args, output,
             std::move(before),
             std::move(after)
         );

@@ -2,8 +2,6 @@
 
 #include "type.hpp"
 
-class Output;
-
 class Node {
 protected:
     uintptr_t nuid() const;
@@ -128,12 +126,12 @@ public:
     inline Block(std::vector<std::pair<std::string, SymbolMode>> &&_params):
         params {std::move(_params)} {}
 
-    void makeBoot(
+    void buildBoot(
         Output &output,
         std::function<void (Instance &)> &&before,
         std::function<void (Instance &)> &&after
     );
-    void makeCall(
+    void buildCall(
         Instance &parent, Instance &caller,
         std::vector<std::unique_ptr<Node>> &args,
         Output &output,

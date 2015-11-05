@@ -8,7 +8,9 @@
 #include <ostream>
 #endif
 
+class Output;
 class Instance;
+class Node;
 class Block;
 
 class Type {
@@ -35,13 +37,18 @@ private:
     Instance &parent;
     Block &block;
 
-    friend class Block;
-    friend class NodeCall; // TODO: remove this
-
 public:
     inline TypeBlock(Instance &_parent, Block &_block):
         parent {_parent},
         block {_block} {}
+
+    void call(
+        Instance &caller,
+        std::vector<std::unique_ptr<Node>> &args,
+        Output &output,
+        std::function<void (Instance &)> &&before,
+        std::function<void (Instance &)> &&after
+    );
 
     virtual void renderDecl(
         std::ostream &os,

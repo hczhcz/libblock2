@@ -59,7 +59,7 @@ int main() {
 
     Output output;
 
-    root_p->makeBoot(
+    root_p->buildBoot(
         output,
         [&](Instance &instance) {
             BlockBuiltin::applyBuiltin(instance);
