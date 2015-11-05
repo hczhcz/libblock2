@@ -7,10 +7,24 @@ void TypeBlock::call(
     std::function<void (Instance &)> &&before,
     std::function<void (Instance &)> &&after
 ) {
-    block.buildCall(
-        parent, caller, args, output,
-        std::move(before),
-        std::move(after)
+    block.build(
+        output,
+        [&](Instance &child) {
+            child.insert("parent", parent);
+
+            for (size_t i = 0; i < args.size(); ++i) {
+                block.inArg(caller, child, i, args[i], output);
+            }
+
+            before(child);
+        },
+        [&](Instance &child) {
+            after(child);
+
+            for (size_t i = 0; i < args.size(); ++i) {
+                block.outArg(caller, child, i, args[i], output);
+            }
+        }
     );
 }
 

@@ -59,10 +59,10 @@ int main() {
 
     Output output;
 
-    root_p->buildBoot(
+    root_p->build(
         output,
-        [&](Instance &instance) {
-            BlockBuiltin::applyBuiltin(instance);
+        [&](Instance &root) {
+            BlockBuiltin::applyBuiltin(root);
         },
         [](Instance &) {
             //

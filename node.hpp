@@ -95,18 +95,8 @@ private:
     std::vector<std::unique_ptr<Instance>> instances;
 
 protected:
-    void inArg(
-        Instance &caller, Instance &instance,
-        size_t index, std::unique_ptr<Node> &arg,
-        Output &output
-    );
     Instance &matchInstance(
         std::unique_ptr<Instance> &&instance,
-        Output &output
-    );
-    void outArg(
-        Instance &caller, Instance &instance,
-        size_t index, std::unique_ptr<Node> &arg,
         Output &output
     );
 
@@ -126,14 +116,17 @@ public:
     inline Block(std::vector<std::pair<std::string, SymbolMode>> &&_params):
         params {std::move(_params)} {}
 
-    void buildBoot(
-        Output &output,
-        std::function<void (Instance &)> &&before,
-        std::function<void (Instance &)> &&after
+    void inArg(
+        Instance &caller, Instance &instance,
+        size_t index, std::unique_ptr<Node> &arg,
+        Output &output
     );
-    void buildCall(
-        Instance &parent, Instance &caller,
-        std::vector<std::unique_ptr<Node>> &args,
+    void outArg(
+        Instance &caller, Instance &instance,
+        size_t index, std::unique_ptr<Node> &arg,
+        Output &output
+    );
+    void build(
         Output &output,
         std::function<void (Instance &)> &&before,
         std::function<void (Instance &)> &&after

@@ -2,27 +2,6 @@
 #include "output.hpp"
 #include "node.hpp"
 
-void Block::inArg(
-    Instance &caller, Instance &instance,
-    size_t index, std::unique_ptr<Node> &arg,
-    Output &output
-) {
-    if (
-        index >= params.size()
-        || params[index].second == SymbolMode::special
-    ) {
-        inSpecialArg(caller, instance, index, arg, output);
-    } else if (
-        params[index].second == SymbolMode::in
-        || params[index].second == SymbolMode::var
-    ) {
-        instance.insert(
-            params[index].first,
-            arg->buildOut(caller, output)
-        );
-    }
-}
-
 Instance &Block::matchInstance(
     std::unique_ptr<Instance> &&instance_p,
     Output &output
@@ -65,6 +44,43 @@ Instance &Block::matchInstance(
     return instance;
 }
 
+void Block::inSpecialArg(
+    Instance &, Instance &,
+    size_t, std::unique_ptr<Node> &,
+    Output &
+) {
+    throw ErrorTooManyArguments {}; // TODO: va_args?
+}
+
+void Block::outSpecialArg(
+    Instance &, Instance &,
+    size_t, std::unique_ptr<Node> &,
+    Output &
+) {
+    // nothing, by default // TODO: va_args?
+}
+
+void Block::inArg(
+    Instance &caller, Instance &instance,
+    size_t index, std::unique_ptr<Node> &arg,
+    Output &output
+) {
+    if (
+        index >= params.size()
+        || params[index].second == SymbolMode::special
+    ) {
+        inSpecialArg(caller, instance, index, arg, output);
+    } else if (
+        params[index].second == SymbolMode::in
+        || params[index].second == SymbolMode::var
+    ) {
+        instance.insert(
+            params[index].first,
+            arg->buildOut(caller, output)
+        );
+    }
+}
+
 void Block::outArg(
     Instance &caller, Instance &instance,
     size_t index, std::unique_ptr<Node> &arg,
@@ -87,23 +103,7 @@ void Block::outArg(
     }
 }
 
-void Block::inSpecialArg(
-    Instance &, Instance &,
-    size_t, std::unique_ptr<Node> &,
-    Output &
-) {
-    throw ErrorTooManyArguments {}; // TODO: va_args?
-}
-
-void Block::outSpecialArg(
-    Instance &, Instance &,
-    size_t, std::unique_ptr<Node> &,
-    Output &
-) {
-    // nothing, by default // TODO: va_args?
-}
-
-void Block::buildBoot(
+void Block::build(
     Output &output,
     std::function<void (Instance &)> &&before,
     std::function<void (Instance &)> &&after
@@ -114,7 +114,7 @@ void Block::buildBoot(
         new Instance {}
     };
 
-    // in args
+    // in
 
     before(*instance_p);
 
@@ -126,49 +126,6 @@ void Block::buildBoot(
 
     // out
 
-    after(instance);
-}
-
-void Block::buildCall(
-    Instance &parent, Instance &caller,
-    std::vector<std::unique_ptr<Node>> &args,
-    Output &output,
-    std::function<void (Instance &)> &&before,
-    std::function<void (Instance &)> &&after
-) {
-    // init
-
-    std::unique_ptr<Instance> instance_p {
-        new Instance {}
-    };
-
-    instance_p->insert("parent", parent);
-
-    // in args
-
-    before(*instance_p);
-    for (size_t i = 0; i < args.size(); ++i) {
-        inArg(caller, *instance_p, i, args[i], output);
-    }
-
-    // find or create instance
-
-    Instance &instance {
-        matchInstance(std::move(instance_p), output)
-    };
-
-    // render
-
-    std::ostream &os {output.osContent(caller)};
-
-    os << "    ";
-    os << "<TODO: call>;\n"; // TODO
-
-    // out
-
-    for (size_t i = 0; i < args.size(); ++i) {
-        outArg(caller, instance, i, args[i], output);
-    }
     after(instance);
 }
 
