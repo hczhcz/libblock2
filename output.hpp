@@ -19,8 +19,7 @@ private:
 
 class Output {
 private:
-    std::vector<std::unique_ptr<OutputContext>> members;
-    std::map<uintptr_t, OutputContext &> map;
+    std::map<uintptr_t, std::shared_ptr<OutputContext>> members;
 
 public:
     std::ostream &osHeader(Instance &instance);

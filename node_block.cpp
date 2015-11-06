@@ -153,16 +153,34 @@ void Block::buildProc(
     // nothing
 }
 
+Type &Block::addClosureType(Instance &instance) {
+    if (
+        closure_types.find(instance.tuid()) != closure_types.end()
+    ) {
+        return *closure_types.at(instance.tuid());
+    }
+
+    std::shared_ptr<TypeBlock> type_p {
+        std::make_shared<TypeBlock>(
+            instance, *this
+        )
+    };
+
+    closure_types.insert({
+        instance.tuid(),
+        type_p
+    });
+
+    return *type_p;
+}
+
 Type &Block::buildOut(
     Instance &instance,
     Output &output, const std::string &target
 ) {
     // get type
 
-    instance.children.push_back(std::unique_ptr<TypeBlock> {
-        new TypeBlock {instance, *this}
-    });
-    Type &type {*instance.children.back()};
+    Type &type {addClosureType(instance)};
 
     // render
 

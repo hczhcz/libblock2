@@ -56,14 +56,12 @@ public:
 
 class Instance: public Type {
 private:
-    std::vector<std::unique_ptr<TypeBlock>> children;
     std::map<std::string, Type &> symbol_types;
 
     std::string tuidFunc() const;
     std::string tuidObj() const;
 
     friend class Block;
-    friend class BlockBuiltin; // TODO: ?
     friend class Output;
 
 public:

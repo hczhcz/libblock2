@@ -127,6 +127,7 @@ private:
     // TODO: multiple signature (overloading and SFINAE)
     std::vector<std::pair<std::string, SymbolMode>> params;
 
+    std::map<uintptr_t, std::shared_ptr<TypeBlock>> closure_types;
     std::vector<std::unique_ptr<Instance>> instances;
 
 protected:
@@ -167,6 +168,8 @@ public:
         std::function<void (Instance &)> &&after
     );
 
+    Type &addClosureType(Instance &instance);
+
     // as node
     virtual void buildProc(
         Instance &instance,
@@ -186,6 +189,8 @@ class BlockBuiltin: public Block {
 private:
     std::string name;
 
+    static std::map<std::string, BlockBuiltin &> &builtins();
+
 public:
     inline BlockBuiltin(
         std::vector<std::pair<std::string, SymbolMode>> &&_params,
@@ -196,7 +201,6 @@ public:
             builtins().insert({name, *this});
         }
 
-    static std::map<std::string, BlockBuiltin &> &builtins();
     static void applyBuiltin(Instance &instance);
 };
 
