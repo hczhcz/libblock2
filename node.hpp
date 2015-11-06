@@ -127,7 +127,7 @@ private:
     // TODO: multiple signature (overloading and SFINAE)
     std::vector<std::pair<std::string, SymbolMode>> params;
 
-    std::map<uintptr_t, std::shared_ptr<TypeBlock>> closure_types;
+    std::map<uintptr_t, std::shared_ptr<TypeClosure>> closure_types;
     std::vector<std::unique_ptr<Instance>> instances;
 
 protected:

@@ -22,12 +22,12 @@ void NodeCall::build(
     };
 
     if (
-        TypeBlock *callee_p {
-            dynamic_cast<TypeBlock *>(&callee_type)
+        TypeClosure *closure_p {
+            dynamic_cast<TypeClosure *>(&callee_type)
         }
     ) {
         // call
-        callee_p->call(
+        closure_p->call(
             output,
             [&](Instance &child, Block &block) {
                 // in

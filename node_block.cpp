@@ -160,18 +160,12 @@ Type &Block::addClosureType(Instance &instance) {
         return *closure_types.at(instance.tuid());
     }
 
-    std::shared_ptr<TypeBlock> type_p {
-        std::make_shared<TypeBlock>(
+    return *closure_types.insert({
+        instance.tuid(),
+        std::make_shared<TypeClosure>(
             instance, *this
         )
-    };
-
-    closure_types.insert({
-        instance.tuid(),
-        type_p
-    });
-
-    return *type_p;
+    }).first->second;
 }
 
 Type &Block::buildOut(

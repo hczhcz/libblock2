@@ -1,11 +1,11 @@
 #include "node.hpp"
 
-std::string TypeBlock::decl(const std::string &name) const {
+std::string TypeClosure::decl(const std::string &name) const {
     // type: struct <parent object> *
     return parent.decl(name);
 }
 
-void TypeBlock::call(
+void TypeClosure::call(
     Output &output,
     std::function<void (Instance &, Block &)> &&before,
     std::function<void (Instance &, Block &)> &&after

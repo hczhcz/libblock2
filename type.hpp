@@ -35,13 +35,13 @@ public:
     virtual std::string decl(const std::string &name) const;
 };
 
-class TypeBlock: public Type {
+class TypeClosure: public Type {
 private:
     Instance &parent;
     Block &block;
 
 public:
-    inline TypeBlock(Instance &_parent, Block &_block):
+    inline TypeClosure(Instance &_parent, Block &_block):
         parent {_parent},
         block {_block} {}
 
