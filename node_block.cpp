@@ -78,7 +78,7 @@ void Block::inArg(
             params[index].first,
             arg->buildOut(
                 caller,
-                output, target
+                output, target + "->" + params[index].first
             )
         );
     }
@@ -101,7 +101,7 @@ void Block::outArg(
         arg->buildIn(
             caller,
             instance.at(params[index].first),
-            output, target
+            output, target + "->" + params[index].first
         );
     }
 }

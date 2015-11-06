@@ -2,11 +2,11 @@
 #include "type.hpp"
 
 std::string Instance::tuidFunc() const {
-    return "struct obj_" + std::to_string(tuid());
+    return "func_" + std::to_string(tuid());
 }
 
 std::string Instance::tuidObj() const {
-    return "func_" + std::to_string(tuid());
+    return "struct obj_" + std::to_string(tuid());
 }
 
 std::string Instance::decl(const std::string &name) const {

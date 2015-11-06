@@ -62,6 +62,7 @@ private:
     std::string tuidFunc() const;
     std::string tuidObj() const;
 
+    friend class NodeCall; // TODO: too many friend classes
     friend class Block;
     friend class BlockBuiltin; // TODO: ?
     friend class Output;

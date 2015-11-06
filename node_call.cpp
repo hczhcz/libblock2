@@ -2,8 +2,8 @@
 #include "output.hpp"
 #include "node.hpp"
 
-std::string NodeCall::nuidCallee() const {
-    return "callee_" + std::to_string(nuid()); // TODO
+std::string NodeCall::nuidFrame() const {
+    return "frame_" + std::to_string(nuid()); // TODO
 }
 
 void NodeCall::build(
@@ -14,7 +14,12 @@ void NodeCall::build(
     // special args: input, result, self, parent
 
     // get callee
-    Type &callee_type {callee->buildOut(instance, output, nuidCallee())};
+    Type &callee_type {
+        callee->buildOut(
+            instance,
+            output, nuidFrame() + "->parent"
+        )
+    };
 
     if (
         TypeBlock *callee_p {
@@ -25,22 +30,38 @@ void NodeCall::build(
         callee_p->call(
             output,
             [&](Instance &child, Block &block) {
+                // render (before call)
+
+                std::ostream &osh {output.osHeader(instance)};
+
+                osh << child.decl(nuidFrame()) << ";\n";
+
+                // in
+
                 before(child);
 
                 for (size_t i = 0; i < args.size(); ++i) {
                     block.inArg(
                         instance, child,
                         i, args[i],
-                        output, "<in?>"
+                        output, nuidFrame()
                     );
                 }
             },
             [&](Instance &child, Block &block) {
+                // render (call)
+
+                std::ostream &os {output.osContent(instance)};
+
+                os << "    " << child.tuidFunc() << "(" << nuidFrame() << ");\n";
+
+                // out
+
                 for (size_t i = 0; i < args.size(); ++i) {
                     block.outArg(
                         instance, child,
                         i, args[i],
-                        output, "<out?>"
+                        output, nuidFrame()
                     );
                 }
 
@@ -81,6 +102,16 @@ Type &NodeCall::buildOut(
         },
         [&](Instance &child) {
             type_p = &child.at("result");
+
+            // render
+
+            std::ostream &os {output.osContent(instance)};
+
+            os << "    ";
+            os << target;
+            os << " = ";
+            os << nuidFrame();
+            os << "->result;\n";
         }
     );
 
@@ -95,6 +126,16 @@ void NodeCall::buildIn(
         instance, output,
         [&](Instance &child) {
             child.insert("input", type);
+
+            // render
+
+            std::ostream &os {output.osContent(instance)};
+
+            os << "    ";
+            os << nuidFrame();
+            os << "->input = ";
+            os << target;
+            os << ";\n";
         },
         [](Instance &) {
             // nothing

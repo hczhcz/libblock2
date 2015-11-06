@@ -85,7 +85,7 @@ private:
     std::unique_ptr<Node> callee;
     std::vector<std::unique_ptr<Node>> args;
 
-    std::string nuidCallee() const;
+    std::string nuidFrame() const;
     void build(
         Instance &instance, Output &output,
         std::function<void (Instance &)> &&before,
