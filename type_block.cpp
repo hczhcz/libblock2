@@ -1,5 +1,10 @@
 #include "node.hpp"
 
+std::string TypeBlock::decl(const std::string &name) const {
+    // type: struct <parent object> *
+    return parent.decl(name);
+}
+
 void TypeBlock::call(
     Output &output,
     std::function<void (Instance &, Block &)> &&before,
@@ -16,9 +21,4 @@ void TypeBlock::call(
             after(child, block);
         }
     );
-}
-
-std::string TypeBlock::decl(const std::string &name) const {
-    // type: struct <parent object> *
-    return parent.decl(name);
 }

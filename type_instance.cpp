@@ -9,6 +9,10 @@ std::string Instance::tuidObj() const {
     return "func_" + std::to_string(tuid());
 }
 
+std::string Instance::decl(const std::string &name) const {
+    return tuidObj() + " *" + name;
+}
+
 Type &Instance::at(const std::string &name) {
     if (name == "self") {
         return *this;
@@ -96,8 +100,4 @@ void Instance::renderStruct(std::ostream &os) const {
     }
 
     os << "}\n";
-}
-
-std::string Instance::decl(const std::string &name) const {
-    return tuidObj() + " *" + name;
 }

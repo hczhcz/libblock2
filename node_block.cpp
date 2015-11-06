@@ -6,11 +6,11 @@ Instance &Block::matchInstance(
     std::unique_ptr<Instance> &&instance_p,
     Output &output
 ) {
-    for (std::unique_ptr<Instance> &target_p: instances) {
+    for (std::unique_ptr<Instance> &exist_p: instances) {
         bool ok {true};
 
         for (const auto &symbol: instance_p->symbol_types) {
-            if (symbol.second != target_p->at(symbol.first)) {
+            if (symbol.second != exist_p->at(symbol.first)) {
                 ok = false;
                 break;
             }
@@ -19,7 +19,7 @@ Instance &Block::matchInstance(
         if (ok) {
             // found
 
-            return *target_p;
+            return *exist_p;
         }
     }
 

@@ -5,8 +5,6 @@
 class Node {
 protected:
     uintptr_t nuid() const;
-    std::string nuidOut() const;
-    std::string nuidIn() const;
 
 public:
     virtual void buildProc(
@@ -101,8 +99,8 @@ public:
             Node *init[] {_args...};
 
             args.reserve(sizeof...(_args));
-            for (Node *i: init) {
-                args.push_back(std::unique_ptr<Node> {i});
+            for (Node *arg: init) {
+                args.push_back(std::unique_ptr<Node> {arg});
             }
         }
 

@@ -22,13 +22,13 @@ void Output::insert(Instance &instance) {
 }
 
 void Output::getHeader(std::ostream &os) const {
-    for (const auto &i: map) {
-        os << i.second.header.str();
+    for (const auto &member: map) {
+        os << member.second.header.str();
     }
 }
 
 void Output::getContent(std::ostream &os) const {
-    for (const auto &i: map) {
-        os << i.second.content.str();
+    for (const auto &member: map) {
+        os << member.second.content.str();
     }
 }
