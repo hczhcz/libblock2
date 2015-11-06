@@ -62,7 +62,6 @@ private:
     std::string tuidFunc() const;
     std::string tuidObj() const;
 
-    friend class NodeCall; // TODO: too many friend classes
     friend class Block;
     friend class BlockBuiltin; // TODO: ?
     friend class Output;
@@ -77,8 +76,12 @@ public:
         size_t &level
     ); // also lookup parent->path->name
 
-    void renderFuncDecl(std::ostream &os) const;
     void renderStruct(std::ostream &os) const;
+    void renderFuncDecl(std::ostream &os) const;
+    void renderFuncCall(
+        std::ostream &os,
+        const std::string &self
+    ) const;
 
     virtual std::string decl(const std::string &name) const;
 };

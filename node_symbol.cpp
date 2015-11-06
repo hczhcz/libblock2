@@ -48,9 +48,7 @@ Type &NodeSymbol::buildOut(
 
     std::ostream &os {output.osContent(instance)};
 
-    os << "    ";
-    os << target;
-    os << " = ";
+    os << "    " << target << " = ";
     renderPath(os);
     os << ";\n";
 

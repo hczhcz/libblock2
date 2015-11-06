@@ -84,20 +84,23 @@ Type &Instance::fullLookup(
     }
 }
 
-void Instance::renderFuncDecl(std::ostream &os) const {
-    os << tuidFunc() << "(";
-    os << decl("self");
-    os << ")";
-}
-
 void Instance::renderStruct(std::ostream &os) const {
     os << tuidObj() << " {\n";
 
     for (const auto &symbol: symbol_types) {
-        os << "    ";
-        os << symbol.second.decl(symbol.first);
-        os << ";\n";
+        os << "    " << symbol.second.decl(symbol.first) << ";\n";
     }
 
-    os << "}\n";
+    os << "};\n";
+}
+
+void Instance::renderFuncDecl(std::ostream &os) const {
+    os << tuidFunc() << "(" << decl("self") << ");\n";
+}
+
+void Instance::renderFuncCall(
+    std::ostream &os,
+    const std::string &self
+) const {
+    os << "    " << tuidFunc() << "(" << self << ");\n";
 }

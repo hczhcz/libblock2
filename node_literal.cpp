@@ -57,9 +57,7 @@ Type &NodeLiteral<T>::buildOut(
 
     std::ostream &os {output.osContent(instance)};
 
-    os << "    ";
-    os << target;
-    os << " = ";
+    os << "    " << target << " = ";
     renderValue(os);
     os << ";\n";
 

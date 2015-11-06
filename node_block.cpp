@@ -39,7 +39,7 @@ Instance &Block::matchInstance(
 
     instance.renderStruct(osh);
     instance.renderFuncDecl(osh);
-    osh << ";\n\n";
+    osh << "\n";
 
     return instance;
 }
@@ -154,9 +154,7 @@ Type &Block::buildOut(
 
     std::ostream &os {output.osContent(instance)};
 
-    os << "    ";
-    os << target;
-    os << " = self;\n";
+    os << "    " << target << " = self;\n";
 
     // return
 

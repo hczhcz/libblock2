@@ -53,7 +53,7 @@ void NodeCall::build(
 
                 std::ostream &os {output.osContent(instance)};
 
-                os << "    " << child.tuidFunc() << "(" << nuidFrame() << ");\n";
+                child.renderFuncCall(os, nuidFrame());
 
                 // out
 
@@ -107,11 +107,7 @@ Type &NodeCall::buildOut(
 
             std::ostream &os {output.osContent(instance)};
 
-            os << "    ";
-            os << target;
-            os << " = ";
-            os << nuidFrame();
-            os << "->result;\n";
+            os << "    " << target << " = " << nuidFrame() << "->result;\n";
         }
     );
 
@@ -131,11 +127,7 @@ void NodeCall::buildIn(
 
             std::ostream &os {output.osContent(instance)};
 
-            os << "    ";
-            os << nuidFrame();
-            os << "->input = ";
-            os << target;
-            os << ";\n";
+            os << "    " << nuidFrame() << "->input = " << target << ";\n";
         },
         [](Instance &) {
             // nothing
