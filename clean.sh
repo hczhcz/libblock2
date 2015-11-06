@@ -1,1 +1,1 @@
-rm -f ./build/*.cpp ./build/*.cpp.o ./build/*.out
+rm -f ./build/*.c ./build/*.cpp ./build/*.o ./build/*.out

@@ -2,6 +2,7 @@
 #include "builder.hpp"
 
 #ifndef NO_STD_LIB
+#include <fstream>
 #include <iostream>
 #endif
 
@@ -73,6 +74,12 @@ int main() {
     output.getHeader(std::cout);
     std::cout << "======== content ========" << std::endl;
     output.getContent(std::cout);
+
+    std::fstream fs {
+        "./build/test.gen.c", std::fstream::out
+    };
+    output.getHeader(fs);
+    output.getContent(fs);
 
     return 0;
 }

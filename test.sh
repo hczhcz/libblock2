@@ -9,6 +9,9 @@ flags_out=''
 
 objs=''
 
+echo '======== build updated files ========'
+echo
+
 for file in $(ls ./*.cpp)
 do
     new=$($cc $flags_pp $flags $file)
@@ -36,7 +39,13 @@ do
     objs=$(echo $objs ./build/$file.o)
 done
 
+echo '======== lint ========'
+echo
+
 cppcheck -q --std=c++11 --enable=all --inconclusive *.cpp
+echo
+
+echo '======== build the test ========'
 echo
 
 echo $cc $flags_out $flags $objs -o ./build/test.out
@@ -48,3 +57,20 @@ fi
 echo
 
 ./build/test.out
+echo
+
+echo '======== build the generated file ========'
+echo
+
+test_cc='clang'
+test_flags='-O0 -g -Wall -Wextra -pedantic -ferror-limit=3'
+
+$test_cc $test_flags ./build/test.gen.c -o ./build/test.gen.out
+if [ $? -ne 0 ]
+then
+    exit
+fi
+echo
+
+./build/test.gen.out
+echo
