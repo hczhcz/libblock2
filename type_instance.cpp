@@ -94,8 +94,13 @@ void Instance::renderStruct(std::ostream &os) const {
     os << "};\n";
 }
 
+void Instance::renderFuncHead(std::ostream &os) const {
+    os << "void " << tuidFunc() << "(" << decl("self") << ")";
+}
+
 void Instance::renderFuncDecl(std::ostream &os) const {
-    os << tuidFunc() << "(" << decl("self") << ");\n";
+    renderFuncHead(os);
+    os << ";\n";
 }
 
 void Instance::renderFuncCall(

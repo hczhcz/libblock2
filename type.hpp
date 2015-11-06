@@ -77,6 +77,7 @@ public:
     ); // also lookup parent->path->name
 
     void renderStruct(std::ostream &os) const;
+    void renderFuncHead(std::ostream &os) const;
     void renderFuncDecl(std::ostream &os) const;
     void renderFuncCall(
         std::ostream &os,

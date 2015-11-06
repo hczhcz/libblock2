@@ -7,7 +7,7 @@ void BlockUser::buildContent(Instance &instance, Output &output) {
 
     std::ostream &os {output.osContent(instance)};
 
-    instance.renderFuncDecl(os);
+    instance.renderFuncHead(os);
     os << " {\n";
 
     // gen type
