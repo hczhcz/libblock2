@@ -28,9 +28,17 @@ Instance &Block::matchInstance(
     instances.push_back(std::move(instance_p));
     Instance &instance {*instances.back()};
 
+    output.insert(instance);
+
+    // render (before body)
+
+    std::ostream &os {output.osContent(instance)};
+
+    instance.renderFuncHead(os);
+    os << " {\n";
+
     // build
 
-    output.insert(instance);
     buildContent(instance, output);
 
     // render header
@@ -40,6 +48,12 @@ Instance &Block::matchInstance(
     instance.renderStruct(osh);
     instance.renderFuncDecl(osh);
     osh << "\n";
+
+    // render (after body)
+
+    os << "}\n\n";
+
+    // return
 
     return instance;
 }

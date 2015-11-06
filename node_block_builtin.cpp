@@ -2,10 +2,6 @@
 #include "output.hpp"
 #include "node.hpp"
 
-void BlockBuiltin::buildContent(Instance &, Output &) {
-    // nothing, by default
-}
-
 std::map<std::string, BlockBuiltin &> &BlockBuiltin::builtins() {
     static std::map<std::string, BlockBuiltin &> map;
 

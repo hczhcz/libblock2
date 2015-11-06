@@ -1,3 +1,4 @@
+#include "output.hpp"
 #include "builder.hpp"
 
 namespace {
@@ -14,6 +15,10 @@ protected:
         arg->buildProc(caller, output);
     }
 
+    virtual void buildContent(Instance &, Output &) {
+        // nothing
+    }
+
 public:
     using BlockBuiltin::BlockBuiltin;
 } then {
@@ -23,8 +28,14 @@ public:
 
 class Set: public BlockBuiltin {
 protected:
-    virtual void buildContent(Instance &instance, Output &) {
+    virtual void buildContent(Instance &instance, Output &output) {
         instance.insert("dest", instance.at("src"));
+
+        // render
+
+        std::ostream &os {output.osContent(instance)};
+
+        os << "    self->dest = self->src;\n";
     }
 
 public:

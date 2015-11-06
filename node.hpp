@@ -186,10 +186,6 @@ class BlockBuiltin: public Block {
 private:
     std::string name;
 
-protected:
-    // as block
-    virtual void buildContent(Instance &instance, Output &output);
-
 public:
     inline BlockBuiltin(
         std::vector<std::pair<std::string, SymbolMode>> &&_params,
