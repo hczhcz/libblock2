@@ -30,12 +30,6 @@ void NodeCall::build(
         callee_p->call(
             output,
             [&](Instance &child, Block &block) {
-                // render (before call)
-
-                std::ostream &osh {output.osHeader(instance)};
-
-                osh << child.decl(nuidFrame()) << ";\n";
-
                 // in
 
                 before(child);
@@ -49,6 +43,12 @@ void NodeCall::build(
                 }
             },
             [&](Instance &child, Block &block) {
+                // render (frame)
+
+                std::ostream &osh {output.osHeader(instance)};
+
+                osh << "static " << child.decl(nuidFrame()) << ";\n";
+
                 // render (call)
 
                 std::ostream &os {output.osContent(instance)};
