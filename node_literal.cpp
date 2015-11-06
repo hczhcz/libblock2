@@ -20,7 +20,6 @@ template <>
 void NodeLiteral<double>::renderValue(
     std::ostream &os
 ) const {
-    // return std::to_string(value);
     os << "*(double *) (uint64_t []) {" << *(uint64_t *) &value << "}";
 }
 
@@ -53,7 +52,7 @@ Type &NodeLiteral<T>::buildOut(Instance &instance, Output &output) {
     std::ostream &os {output.osContent(instance)};
 
     os << "    ";
-    type.renderDecl(os, nuidOut());
+    os << type.decl(nuidOut());
     os << " = ";
     renderValue(os);
     os << ";\n";

@@ -28,9 +28,7 @@ void TypeBlock::call(
     );
 }
 
-void TypeBlock::renderDecl(
-    std::ostream &os,
-    const std::string &name
-) const {
-    os << "struct obj_" << parent.tuid() << " *" << name;
+std::string TypeBlock::decl(const std::string &name) const {
+    // type: struct <parent object> *
+    return parent.decl(name);
 }

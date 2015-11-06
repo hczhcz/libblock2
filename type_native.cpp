@@ -1,33 +1,29 @@
 #include "type.hpp"
 
 template <>
-void TypeNative<bool>::renderDecl(
-    std::ostream &os,
+std::string TypeNative<bool>::decl(
     const std::string &name
 ) const {
-    os << "bool " << name;
+    return "bool " + name;
 }
 
 template <>
-void TypeNative<int64_t>::renderDecl(
-    std::ostream &os,
+std::string TypeNative<int64_t>::decl(
     const std::string &name
 ) const {
-    os << "int64_t " << name;
+    return "int64_t " + name;
 }
 
 template <>
-void TypeNative<double>::renderDecl(
-    std::ostream &os,
+std::string TypeNative<double>::decl(
     const std::string &name
 ) const {
-    os << "double " << name;
+    return "double " + name;
 }
 
 template <>
-void TypeNative<std::string>::renderDecl(
-    std::ostream &os,
+std::string TypeNative<std::string>::decl(
     const std::string &name
 ) const {
-    os << "const char *" << name;
+    return "const char *" + name;
 }

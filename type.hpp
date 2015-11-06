@@ -14,22 +14,25 @@ class Node;
 class Block;
 
 class Type {
-public:
+protected:
     uintptr_t tuid() const;
 
-    virtual void renderDecl(
-        std::ostream &os,
-        const std::string &name
-    ) const = 0;
+    friend inline bool operator==(const Type &a, const Type &b) {
+        return a.tuid() == b.tuid();
+    }
+
+    friend inline bool operator!=(const Type &a, const Type &b) {
+        return !(a == b);
+    }
+
+public:
+    virtual std::string decl(const std::string &name) const = 0;
 };
 
 template <class T>
 class TypeNative: public Type {
 public:
-    virtual void renderDecl(
-        std::ostream &os,
-        const std::string &name
-    ) const;
+    virtual std::string decl(const std::string &name) const;
 };
 
 class TypeBlock: public Type {
@@ -50,10 +53,7 @@ public:
         std::function<void (Instance &)> &&after
     );
 
-    virtual void renderDecl(
-        std::ostream &os,
-        const std::string &name
-    ) const;
+    virtual std::string decl(const std::string &name) const;
 };
 
 class Instance: public Type {
@@ -61,8 +61,12 @@ private:
     std::vector<std::unique_ptr<TypeBlock>> children;
     std::map<std::string, Type &> symbol_types;
 
+    std::string tuidFunc() const;
+    std::string tuidObj() const;
+
     friend class Block;
     friend class BlockBuiltin; // TODO: ?
+    friend class Output;
 
 public:
     Type &at(const std::string &name);
@@ -77,16 +81,5 @@ public:
     void renderFuncDecl(std::ostream &os) const;
     void renderStruct(std::ostream &os) const;
 
-    virtual void renderDecl(
-        std::ostream &os,
-        const std::string &name
-    ) const;
+    virtual std::string decl(const std::string &name) const;
 };
-
-inline bool operator==(const Type &a, const Type &b) {
-    return a.tuid() == b.tuid();
-}
-
-inline bool operator!=(const Type &a, const Type &b) {
-    return !(a == b);
-}

@@ -43,7 +43,7 @@ Type &NodeSymbol::buildOut(Instance &instance, Output &output) {
     std::ostream &os {output.osContent(instance)};
 
     os << "    ";
-    type.renderDecl(os, nuidOut());
+    os << type.decl(nuidOut());
     os << " = ";
     renderPath(os);
     os << ";\n";
