@@ -47,7 +47,7 @@ Instance &Block::matchInstance(
 void Block::inSpecialArg(
     Instance &, Instance &,
     size_t, std::unique_ptr<Node> &,
-    Output &
+    Output &, const std::string &
 ) {
     throw ErrorTooManyArguments {}; // TODO: va_args?
 }
@@ -55,7 +55,7 @@ void Block::inSpecialArg(
 void Block::outSpecialArg(
     Instance &, Instance &,
     size_t, std::unique_ptr<Node> &,
-    Output &
+    Output &, const std::string &
 ) {
     // nothing, by default // TODO: va_args?
 }
@@ -63,20 +63,23 @@ void Block::outSpecialArg(
 void Block::inArg(
     Instance &caller, Instance &instance,
     size_t index, std::unique_ptr<Node> &arg,
-    Output &output
+    Output &output, const std::string &target
 ) {
     if (
         index >= params.size()
         || params[index].second == SymbolMode::special
     ) {
-        inSpecialArg(caller, instance, index, arg, output);
+        inSpecialArg(caller, instance, index, arg, output, target);
     } else if (
         params[index].second == SymbolMode::in
         || params[index].second == SymbolMode::var
     ) {
         instance.insert(
             params[index].first,
-            arg->buildOut(caller, output)
+            arg->buildOut(
+                caller,
+                output, target
+            )
         );
     }
 }
@@ -84,13 +87,13 @@ void Block::inArg(
 void Block::outArg(
     Instance &caller, Instance &instance,
     size_t index, std::unique_ptr<Node> &arg,
-    Output &output
+    Output &output, const std::string &target
 ) {
     if (
         index >= params.size()
         || params[index].second == SymbolMode::special
     ) {
-        outSpecialArg(caller, instance, index, arg, output);
+        outSpecialArg(caller, instance, index, arg, output, target);
     } else if (
         params[index].second == SymbolMode::out
         || params[index].second == SymbolMode::var
@@ -98,7 +101,7 @@ void Block::outArg(
         arg->buildIn(
             caller,
             instance.at(params[index].first),
-            output
+            output, target
         );
     }
 }
@@ -129,11 +132,17 @@ void Block::build(
     after(instance);
 }
 
-void Block::buildProc(Instance &, Output &) {
+void Block::buildProc(
+    Instance &,
+    Output &
+) {
     // nothing
 }
 
-Type &Block::buildOut(Instance &instance, Output &output) {
+Type &Block::buildOut(
+    Instance &instance,
+    Output &output, const std::string &target
+) {
     // get type
 
     instance.children.push_back(std::unique_ptr<TypeBlock> {
@@ -146,7 +155,7 @@ Type &Block::buildOut(Instance &instance, Output &output) {
     std::ostream &os {output.osContent(instance)};
 
     os << "    ";
-    os << type.decl(nuidOut());
+    os << target;
     os << " = self;\n";
 
     // return
@@ -154,6 +163,9 @@ Type &Block::buildOut(Instance &instance, Output &output) {
     return type;
 }
 
-void Block::buildIn(Instance &, Type &, Output &) {
+void Block::buildIn(
+    Instance &, Type &,
+    Output &, const std::string &
+) {
     throw ErrorWriteNotAllowed {};
 }

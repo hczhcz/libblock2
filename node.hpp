@@ -9,9 +9,18 @@ protected:
     std::string nuidIn() const;
 
 public:
-    virtual void buildProc(Instance &instance, Output &output) = 0;
-    virtual Type &buildOut(Instance &instance, Output &output) = 0;
-    virtual void buildIn(Instance &instance, Type &type, Output &output) = 0;
+    virtual void buildProc(
+        Instance &instance,
+        Output &output
+    ) = 0;
+    virtual Type &buildOut(
+        Instance &instance,
+        Output &output, const std::string &target
+    ) = 0;
+    virtual void buildIn(
+        Instance &instance, Type &type,
+        Output &output, const std::string &target
+    ) = 0;
 };
 
 template <class T>
@@ -25,9 +34,18 @@ public:
     inline NodeLiteral(T &&_value):
         value {std::move(_value)} {}
 
-    virtual void buildProc(Instance &instance, Output &output);
-    virtual Type &buildOut(Instance &instance, Output &output);
-    virtual void buildIn(Instance &instance, Type &type, Output &output);
+    virtual void buildProc(
+        Instance &instance,
+        Output &output
+    );
+    virtual Type &buildOut(
+        Instance &instance,
+        Output &output, const std::string &target
+    );
+    virtual void buildIn(
+        Instance &instance, Type &type,
+        Output &output, const std::string &target
+    );
 };
 using NodeLiteralBool = NodeLiteral<bool>;
 using NodeLiteralInt = NodeLiteral<int64_t>;
@@ -50,9 +68,18 @@ public:
             path.pop_back();
         }
 
-    virtual void buildProc(Instance &instance, Output &output);
-    virtual Type &buildOut(Instance &instance, Output &output);
-    virtual void buildIn(Instance &instance, Type &type, Output &output);
+    virtual void buildProc(
+        Instance &instance,
+        Output &output
+    );
+    virtual Type &buildOut(
+        Instance &instance,
+        Output &output, const std::string &target
+    );
+    virtual void buildIn(
+        Instance &instance, Type &type,
+        Output &output, const std::string &target
+    );
 };
 
 class NodeCall: public Node {
@@ -60,6 +87,7 @@ private:
     std::unique_ptr<Node> callee;
     std::vector<std::unique_ptr<Node>> args;
 
+    std::string nuidCallee() const;
     void build(
         Instance &instance, Output &output,
         std::function<void (Instance &)> &&before,
@@ -78,9 +106,18 @@ public:
             }
         }
 
-    virtual void buildProc(Instance &instance, Output &output);
-    virtual Type &buildOut(Instance &instance, Output &output);
-    virtual void buildIn(Instance &instance, Type &type, Output &output);
+    virtual void buildProc(
+        Instance &instance,
+        Output &output
+    );
+    virtual Type &buildOut(
+        Instance &instance,
+        Output &output, const std::string &target
+    );
+    virtual void buildIn(
+        Instance &instance, Type &type,
+        Output &output, const std::string &target
+    );
 };
 
 enum class SymbolMode {
@@ -103,13 +140,13 @@ protected:
     virtual void inSpecialArg(
         Instance &caller, Instance &instance,
         size_t index, std::unique_ptr<Node> &arg,
-        Output &output
+        Output &output, const std::string &target
     );
     virtual void buildContent(Instance &instance, Output &output) = 0;
     virtual void outSpecialArg(
         Instance &caller, Instance &instance,
         size_t index, std::unique_ptr<Node> &arg,
-        Output &output
+        Output &output, const std::string &target
     );
 
 public:
@@ -119,12 +156,12 @@ public:
     void inArg(
         Instance &caller, Instance &instance,
         size_t index, std::unique_ptr<Node> &arg,
-        Output &output
+        Output &output, const std::string &target
     );
     void outArg(
         Instance &caller, Instance &instance,
         size_t index, std::unique_ptr<Node> &arg,
-        Output &output
+        Output &output, const std::string &target
     );
     void build(
         Output &output,
@@ -133,9 +170,18 @@ public:
     );
 
     // as node
-    virtual void buildProc(Instance &instance, Output &output);
-    virtual Type &buildOut(Instance &instance, Output &output);
-    virtual void buildIn(Instance &instance, Type &type, Output &output);
+    virtual void buildProc(
+        Instance &instance,
+        Output &output
+    );
+    virtual Type &buildOut(
+        Instance &instance,
+        Output &output, const std::string &target
+    );
+    virtual void buildIn(
+        Instance &instance, Type &type,
+        Output &output, const std::string &target
+    );
 };
 
 class BlockBuiltin: public Block {

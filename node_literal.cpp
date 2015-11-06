@@ -37,12 +37,18 @@ void NodeLiteral<std::string>::renderValue(
 }
 
 template <class T>
-void NodeLiteral<T>::buildProc(Instance &, Output &) {
+void NodeLiteral<T>::buildProc(
+    Instance &,
+    Output &
+) {
     // nothing
 }
 
 template <class T>
-Type &NodeLiteral<T>::buildOut(Instance &instance, Output &output) {
+Type &NodeLiteral<T>::buildOut(
+    Instance &instance,
+    Output &output, const std::string &target
+) {
     // get type
 
     static TypeNative<T> type;
@@ -52,7 +58,7 @@ Type &NodeLiteral<T>::buildOut(Instance &instance, Output &output) {
     std::ostream &os {output.osContent(instance)};
 
     os << "    ";
-    os << type.decl(nuidOut());
+    os << target;
     os << " = ";
     renderValue(os);
     os << ";\n";
@@ -63,7 +69,10 @@ Type &NodeLiteral<T>::buildOut(Instance &instance, Output &output) {
 }
 
 template <class T>
-void NodeLiteral<T>::buildIn(Instance &, Type &, Output &) {
+void NodeLiteral<T>::buildIn(
+    Instance &, Type &,
+    Output &, const std::string &
+) {
     throw ErrorWriteNotAllowed {};
 }
 

@@ -46,11 +46,9 @@ public:
         block {_block} {}
 
     void call(
-        Instance &caller,
-        std::vector<std::unique_ptr<Node>> &args,
         Output &output,
-        std::function<void (Instance &)> &&before,
-        std::function<void (Instance &)> &&after
+        std::function<void (Instance &, Block &)> &&before,
+        std::function<void (Instance &, Block &)> &&after
     );
 
     virtual std::string decl(const std::string &name) const;

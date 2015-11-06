@@ -9,7 +9,7 @@ protected:
     virtual void inSpecialArg(
         Instance &caller, Instance &,
         size_t, std::unique_ptr<Node> &arg,
-        Output &output
+        Output &output, const std::string &
     ) {
         arg->buildProc(caller, output);
     }

@@ -1,29 +1,19 @@
 #include "node.hpp"
 
 void TypeBlock::call(
-    Instance &caller,
-    std::vector<std::unique_ptr<Node>> &args,
     Output &output,
-    std::function<void (Instance &)> &&before,
-    std::function<void (Instance &)> &&after
+    std::function<void (Instance &, Block &)> &&before,
+    std::function<void (Instance &, Block &)> &&after
 ) {
     block.build(
         output,
         [&](Instance &child) {
             child.insert("parent", parent);
 
-            for (size_t i = 0; i < args.size(); ++i) {
-                block.inArg(caller, child, i, args[i], output);
-            }
-
-            before(child);
+            before(child, block);
         },
         [&](Instance &child) {
-            after(child);
-
-            for (size_t i = 0; i < args.size(); ++i) {
-                block.outArg(caller, child, i, args[i], output);
-            }
+            after(child, block);
         }
     );
 }

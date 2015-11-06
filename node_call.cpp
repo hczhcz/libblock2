@@ -2,6 +2,10 @@
 #include "output.hpp"
 #include "node.hpp"
 
+std::string NodeCall::nuidCallee() const {
+    return "callee_" + std::to_string(nuid()); // TODO
+}
+
 void NodeCall::build(
     Instance &instance, Output &output,
     std::function<void (Instance &)> &&before,
@@ -10,7 +14,7 @@ void NodeCall::build(
     // special args: input, result, self, parent
 
     // get callee
-    Type &callee_type {callee->buildOut(instance, output)};
+    Type &callee_type {callee->buildOut(instance, output, nuidCallee())};
 
     if (
         TypeBlock *callee_p {
@@ -19,9 +23,29 @@ void NodeCall::build(
     ) {
         // call
         callee_p->call(
-            instance, args, output,
-            std::move(before),
-            std::move(after)
+            output,
+            [&](Instance &child, Block &block) {
+                before(child);
+
+                for (size_t i = 0; i < args.size(); ++i) {
+                    block.inArg(
+                        instance, child,
+                        i, args[i],
+                        output, "<in?>"
+                    );
+                }
+            },
+            [&](Instance &child, Block &block) {
+                for (size_t i = 0; i < args.size(); ++i) {
+                    block.outArg(
+                        instance, child,
+                        i, args[i],
+                        output, "<out?>"
+                    );
+                }
+
+                after(child);
+            }
         );
     } else {
         // error: value as callee
@@ -29,7 +53,10 @@ void NodeCall::build(
     }
 }
 
-void NodeCall::buildProc(Instance &instance, Output &output) {
+void NodeCall::buildProc(
+    Instance &instance,
+    Output &output
+) {
     build(
         instance, output,
         [](Instance &) {
@@ -41,8 +68,11 @@ void NodeCall::buildProc(Instance &instance, Output &output) {
     );
 }
 
-Type &NodeCall::buildOut(Instance &instance, Output &output) {
-    Type *type_p;
+Type &NodeCall::buildOut(
+    Instance &instance,
+    Output &output, const std::string &target
+) {
+    Type *type_p {nullptr}; // return value
 
     build(
         instance, output,
@@ -57,7 +87,10 @@ Type &NodeCall::buildOut(Instance &instance, Output &output) {
     return *type_p;
 }
 
-void NodeCall::buildIn(Instance &instance, Type &type, Output &output) {
+void NodeCall::buildIn(
+    Instance &instance, Type &type,
+    Output &output, const std::string &target
+) {
     build(
         instance, output,
         [&](Instance &child) {

@@ -19,7 +19,10 @@ void NodeSymbol::renderPath(std::ostream &os) const {
     }
 }
 
-void NodeSymbol::buildProc(Instance &instance, Output &output) {
+void NodeSymbol::buildProc(
+    Instance &instance,
+    Output &output
+) {
     // gen type
 
     instance.fullLookup(path, name, level);
@@ -33,7 +36,10 @@ void NodeSymbol::buildProc(Instance &instance, Output &output) {
     os << ";\n";
 }
 
-Type &NodeSymbol::buildOut(Instance &instance, Output &output) {
+Type &NodeSymbol::buildOut(
+    Instance &instance,
+    Output &output, const std::string &target
+) {
     // get type
 
     Type &type {instance.fullLookup(path, name, level)};
@@ -43,7 +49,7 @@ Type &NodeSymbol::buildOut(Instance &instance, Output &output) {
     std::ostream &os {output.osContent(instance)};
 
     os << "    ";
-    os << type.decl(nuidOut());
+    os << target;
     os << " = ";
     renderPath(os);
     os << ";\n";
@@ -53,7 +59,10 @@ Type &NodeSymbol::buildOut(Instance &instance, Output &output) {
     return type;
 }
 
-void NodeSymbol::buildIn(Instance &instance, Type &type, Output &output) {
+void NodeSymbol::buildIn(
+    Instance &instance, Type &type,
+    Output &output, const std::string &target
+) {
     // set type
 
     instance.lookup(path).insert(name, type);
@@ -64,5 +73,5 @@ void NodeSymbol::buildIn(Instance &instance, Type &type, Output &output) {
 
     os << "    ";
     renderPath(os);
-    os << " = " << nuidIn() << ";\n";
+    os << " = " << target << ";\n";
 }
