@@ -11,19 +11,25 @@ class Instance;
 
 class OutputContext {
 private:
-    std::ostringstream header;
-    std::ostringstream content;
+    size_t indent;
+    // std::ostringstream os; // TODO
 
     friend class Output;
+
+public:
+    std::ostringstream os; // TODO
+
+    void endl(size_t offset);
 };
 
 class Output {
 private:
-    std::map<uintptr_t, std::shared_ptr<OutputContext>> members;
+    std::map<uintptr_t, std::shared_ptr<OutputContext>> headers;
+    std::map<uintptr_t, std::shared_ptr<OutputContext>> contents;
 
 public:
-    std::ostream &osHeader(Instance &instance);
-    std::ostream &osContent(Instance &instance);
+    OutputContext &header(Instance &instance);
+    OutputContext &content(Instance &instance);
     void insert(Instance &instance);
 
     void getHeader(std::ostream &os) const;
