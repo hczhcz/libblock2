@@ -32,10 +32,9 @@ Instance &Block::matchInstance(
 
     // render (before body)
 
-    std::ostream &os {output.osContent(instance)};
+    OutputContext &oc {output.content(instance)};
 
-    instance.renderFuncHead(os);
-    os << " {\n";
+    instance.renderFuncHead(oc);
 
     // build
 
@@ -43,15 +42,13 @@ Instance &Block::matchInstance(
 
     // render header
 
-    std::ostream &osh {output.osHeader(instance)};
+    OutputContext &och {output.header(instance)};
 
-    instance.renderStruct(osh);
-    instance.renderFuncDecl(osh);
-    osh << "\n";
+    instance.renderStruct(och);
 
     // render (after body)
 
-    os << "}\n\n";
+    instance.renderFuncTail(oc);
 
     // return
 
@@ -178,9 +175,10 @@ Type &Block::buildOut(
 
     // render
 
-    std::ostream &os {output.osContent(instance)};
+    OutputContext &oc {output.content(instance)};
 
-    os << "    " << target << " = self;\n";
+    oc.endl(0);
+    oc.os << target << " = self;";
 
     // return
 

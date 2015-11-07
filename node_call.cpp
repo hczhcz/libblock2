@@ -6,22 +6,20 @@ std::string NodeCall::strFrame() const {
     return "frame_" + std::to_string(nuid()); // TODO
 }
 
-std::string NodeCall::strMember(const std::string &name) const {
-    return strFrame() + "->" + name; // TODO
-}
-
 void NodeCall::build(
     Instance &instance, Output &output,
     std::function<void (Instance &)> &&before,
     std::function<void (Instance &)> &&after
 ) {
-    // special args: input, result, self, parent
+    // special symbols:
+    //     lookup: self, input, result, parent
+    //     control flow: caller, func
 
     // get callee
     Type &callee_type {
         callee->buildOut(
             instance,
-            output, strMember("parent")
+            output, strFrame() + "->parent"
         )
     };
 
@@ -47,17 +45,12 @@ void NodeCall::build(
                 }
             },
             [&](Instance &child, Block &block) {
-                // render (frame)
-
-                std::ostream &osh {output.osHeader(instance)};
-
-                osh << "static " << child.decl(strFrame()) << ";\n";
-
                 // render (call)
 
-                std::ostream &os {output.osContent(instance)};
+                OutputContext &oc {output.content(instance)};
 
-                child.renderFuncCall(os, strFrame());
+                oc.endl(0);
+                child.renderFuncCall(oc, nuid(), strFrame());
 
                 // out
 
@@ -109,9 +102,10 @@ Type &NodeCall::buildOut(
 
             // render
 
-            std::ostream &os {output.osContent(instance)};
+            OutputContext &oc {output.content(instance)};
 
-            os << "    " << target << " = " << strMember("result") << ";\n";
+            oc.endl(0);
+            oc.os << target << " = " << strFrame() << "->result;";
         }
     );
 
@@ -129,9 +123,10 @@ void NodeCall::buildIn(
 
             // render
 
-            std::ostream &os {output.osContent(instance)};
+            OutputContext &oc {output.content(instance)};
 
-            os << "    " << strMember("input") << " = " << target << ";\n";
+            oc.endl(0);
+            oc.os << strFrame() << "->input = " << target << ";";
         },
         [](Instance &) {
             // nothing

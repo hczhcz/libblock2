@@ -9,6 +9,7 @@
 #endif
 
 class Output;
+class OutputContext;
 class Instance;
 class Node;
 class Block;
@@ -60,6 +61,7 @@ private:
 
     std::string strFunc() const;
     std::string strObj() const;
+    std::string strSelf() const;
 
     friend class Block;
     friend class Output;
@@ -74,12 +76,13 @@ public:
         size_t &level
     ); // also lookup parent->path->name
 
-    void renderStruct(std::ostream &os) const;
-    void renderFuncHead(std::ostream &os) const;
-    void renderFuncDecl(std::ostream &os) const;
+    void renderStruct(OutputContext &oc) const;
+    void renderFuncHead(OutputContext &oc) const;
+    void renderFuncTail(OutputContext &oc) const;
     void renderFuncCall(
-        std::ostream &os,
-        const std::string &self
+        OutputContext &oc,
+        uintptr_t pos,
+        const std::string &callee
     ) const;
 
     virtual std::string decl(const std::string &name) const;

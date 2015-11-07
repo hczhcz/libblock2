@@ -29,11 +29,11 @@ void NodeSymbol::buildProc(
 
     // render
 
-    std::ostream &os {output.osContent(instance)};
+    OutputContext &oc {output.content(instance)};
 
-    os << "    ";
-    renderPath(os);
-    os << ";\n";
+    oc.endl(0);
+    renderPath(oc.os);
+    oc.os << ";";
 }
 
 Type &NodeSymbol::buildOut(
@@ -46,11 +46,12 @@ Type &NodeSymbol::buildOut(
 
     // render
 
-    std::ostream &os {output.osContent(instance)};
+    OutputContext &oc {output.content(instance)};
 
-    os << "    " << target << " = ";
-    renderPath(os);
-    os << ";\n";
+    oc.endl(0);
+    oc.os << target << " = ";
+    renderPath(oc.os);
+    oc.os << ";";
 
     // return
 
@@ -67,9 +68,9 @@ void NodeSymbol::buildIn(
 
     // render
 
-    std::ostream &os {output.osContent(instance)};
+    OutputContext &oc {output.content(instance)};
 
-    os << "    ";
-    renderPath(os);
-    os << " = " << target << ";\n";
+    oc.endl(0);
+    renderPath(oc.os);
+    oc.os << " = " << target << ";";
 }

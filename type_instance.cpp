@@ -1,4 +1,5 @@
 #include "exception.hpp"
+#include "output.hpp"
 #include "type.hpp"
 
 std::string Instance::strFunc() const {
@@ -7,6 +8,10 @@ std::string Instance::strFunc() const {
 
 std::string Instance::strObj() const {
     return "struct obj_" + std::to_string(tuid());
+}
+
+std::string Instance::strSelf() const {
+    return "(" + strObj() + " *) self";
 }
 
 std::string Instance::decl(const std::string &name) const {
@@ -84,28 +89,53 @@ Type &Instance::fullLookup(
     }
 }
 
-void Instance::renderStruct(std::ostream &os) const {
-    os << strObj() << " {\n";
+void Instance::renderStruct(OutputContext &oc) const {
+    oc.endl(0);
+    oc.os << strObj() << " {";
+    oc.endl(1);
+    oc.os << "void *caller;";
+    oc.endl(0);
+    oc.os << "void *func;";
 
     for (const auto &symbol: symbol_types) {
-        os << "    " << symbol.second.decl(symbol.first) << ";\n";
+        oc.endl(0);
+        oc.os << symbol.second.decl(symbol.first) << ";";
     }
 
-    os << "};\n";
+    oc.endl(-1);
+    oc.os << "};";
+    oc.endl(0);
 }
 
-void Instance::renderFuncHead(std::ostream &os) const {
-    os << "void " << strFunc() << "(" << decl("self") << ")";
+void Instance::renderFuncHead(OutputContext &oc) const {
+    oc.endl(0);
+    oc.os << strFunc() << ": {";
+    oc.endl(1);
+    oc.os << "/* function */";
 }
 
-void Instance::renderFuncDecl(std::ostream &os) const {
-    renderFuncHead(os);
-    os << ";\n";
+void Instance::renderFuncTail(OutputContext &oc) const {
+    oc.endl(0);
+    oc.os << "goto " << strSelf() << "->func;";
+    oc.endl(-1);
+    oc.os << "}";
+    oc.endl(0);
 }
 
 void Instance::renderFuncCall(
-    std::ostream &os,
-    const std::string &self
+    OutputContext &oc,
+    uintptr_t pos,
+    const std::string &callee
 ) const {
-    os << "    " << strFunc() << "(" << self << ");\n";
+    oc.endl(0);
+    oc.os << callee << "->caller = " << strSelf() << ";";
+    // notice: reset callee->func
+    oc.endl(0);
+    oc.os << callee << "->func = &&" << strFunc() << ";";
+    oc.endl(0);
+    oc.os << strSelf() << "->func = &&return_" << pos << ";";
+    oc.endl(0);
+    oc.os << "goto " << callee << "->func;";
+    oc.endl(0);
+    oc.os << "return_" << pos << ":";
 }

@@ -33,9 +33,10 @@ protected:
 
         // render
 
-        std::ostream &os {output.osContent(instance)};
+        OutputContext &oc {output.content(instance)};
 
-        os << "    self->dest = self->src;\n";
+        oc.endl(0);
+        oc.os << "self->dest = self->src;";
     }
 
 public:
