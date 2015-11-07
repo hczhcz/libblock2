@@ -49,7 +49,6 @@ void NodeCall::build(
 
                 OutputContext &oc {output.content(instance)};
 
-                oc.endl(0);
                 child.renderFuncCall(oc, nuid(), strFrame());
 
                 // out

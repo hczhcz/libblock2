@@ -96,6 +96,7 @@ void Instance::renderStruct(OutputContext &oc) const {
     oc.os << "void *caller;";
     oc.endl(0);
     oc.os << "void *func;";
+    oc.endl(0);
 
     for (const auto &symbol: symbol_types) {
         oc.endl(0);
