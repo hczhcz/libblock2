@@ -34,6 +34,6 @@ public:
     OutputContext &content(Instance &instance);
     void insert(Instance &instance);
 
-    void getHeader(std::ostream &os) const;
-    void getContent(std::ostream &os) const;
+    void getHeader(std::ostream &os, Instance &root) const;
+    void getContent(std::ostream &os, Instance &root) const;
 };

@@ -59,27 +59,28 @@ int main() {
     };
 
     Output output;
+    Instance *root_p {nullptr};
 
     block_p->build(
         output,
         [&](Instance &root) {
             BlockBuiltin::applyBuiltin(root);
         },
-        [](Instance &) {
-            //
+        [&](Instance &root) {
+            root_p = &root;
         }
     );
 
     std::cout << "======== header ========" << std::endl;
-    output.getHeader(std::cout);
+    output.getHeader(std::cout, *root_p);
     std::cout << "======== content ========" << std::endl;
-    output.getContent(std::cout);
+    output.getContent(std::cout, *root_p);
 
     std::fstream fs {
         "./build/test.gen.c", std::fstream::out
     };
-    output.getHeader(fs);
-    output.getContent(fs);
+    output.getHeader(fs, *root_p);
+    output.getContent(fs, *root_p);
 
     return 0;
 }

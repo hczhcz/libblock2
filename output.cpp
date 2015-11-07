@@ -36,17 +36,29 @@ void Output::insert(Instance &instance) {
     });
 }
 
-void Output::getHeader(std::ostream &os) const {
+void Output::getHeader(std::ostream &os, Instance &root) const {
+    os << "#include <stdlib.h>\n"
+       << "\n"
+       << "typedef " << root.strStruct() << " frame_root;\n";
+
     for (const auto &member: headers) {
         os << member.second->os.str();
     }
 }
 
-void Output::getContent(std::ostream &os) const {
-    os << "int main() {\n"
-          "    void *self = 0;\n"
+void Output::getContent(std::ostream &os, Instance &root) const {
+    os << "frame_root root;\n"
+          "\n"
+          "int main() {\n"
+          "    void *exit_addr = &&exit;\n"
+          "\n"
+          "    root.func = &&" << root.strFunc() << ";\n"
+          "    root.caller = &exit_addr;\n"
+          "\n"
+          "    void *self = &root;\n"
           "    void *callee = 0;\n"
-          "    /* TODO: init */\n";
+          "\n"
+          "    goto **(void ***) self;\n";
 
     for (const auto &member: contents) {
         os << member.second->os.str();

@@ -28,9 +28,10 @@ void NodeCall::build(
     OutputContext &oc {output.content(instance)};
 
     oc.endl();
-    oc.os << "/* call */";
+    oc.os << "callee = malloc(sizeof(" << strFrame() << "));"; // TODO: GC?
+
     oc.endl();
-    oc.os << "/* callee = malloc(...); */";
+    oc.os << "/* call */";
     oc.enter();
 
     // get callee
@@ -72,15 +73,18 @@ void NodeCall::build(
                 OutputContext &och {output.header(instance)};
 
                 och.endl();
-                och.os << "typedef " << child.strStruct() << " " << strFrame() << ";";
+                och.os << "typedef " << child.strStruct()
+                       << " " << strFrame() << ";";
 
                 // render (call)
 
                 oc.endl();
-                oc.os << instance.strCast() << "->func = &&" << strLabel() << ";";
+                oc.os << instance.strCast() << "->func = &&"
+                      << strLabel() << ";";
                 // notice: reset callee->func
                 oc.endl();
-                oc.os << strCallee() << "->func" << " = &&" << child.strFunc() << ";";
+                oc.os << strCallee() << "->func" << " = &&"
+                      << child.strFunc() << ";";
 
                 oc.endl();
                 oc.os << strCallee() << "->caller" << " = self;";
@@ -114,6 +118,8 @@ void NodeCall::build(
         // error: value as callee
         throw ErrorCallNotAllowed {};
     }
+
+    // render (exit)
 
     oc.leave();
 }
