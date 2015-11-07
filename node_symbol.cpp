@@ -2,8 +2,6 @@
 #include "node.hpp"
 
 void NodeSymbol::renderPath(std::ostream &os) const {
-    os << "self";
-
     for (size_t i = 0; i < level; ++i) {
         os << "->parent";
     }
@@ -32,6 +30,7 @@ void NodeSymbol::buildProc(
     OutputContext &oc {output.content(instance)};
 
     oc.endl();
+    oc.os << instance.strCast();
     renderPath(oc.os);
     oc.os << ";";
 }
@@ -49,7 +48,7 @@ Type &NodeSymbol::buildOut(
     OutputContext &oc {output.content(instance)};
 
     oc.endl();
-    oc.os << target << " = ";
+    oc.os << target << " = " << instance.strCast();
     renderPath(oc.os);
     oc.os << ";";
 
@@ -71,6 +70,7 @@ void NodeSymbol::buildIn(
     OutputContext &oc {output.content(instance)};
 
     oc.endl();
+    oc.os << instance.strCast();
     renderPath(oc.os);
     oc.os << " = " << target << ";";
 }

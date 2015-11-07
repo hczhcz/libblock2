@@ -78,6 +78,7 @@ public:
 
     std::string strFunc() const;
     std::string strStruct() const;
+    std::string strCast() const;
 
     virtual std::string strDecl(const std::string &name) const;
 };

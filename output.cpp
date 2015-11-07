@@ -44,12 +44,16 @@ void Output::getHeader(std::ostream &os) const {
 
 void Output::getContent(std::ostream &os) const {
     os << "int main() {\n"
-          "    void *self;\n"
-          "    void *callee;\n";
+          "    void *self = 0;\n"
+          "    void *callee = 0;\n"
+          "    /* TODO: init */\n";
 
     for (const auto &member: contents) {
         os << member.second->os.str();
     }
 
-    os << "}\n";
+    os << "\n"
+          "    exit:\n"
+          "    return 0;\n"
+          "}\n";
 }

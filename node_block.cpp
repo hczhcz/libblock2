@@ -178,7 +178,7 @@ Type &Block::buildOut(
     OutputContext &oc {output.content(instance)};
 
     oc.endl();
-    oc.os << target << " = self;";
+    oc.os << target << " = " << instance.strCast() << ";";
 
     // return
 

@@ -37,7 +37,8 @@ protected:
 
         oc.enter();
         oc.endl();
-        oc.os << "self->dest = self->src;";
+        oc.os << instance.strCast() << "->dest = "
+              << instance.strCast() << "->src;";
         oc.leave();
     }
 

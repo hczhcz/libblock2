@@ -7,7 +7,7 @@ std::string NodeCall::strFrame() const {
 }
 
 std::string NodeCall::strCallee() const {
-    return "(" + strFrame() + " *) callee";
+    return "((" + strFrame() + " *) callee)";
 }
 
 std::string NodeCall::strLabel() const {
@@ -77,7 +77,7 @@ void NodeCall::build(
                 // render (call)
 
                 oc.endl();
-                oc.os << "self->func = &&" << strLabel() << ";";
+                oc.os << instance.strCast() << "->func = &&" << strLabel() << ";";
                 // notice: reset callee->func
                 oc.endl();
                 oc.os << strCallee() << "->func" << " = &&" << child.strFunc() << ";";
@@ -88,14 +88,14 @@ void NodeCall::build(
                 oc.endl();
                 oc.os << "self = callee;";
                 oc.endl();
-                oc.os << "goto **callee;";
+                oc.os << "goto **(void ***) callee;";
                 oc.endl();
                 oc.os << strLabel() << ":";
                 oc.endl();
                 oc.os << "callee = self;";
 
                 oc.endl();
-                oc.os << "self = " << strCallee() << "->caller";
+                oc.os << "self = " << strCallee() << "->caller;";
 
                 // out
 
@@ -152,7 +152,7 @@ Type &NodeCall::buildOut(
             OutputContext &oc {output.content(instance)};
 
             oc.endl();
-            oc.os << target << " = " << strFrame() << "->result;";
+            oc.os << target << " = " << strCallee() << "->result;";
         }
     );
 
@@ -173,7 +173,7 @@ void NodeCall::buildIn(
             OutputContext &oc {output.content(instance)};
 
             oc.endl();
-            oc.os << strFrame() << "->input = " << target << ";";
+            oc.os << strCallee() << "->input = " << target << ";";
         },
         [](Instance &) {
             // nothing

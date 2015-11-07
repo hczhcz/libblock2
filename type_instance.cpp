@@ -102,7 +102,7 @@ void Instance::renderFuncHead(OutputContext &oc) const {
 
 void Instance::renderFuncTail(OutputContext &oc) const {
     oc.endl();
-    oc.os << "goto **(" << strStruct() << " *) self->caller;";
+    oc.os << "goto **(void ***) " << strCast() << "->caller;";
     oc.leave();
     oc.endl();
 }
@@ -113,6 +113,10 @@ std::string Instance::strFunc() const {
 
 std::string Instance::strStruct() const {
     return "struct struct_" + std::to_string(tuid());
+}
+
+std::string Instance::strCast() const {
+    return "((" + strStruct() + " *) self)";
 }
 
 std::string Instance::strDecl(const std::string &name) const {
