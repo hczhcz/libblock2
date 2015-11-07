@@ -56,6 +56,10 @@ fi
 echo
 
 ./build/test.out
+if [ $? -ne 0 ]
+then
+    exit
+fi
 echo
 
 echo '======== build the generated file ========'
@@ -73,4 +77,8 @@ fi
 echo
 
 ./build/test.gen.out
+if [ $? -ne 0 ]
+then
+    exit
+fi
 echo

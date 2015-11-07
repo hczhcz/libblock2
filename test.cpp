@@ -9,27 +9,6 @@
 int main() {
     using namespace builder;
 
-    // BlockUser root {
-    //     {},
-    //     call(
-    //         $("__then__"),
-    //         call(
-    //             $("__set__"), $("c"), block(
-    //                 {in("a"), in("b")},
-    //                 call(
-    //                     $("__then__"),
-    //                     call(
-    //                         $("__set__"), $("t"), call($("*"), _(2), $("b"))
-    //                     ),
-    //                     call(
-    //                         $("__set__"), $("result"), call($("+"), $("a"), $("t"))
-    //                     )
-    //                 )
-    //             )
-    //         ),
-    //         call($("c"), _("xx"), _("yy"))
-    //     )
-    // };
     BlockUser *block_p {
         block(
             {},
@@ -50,9 +29,14 @@ int main() {
                     )
                 ),
                 call(
-                    $("__set__"), $("d"), call(
-                        $("c"), _("xx"), _("yy")
+                    $("print"),
+                    call(
+                        $("c"), _("bye"), _("hello")
                     )
+                ),
+                call(
+                    $("print"),
+                    _(", world")
                 )
             )
         )

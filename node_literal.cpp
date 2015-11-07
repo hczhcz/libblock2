@@ -33,7 +33,7 @@ void NodeLiteral<std::string>::renderValue(
         os << (int) i << ",";
     }
 
-    os << "}";
+    os << "0}";
 }
 
 template <class T>

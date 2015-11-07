@@ -47,4 +47,22 @@ public:
     "__set__"
 };
 
+class Print: public BlockBuiltin {
+protected:
+    virtual void buildContent(Instance &instance, Output &output) {
+        // render
+
+        OutputContext &oc {output.content(instance)};
+
+        oc.endl();
+        oc.os << "printf(\"%s\", " << instance.strCast() << "->value);";
+    }
+
+public:
+    using BlockBuiltin::BlockBuiltin;
+} print {
+    {in("value")},
+    "print"
+};
+
 }

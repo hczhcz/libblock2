@@ -38,6 +38,7 @@ void Output::insert(Instance &instance) {
 
 void Output::getHeader(std::ostream &os, Instance &root) const {
     os << "#include <stdlib.h>\n"
+       << "#include <stdio.h>\n"
        << "\n"
        << "typedef " << root.strStruct() << " frame_root;\n";
 
