@@ -30,7 +30,7 @@ int main() {
     //         call($("c"), _("xx"), _("yy"))
     //     )
     // };
-    BlockUser *root_p {
+    BlockUser *block_p {
         block(
             {},
             call(
@@ -60,7 +60,7 @@ int main() {
 
     Output output;
 
-    root_p->build(
+    block_p->build(
         output,
         [&](Instance &root) {
             BlockBuiltin::applyBuiltin(root);

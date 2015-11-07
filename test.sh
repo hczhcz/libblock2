@@ -64,6 +64,7 @@ echo
 test_cc='clang'
 test_flags='-O0 -g -Wall -Wextra -ferror-limit=3'
 
+echo $test_cc $test_flags ./build/test.gen.c -o ./build/test.gen.out
 $test_cc $test_flags ./build/test.gen.c -o ./build/test.gen.out
 if [ $? -ne 0 ]
 then

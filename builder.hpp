@@ -48,19 +48,27 @@ inline BlockUser *block(
     return new BlockUser {std::move(params), ast};
 }
 
-inline std::pair<std::string, SymbolMode> in(std::string &&name) {
+inline std::pair<std::string, SymbolMode> in(
+    std::string &&name
+) {
     return {std::move(name), SymbolMode::in};
 }
 
-inline std::pair<std::string, SymbolMode> out(std::string &&name) {
+inline std::pair<std::string, SymbolMode> out(
+    std::string &&name
+) {
     return {std::move(name), SymbolMode::out};
 }
 
-inline std::pair<std::string, SymbolMode> var(std::string &&name) {
+inline std::pair<std::string, SymbolMode> var(
+    std::string &&name
+) {
     return {std::move(name), SymbolMode::var};
 }
 
-inline std::pair<std::string, SymbolMode> special(std::string &&name) {
+inline std::pair<std::string, SymbolMode> special(
+    std::string &&name
+) {
     return {std::move(name), SymbolMode::special};
 }
 

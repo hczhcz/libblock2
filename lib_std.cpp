@@ -35,11 +35,9 @@ protected:
 
         OutputContext &oc {output.content(instance)};
 
-        oc.enter();
         oc.endl();
         oc.os << instance.strCast() << "->dest = "
               << instance.strCast() << "->src;";
-        oc.leave();
     }
 
 public:
