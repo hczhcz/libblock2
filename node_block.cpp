@@ -92,7 +92,7 @@ void Block::inArg(
             params[index].first,
             arg->buildOut(
                 caller,
-                output, target + "->" + params[index].first
+                output, target + "->" + params[index].first // TODO: use callback?
             )
         );
     }
@@ -115,7 +115,7 @@ void Block::outArg(
         arg->buildIn(
             caller,
             instance.at(params[index].first),
-            output, target + "->" + params[index].first
+            output, target + "->" + params[index].first // TODO: use callback?
         );
     }
 }

@@ -58,8 +58,8 @@ class Instance: public Type {
 private:
     std::map<std::string, Type &> symbol_types;
 
-    std::string tuidFunc() const;
-    std::string tuidObj() const;
+    std::string strFunc() const;
+    std::string strObj() const;
 
     friend class Block;
     friend class Output;

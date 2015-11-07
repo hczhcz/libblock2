@@ -2,8 +2,12 @@
 #include "output.hpp"
 #include "node.hpp"
 
-std::string NodeCall::nuidFrame() const {
+std::string NodeCall::strFrame() const {
     return "frame_" + std::to_string(nuid()); // TODO
+}
+
+std::string NodeCall::strMember(const std::string &name) const {
+    return strFrame() + "->" + name; // TODO
 }
 
 void NodeCall::build(
@@ -17,7 +21,7 @@ void NodeCall::build(
     Type &callee_type {
         callee->buildOut(
             instance,
-            output, nuidFrame() + "->parent"
+            output, strMember("parent")
         )
     };
 
@@ -38,7 +42,7 @@ void NodeCall::build(
                     block.inArg(
                         instance, child,
                         i, args[i],
-                        output, nuidFrame()
+                        output, strFrame()
                     );
                 }
             },
@@ -47,13 +51,13 @@ void NodeCall::build(
 
                 std::ostream &osh {output.osHeader(instance)};
 
-                osh << "static " << child.decl(nuidFrame()) << ";\n";
+                osh << "static " << child.decl(strFrame()) << ";\n";
 
                 // render (call)
 
                 std::ostream &os {output.osContent(instance)};
 
-                child.renderFuncCall(os, nuidFrame());
+                child.renderFuncCall(os, strFrame());
 
                 // out
 
@@ -61,7 +65,7 @@ void NodeCall::build(
                     block.outArg(
                         instance, child,
                         i, args[i],
-                        output, nuidFrame()
+                        output, strFrame()
                     );
                 }
 
@@ -107,7 +111,7 @@ Type &NodeCall::buildOut(
 
             std::ostream &os {output.osContent(instance)};
 
-            os << "    " << target << " = " << nuidFrame() << "->result;\n";
+            os << "    " << target << " = " << strMember("result") << ";\n";
         }
     );
 
@@ -127,7 +131,7 @@ void NodeCall::buildIn(
 
             std::ostream &os {output.osContent(instance)};
 
-            os << "    " << nuidFrame() << "->input = " << target << ";\n";
+            os << "    " << strMember("input") << " = " << target << ";\n";
         },
         [](Instance &) {
             // nothing

@@ -1,16 +1,16 @@
 #include "exception.hpp"
 #include "type.hpp"
 
-std::string Instance::tuidFunc() const {
+std::string Instance::strFunc() const {
     return "func_" + std::to_string(tuid());
 }
 
-std::string Instance::tuidObj() const {
+std::string Instance::strObj() const {
     return "struct obj_" + std::to_string(tuid());
 }
 
 std::string Instance::decl(const std::string &name) const {
-    return tuidObj() + " *" + name;
+    return strObj() + " *" + name;
 }
 
 Type &Instance::at(const std::string &name) {
@@ -85,7 +85,7 @@ Type &Instance::fullLookup(
 }
 
 void Instance::renderStruct(std::ostream &os) const {
-    os << tuidObj() << " {\n";
+    os << strObj() << " {\n";
 
     for (const auto &symbol: symbol_types) {
         os << "    " << symbol.second.decl(symbol.first) << ";\n";
@@ -95,7 +95,7 @@ void Instance::renderStruct(std::ostream &os) const {
 }
 
 void Instance::renderFuncHead(std::ostream &os) const {
-    os << "void " << tuidFunc() << "(" << decl("self") << ")";
+    os << "void " << strFunc() << "(" << decl("self") << ")";
 }
 
 void Instance::renderFuncDecl(std::ostream &os) const {
@@ -107,5 +107,5 @@ void Instance::renderFuncCall(
     std::ostream &os,
     const std::string &self
 ) const {
-    os << "    " << tuidFunc() << "(" << self << ");\n";
+    os << "    " << strFunc() << "(" << self << ");\n";
 }
