@@ -27,13 +27,13 @@ protected:
     }
 
 public:
-    virtual std::string decl(const std::string &name) const = 0;
+    virtual std::string strDecl(const std::string &name) const = 0;
 };
 
 template <class T>
 class TypeNative: public Type {
 public:
-    virtual std::string decl(const std::string &name) const;
+    virtual std::string strDecl(const std::string &name) const;
 };
 
 class TypeClosure: public Type {
@@ -52,7 +52,7 @@ public:
         std::function<void (Instance &, Block &)> &&after
     );
 
-    virtual std::string decl(const std::string &name) const;
+    virtual std::string strDecl(const std::string &name) const;
 };
 
 class Instance: public Type {
@@ -85,5 +85,5 @@ public:
         const std::string &callee
     ) const;
 
-    virtual std::string decl(const std::string &name) const;
+    virtual std::string strDecl(const std::string &name) const;
 };

@@ -14,10 +14,6 @@ std::string Instance::strSelf() const {
     return "(" + strObj() + " *) self";
 }
 
-std::string Instance::decl(const std::string &name) const {
-    return strObj() + " *" + name;
-}
-
 Type &Instance::at(const std::string &name) {
     if (name == "self") {
         return *this;
@@ -139,4 +135,8 @@ void Instance::renderFuncCall(
     oc.os << "goto " << callee << "->func;";
     oc.endl(0);
     oc.os << "return_" << pos << ":";
+}
+
+std::string Instance::strDecl(const std::string &name) const {
+    return strStruct() + " *" + name;
 }

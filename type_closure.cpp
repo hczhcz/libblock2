@@ -1,8 +1,8 @@
 #include "node.hpp"
 
-std::string TypeClosure::decl(const std::string &name) const {
+std::string TypeClosure::strDecl(const std::string &name) const {
     // type: struct <parent object> *
-    return parent.decl(name);
+    return parent.strDecl(name);
 }
 
 void TypeClosure::call(
