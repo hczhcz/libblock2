@@ -35,8 +35,10 @@ protected:
 
         OutputContext &oc {output.content(instance)};
 
-        oc.endl(0);
+        oc.enter();
+        oc.endl();
         oc.os << "self->dest = self->src;";
+        oc.leave();
     }
 
 public:

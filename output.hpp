@@ -19,7 +19,9 @@ private:
 public:
     std::ostringstream os; // TODO
 
-    void endl(size_t offset);
+    void enter();
+    void leave();
+    void endl();
 };
 
 class Output {

@@ -177,7 +177,7 @@ Type &Block::buildOut(
 
     OutputContext &oc {output.content(instance)};
 
-    oc.endl(0);
+    oc.endl();
     oc.os << target << " = self;";
 
     // return

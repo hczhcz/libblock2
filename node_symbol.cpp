@@ -31,7 +31,7 @@ void NodeSymbol::buildProc(
 
     OutputContext &oc {output.content(instance)};
 
-    oc.endl(0);
+    oc.endl();
     renderPath(oc.os);
     oc.os << ";";
 }
@@ -48,7 +48,7 @@ Type &NodeSymbol::buildOut(
 
     OutputContext &oc {output.content(instance)};
 
-    oc.endl(0);
+    oc.endl();
     oc.os << target << " = ";
     renderPath(oc.os);
     oc.os << ";";
@@ -70,7 +70,7 @@ void NodeSymbol::buildIn(
 
     OutputContext &oc {output.content(instance)};
 
-    oc.endl(0);
+    oc.endl();
     renderPath(oc.os);
     oc.os << " = " << target << ";";
 }

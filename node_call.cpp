@@ -27,10 +27,11 @@ void NodeCall::build(
 
     OutputContext &oc {output.content(instance)};
 
-    oc.endl(1);
+    oc.endl();
     oc.os << "/* call */";
-    oc.endl(0);
+    oc.endl();
     oc.os << "/* callee = malloc(...); */";
+    oc.enter();
 
     // get callee
     // notice: "callee" here is actually "closure"
@@ -70,30 +71,30 @@ void NodeCall::build(
 
                 OutputContext &och {output.header(instance)};
 
-                och.endl(0);
+                och.endl();
                 och.os << "typedef " << child.strStruct() << " " << strFrame() << ";";
 
                 // render (call)
 
-                oc.endl(0);
+                oc.endl();
                 oc.os << "self->func = &&" << strLabel() << ";";
                 // notice: reset callee->func
-                oc.endl(0);
+                oc.endl();
                 oc.os << strCallee() << "->func" << " = &&" << child.strFunc() << ";";
 
-                oc.endl(0);
+                oc.endl();
                 oc.os << strCallee() << "->caller" << " = self;";
 
-                oc.endl(0);
+                oc.endl();
                 oc.os << "self = callee;";
-                oc.endl(0);
+                oc.endl();
                 oc.os << "goto **callee;";
-                oc.endl(0);
+                oc.endl();
                 oc.os << strLabel() << ":";
-                oc.endl(0);
+                oc.endl();
                 oc.os << "callee = self;";
 
-                oc.endl(0);
+                oc.endl();
                 oc.os << "self = " << strCallee() << "->caller";
 
                 // out
@@ -114,9 +115,7 @@ void NodeCall::build(
         throw ErrorCallNotAllowed {};
     }
 
-    // render (after call)
-
-    oc.endl(-1);
+    oc.leave();
 }
 
 void NodeCall::buildProc(
@@ -152,7 +151,7 @@ Type &NodeCall::buildOut(
 
             OutputContext &oc {output.content(instance)};
 
-            oc.endl(0);
+            oc.endl();
             oc.os << target << " = " << strFrame() << "->result;";
         }
     );
@@ -173,7 +172,7 @@ void NodeCall::buildIn(
 
             OutputContext &oc {output.content(instance)};
 
-            oc.endl(0);
+            oc.endl();
             oc.os << strFrame() << "->input = " << target << ";";
         },
         [](Instance &) {

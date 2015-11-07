@@ -1,9 +1,15 @@
 #include "output.hpp"
 #include "type.hpp"
 
-void OutputContext::endl(size_t offset) {
-    indent += offset;
+void OutputContext::enter() {
+    ++indent;
+}
 
+void OutputContext::leave() {
+    --indent;
+}
+
+void OutputContext::endl() {
     os << "\n";
 
     for (size_t to_print = indent; to_print > 0; --to_print) {
@@ -37,7 +43,13 @@ void Output::getHeader(std::ostream &os) const {
 }
 
 void Output::getContent(std::ostream &os) const {
+    os << "int main() {\n"
+          "    void *self;\n"
+          "    void *callee;\n";
+
     for (const auto &member: contents) {
         os << member.second->os.str();
     }
+
+    os << "}\n";
 }

@@ -74,37 +74,37 @@ Type &Instance::fullLookup(
 }
 
 void Instance::renderStruct(OutputContext &oc) const {
-    oc.endl(0);
+    oc.endl();
     oc.os << strStruct() << " {";
-    oc.endl(1);
+    oc.enter();
+    oc.endl();
     oc.os << "void *func;";
-    oc.endl(0);
+    oc.endl();
     oc.os << "void *caller;";
-    oc.endl(0);
+    oc.endl();
 
     for (const auto &symbol: symbol_types) {
-        oc.endl(0);
+        oc.endl();
         oc.os << symbol.second.strDecl(symbol.first) << ";";
     }
 
-    oc.endl(-1);
+    oc.leave();
+    oc.endl();
     oc.os << "};";
-    oc.endl(0);
+    oc.endl();
 }
 
 void Instance::renderFuncHead(OutputContext &oc) const {
-    oc.endl(0);
-    oc.os << strFunc() << ": {";
-    oc.endl(1);
-    oc.os << "/* function */";
+    oc.enter();
+    oc.endl();
+    oc.os << strFunc() << ":";
 }
 
 void Instance::renderFuncTail(OutputContext &oc) const {
-    oc.endl(0);
+    oc.endl();
     oc.os << "goto **(" << strStruct() << " *) self->caller;";
-    oc.endl(-1);
-    oc.os << "}";
-    oc.endl(0);
+    oc.leave();
+    oc.endl();
 }
 
 std::string Instance::strFunc() const {
