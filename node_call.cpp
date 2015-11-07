@@ -3,7 +3,15 @@
 #include "node.hpp"
 
 std::string NodeCall::strFrame() const {
-    return "frame_" + std::to_string(nuid()); // TODO
+    return "frame_" + std::to_string(nuid());
+}
+
+std::string NodeCall::strCallee() const {
+    return "(" + strFrame() + " *) callee";
+}
+
+std::string NodeCall::strLabel() const {
+    return "label_" + std::to_string(nuid());
 }
 
 void NodeCall::build(
@@ -13,13 +21,25 @@ void NodeCall::build(
 ) {
     // special symbols:
     //     lookup: self, input, result, parent
-    //     control flow: caller, func
+    //     control flow: func, caller
+
+    // render (init call frame)
+
+    OutputContext &oc {output.content(instance)};
+
+    oc.endl(1);
+    oc.os << "/* call */";
+    oc.endl(0);
+    oc.os << "/* callee = malloc(...); */";
 
     // get callee
+    // notice: "callee" here is actually "closure"
+    //         this may change if value could be callee
+
     Type &callee_type {
         callee->buildOut(
             instance,
-            output, strFrame() + "->parent"
+            output, strCallee() + "->parent"
         )
     };
 
@@ -29,6 +49,7 @@ void NodeCall::build(
         }
     ) {
         // call
+
         closure_p->call(
             output,
             [&](Instance &child, Block &block) {
@@ -40,16 +61,40 @@ void NodeCall::build(
                     block.inArg(
                         instance, child,
                         i, args[i],
-                        output, strFrame()
+                        output, strCallee()
                     );
                 }
             },
             [&](Instance &child, Block &block) {
+                // render (header)
+
+                OutputContext &och {output.header(instance)};
+
+                och.endl(0);
+                och.os << "typedef " << child.strStruct() << " " << strFrame() << ";";
+
                 // render (call)
 
-                OutputContext &oc {output.content(instance)};
+                oc.endl(0);
+                oc.os << "self->func = &&" << strLabel() << ";";
+                // notice: reset callee->func
+                oc.endl(0);
+                oc.os << strCallee() << "->func" << " = &&" << child.strFunc() << ";";
 
-                child.renderFuncCall(oc, nuid(), strFrame());
+                oc.endl(0);
+                oc.os << strCallee() << "->caller" << " = self;";
+
+                oc.endl(0);
+                oc.os << "self = callee;";
+                oc.endl(0);
+                oc.os << "goto **callee;";
+                oc.endl(0);
+                oc.os << strLabel() << ":";
+                oc.endl(0);
+                oc.os << "callee = self;";
+
+                oc.endl(0);
+                oc.os << "self = " << strCallee() << "->caller";
 
                 // out
 
@@ -57,7 +102,7 @@ void NodeCall::build(
                     block.outArg(
                         instance, child,
                         i, args[i],
-                        output, strFrame()
+                        output, strCallee()
                     );
                 }
 
@@ -68,6 +113,10 @@ void NodeCall::build(
         // error: value as callee
         throw ErrorCallNotAllowed {};
     }
+
+    // render (after call)
+
+    oc.endl(-1);
 }
 
 void NodeCall::buildProc(

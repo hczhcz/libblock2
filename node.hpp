@@ -86,6 +86,9 @@ private:
     std::vector<std::unique_ptr<Node>> args;
 
     std::string strFrame() const;
+    std::string strCallee() const;
+    std::string strLabel() const;
+
     void build(
         Instance &instance, Output &output,
         std::function<void (Instance &)> &&before,

@@ -2,18 +2,6 @@
 #include "output.hpp"
 #include "type.hpp"
 
-std::string Instance::strFunc() const {
-    return "func_" + std::to_string(tuid());
-}
-
-std::string Instance::strObj() const {
-    return "struct obj_" + std::to_string(tuid());
-}
-
-std::string Instance::strSelf() const {
-    return "(" + strObj() + " *) self";
-}
-
 Type &Instance::at(const std::string &name) {
     if (name == "self") {
         return *this;
@@ -87,16 +75,16 @@ Type &Instance::fullLookup(
 
 void Instance::renderStruct(OutputContext &oc) const {
     oc.endl(0);
-    oc.os << strObj() << " {";
+    oc.os << strStruct() << " {";
     oc.endl(1);
-    oc.os << "void *caller;";
-    oc.endl(0);
     oc.os << "void *func;";
+    oc.endl(0);
+    oc.os << "void *caller;";
     oc.endl(0);
 
     for (const auto &symbol: symbol_types) {
         oc.endl(0);
-        oc.os << symbol.second.decl(symbol.first) << ";";
+        oc.os << symbol.second.strDecl(symbol.first) << ";";
     }
 
     oc.endl(-1);
@@ -113,28 +101,18 @@ void Instance::renderFuncHead(OutputContext &oc) const {
 
 void Instance::renderFuncTail(OutputContext &oc) const {
     oc.endl(0);
-    oc.os << "goto " << strSelf() << "->func;";
+    oc.os << "goto **(" << strStruct() << " *) self->caller;";
     oc.endl(-1);
     oc.os << "}";
     oc.endl(0);
 }
 
-void Instance::renderFuncCall(
-    OutputContext &oc,
-    uintptr_t pos,
-    const std::string &callee
-) const {
-    oc.endl(0);
-    oc.os << callee << "->caller = " << strSelf() << ";";
-    // notice: reset callee->func
-    oc.endl(0);
-    oc.os << callee << "->func = &&" << strFunc() << ";";
-    oc.endl(0);
-    oc.os << strSelf() << "->func = &&return_" << pos << ";";
-    oc.endl(0);
-    oc.os << "goto " << callee << "->func;";
-    oc.endl(0);
-    oc.os << "return_" << pos << ":";
+std::string Instance::strFunc() const {
+    return "func_" + std::to_string(tuid());
+}
+
+std::string Instance::strStruct() const {
+    return "struct struct_" + std::to_string(tuid());
 }
 
 std::string Instance::strDecl(const std::string &name) const {

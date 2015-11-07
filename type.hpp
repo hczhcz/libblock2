@@ -59,10 +59,6 @@ class Instance: public Type {
 private:
     std::map<std::string, Type &> symbol_types;
 
-    std::string strFunc() const;
-    std::string strObj() const;
-    std::string strSelf() const;
-
     friend class Block;
     friend class Output;
 
@@ -79,11 +75,9 @@ public:
     void renderStruct(OutputContext &oc) const;
     void renderFuncHead(OutputContext &oc) const;
     void renderFuncTail(OutputContext &oc) const;
-    void renderFuncCall(
-        OutputContext &oc,
-        uintptr_t pos,
-        const std::string &callee
-    ) const;
+
+    std::string strFunc() const;
+    std::string strStruct() const;
 
     virtual std::string strDecl(const std::string &name) const;
 };
