@@ -28,12 +28,17 @@ inline NodeLiteralStr *_(std::string &&value) {
     return new NodeLiteralStr {std::move(value)};
 }
 
-inline NodeSymbol *$(std::string &&name) {
-    return new NodeSymbol {{std::move(name)}};
-}
+// inline NodeSymbol *$(std::string &&name) {
+//     return new NodeSymbol {{std::move(name)}};
+// }
 
-inline NodeSymbol *$(std::vector<std::string> &&path) {
-    return new NodeSymbol {std::move(path)};
+// inline NodeSymbol *$(std::vector<std::string> &&path) {
+//     return new NodeSymbol {std::move(path)};
+// }
+
+template <class... Args>
+inline NodeSymbol *$(Args... args) {
+    return new NodeSymbol {std::vector<std::string> {args...}};
 }
 
 template <class... Args>
