@@ -38,7 +38,12 @@ inline NodeSymbol *$(std::vector<std::string> &&path) {
 
 template <class... Args>
 inline NodeCall *call(Node *callee, Args... args) {
-    return new NodeCall {callee, args...};
+    return new NodeCall {callee, FrameMode::dynamic_gc, args...};
+}
+
+template <class... Args>
+inline NodeCall *call(Node *callee, FrameMode mode, Args... args) {
+    return new NodeCall {callee, mode, args...};
 }
 
 inline BlockUser *block(

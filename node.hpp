@@ -80,12 +80,22 @@ public:
     );
 };
 
+enum class FrameMode { // TODO: implement
+    static_global,
+    static_local,
+    dynamic_stack,
+    dynamic_gc,
+    dynamic_free
+};
+
 class NodeCall: public Node {
 private:
     std::unique_ptr<Node> callee;
+    FrameMode mode;
     std::vector<std::unique_ptr<Node>> args;
 
     std::string strFrame() const;
+    std::string strObject() const;
     std::string strCallee() const;
     std::string strLabel() const;
 
@@ -97,8 +107,9 @@ private:
 
 public:
     template <class... Args>
-    inline NodeCall(Node *_callee, Args... _args):
-        callee {_callee} {
+    inline NodeCall(Node *_callee, FrameMode _mode, Args... _args):
+        callee {_callee},
+        mode {_mode} {
             Node *init[] {_args...};
 
             args.reserve(sizeof...(_args));

@@ -29,10 +29,10 @@ int main() {
                         $("c"), _("bye"), _("hello")
                     )
                 ),
-                call(
-                    $("print"),
-                    _(", world")
-                )
+                call($("print"), FrameMode::static_global, _(", ")),
+                call($("print"), FrameMode::static_local, _("wo")),
+                call($("print"), FrameMode::dynamic_stack, _("rl")),
+                call($("print"), FrameMode::dynamic_free, _("d!"))
             )
         )
     };

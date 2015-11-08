@@ -7,7 +7,9 @@ flags_pch='-emit_pch'
 flags_obj='-c'
 flags_out=''
 
-objs=''
+test_cc='clang'
+test_flags='-O0 -g -Wall -Wextra -ferror-limit=3'
+test_flags_out='-lgc'
 
 echo '======== build precompiled files ========'
 echo
@@ -36,6 +38,8 @@ fi
 
 echo '======== build updated files ========'
 echo
+
+objs=''
 
 for file in $(ls ./*.cpp)
 do
@@ -91,11 +95,8 @@ echo
 echo '======== build the generated file ========'
 echo
 
-test_cc='clang'
-test_flags='-O0 -g -Wall -Wextra -ferror-limit=3'
-
-echo $test_cc $test_flags ./build/test.gen.c -o ./build/test.gen.out
-$test_cc $test_flags ./build/test.gen.c -o ./build/test.gen.out
+echo $test_cc $test_flags_out $test_flags ./build/test.gen.c -o ./build/test.gen.out
+$test_cc $test_flags_out $test_flags ./build/test.gen.c -o ./build/test.gen.out
 if [ $? -ne 0 ]
 then
     exit

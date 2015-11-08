@@ -6,6 +6,10 @@ std::string NodeCall::strFrame() const {
     return "frame_" + std::to_string(nuid());
 }
 
+std::string NodeCall::strObject() const {
+    return "object_" + std::to_string(nuid());
+}
+
 std::string NodeCall::strCallee() const {
     return "((" + strFrame() + " *) callee)";
 }
@@ -27,8 +31,36 @@ void NodeCall::build(
 
     OutputContext &oc {output.content(instance)};
 
-    oc.endl();
-    oc.os << "callee = malloc(sizeof(" << strFrame() << "));"; // TODO: GC?
+    switch (mode) {
+        case FrameMode::static_global:
+            oc.endl();
+            oc.os << "static " << strFrame() << " " << strObject() << ";";
+            oc.endl();
+            oc.os << "callee = &" << strObject() << ";";
+            break;
+
+        case FrameMode::static_local:
+            oc.endl();
+            oc.os << strFrame() << " " << strObject() << ";";
+            oc.endl();
+            oc.os << "callee = &" << strObject() << ";";
+            break;
+
+        case FrameMode::dynamic_stack:
+            oc.endl();
+            oc.os << "callee = alloca(sizeof(" << strFrame() << "));";
+            break;
+
+        case FrameMode::dynamic_gc:
+            oc.endl();
+            oc.os << "callee = GC_malloc(sizeof(" << strFrame() << "));";
+            break;
+
+        case FrameMode::dynamic_free:
+            oc.endl();
+            oc.os << "callee = malloc(sizeof(" << strFrame() << "));";
+            break;
+    }
 
     oc.endl();
     oc.os << "/* call */";
@@ -122,6 +154,21 @@ void NodeCall::build(
     // render (exit)
 
     oc.leave();
+
+    switch (mode) {
+        case FrameMode::static_global:
+        case FrameMode::static_local:
+            break;
+
+        case FrameMode::dynamic_stack:
+            oc.endl();
+            oc.os << "callee = alloca(-sizeof(" << strFrame() << "));";
+            break;
+
+        case FrameMode::dynamic_gc:
+        case FrameMode::dynamic_free:
+            break;
+    }
 }
 
 void NodeCall::buildProc(
