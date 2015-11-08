@@ -10,7 +10,24 @@ int main() {
             call(
                 $("__then__"),
                 call(
-                    $("__set__"), $("c"), block(
+                    $("__set__"), $("a"), block( // function a
+                        {},
+                        call(
+                            $("__then__"),
+                            call(
+                                $("__set__"), $("c"), _("hell")
+                            ),
+                            call(
+                                $("__set__"), $("parent", "c"), _("o")
+                            ),
+                            call(
+                                $("__set__"), $("result"), $("self")
+                            )
+                        )
+                    )
+                ),
+                call(
+                    $("__set__"), $("b"), block( // function b
                         {in("a"), in("b")},
                         call(
                             $("__then__"),
@@ -24,10 +41,15 @@ int main() {
                     )
                 ),
                 call(
+                    $("__set__"), $("d"), call($("a"))
+                ),
+                call(
                     $("print"),
-                    call(
-                        $("c"), _("bye"), _("hello")
-                    )
+                    call($("b"), _("bye"), $("d", "c"))
+                ),
+                call(
+                    $("print"),
+                    call($("b"), _("bye"), $("c"))
                 ),
                 call($("print"), FrameMode::static_global, _(", ")),
                 call($("print"), FrameMode::static_local, _("wo")),
