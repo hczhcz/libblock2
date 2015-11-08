@@ -1,11 +1,6 @@
 #pragma once
 
-#ifndef NO_STD_LIB
-#include <memory>
-#include <vector>
-#include <map>
-#include <sstream>
-#endif
+#include "include.hpp"
 
 class Instance;
 

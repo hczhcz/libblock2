@@ -1,12 +1,6 @@
 #pragma once
 
-#ifndef NO_STD_LIB
-#include <memory>
-#include <string>
-#include <vector>
-#include <map>
-#include <ostream>
-#endif
+#include "include.hpp"
 
 class Output;
 class OutputContext;

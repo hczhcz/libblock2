@@ -2,11 +2,37 @@ mkdir -p ./build
 
 cc='clang++'
 flags='-std=c++11 -O0 -g -Wall -Wextra -ferror-limit=3'
-flags_pp='-E -DNO_STD_LIB'
+flags_pp='-E -DSKIP_STD_LIB'
+flags_pch='-emit_pch'
 flags_obj='-c'
 flags_out=''
 
 objs=''
+
+echo '======== build precompiled files ========'
+echo
+
+new=$(cat ./include.hpp)
+
+echo $new | diff -q - ./build/include.hpp 1> /dev/null 2> /dev/null
+if [ $? -eq 0 ]
+then
+    echo 'not changed'
+    echo
+else
+    echo 'changed'
+
+    echo $cc $flags_pch $flags ./include.hpp -o ./build/include.pch
+    $cc $flags_pch $flags ./include.hpp -o ./build/include.pch
+    if [ $? -eq 0 ]
+    then
+        echo $new > ./build/include.hpp
+    else
+        echo '' > ./build/include.hpp
+        exit
+    fi
+    echo
+fi
 
 echo '======== build updated files ========'
 echo
@@ -23,8 +49,8 @@ do
     else
         echo 'changed: '$file
 
-        echo $cc $flags_obj $flags $file -o ./build/$file.o
-        $cc $flags_obj $flags $file -o ./build/$file.o
+        echo $cc $flags_obj $flags -include-pch ./build/include.pch $file -o ./build/$file.o
+        $cc $flags_obj $flags -include-pch ./build/include.pch $file -o ./build/$file.o
         if [ $? -eq 0 ]
         then
             echo $new > ./build/$file
@@ -41,7 +67,7 @@ done
 echo '======== lint ========'
 echo
 
-cppcheck -q --std=c++11 --enable=all --inconclusive *.cpp
+cppcheck -q --std=c++11 --enable=all --inconclusive ./*.cpp
 echo
 
 echo '======== build the test ========'

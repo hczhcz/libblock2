@@ -1,11 +1,6 @@
 #include "output.hpp"
 #include "builder.hpp"
 
-#ifndef NO_STD_LIB
-#include <fstream>
-#include <iostream>
-#endif
-
 int main() {
     using namespace builder;
 
