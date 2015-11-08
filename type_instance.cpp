@@ -80,6 +80,8 @@ void Instance::renderStruct(OutputContext &oc) const {
     oc.endl();
     oc.os << "void *func;";
     oc.endl();
+    oc.os << "void *outer;";
+    oc.endl();
     oc.os << "void *caller;";
     oc.endl();
 

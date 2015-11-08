@@ -10,6 +10,10 @@ std::string NodeCall::strObject() const {
     return "object_" + std::to_string(nuid());
 }
 
+std::string NodeCall::strInner() const {
+    return "((" + strFrame() + " *) inner)";
+}
+
 std::string NodeCall::strCallee() const {
     return "((" + strFrame() + " *) callee)";
 }
@@ -25,46 +29,46 @@ void NodeCall::build(
 ) {
     // special symbols:
     //     lookup: self, input, result, parent
-    //     control flow: func, caller
+    //     control flow: func, outer, caller
 
     // render (init call frame)
 
     OutputContext &oc {output.content(instance)};
+
+    oc.endl();
+    oc.os << "/* call */";
+    oc.enter();
 
     switch (mode) {
         case FrameMode::static_global:
             oc.endl();
             oc.os << "static " << strFrame() << " " << strObject() << ";";
             oc.endl();
-            oc.os << "callee = &" << strObject() << ";";
+            oc.os << "inner = &" << strObject() << ";";
             break;
 
         case FrameMode::static_local:
             oc.endl();
             oc.os << strFrame() << " " << strObject() << ";";
             oc.endl();
-            oc.os << "callee = &" << strObject() << ";";
+            oc.os << "inner = &" << strObject() << ";";
             break;
 
         case FrameMode::dynamic_stack:
             oc.endl();
-            oc.os << "callee = alloca(sizeof(" << strFrame() << "));";
+            oc.os << "inner = alloca(sizeof(" << strFrame() << "));";
             break;
 
         case FrameMode::dynamic_gc:
             oc.endl();
-            oc.os << "callee = GC_malloc(sizeof(" << strFrame() << "));";
+            oc.os << "inner = GC_malloc(sizeof(" << strFrame() << "));";
             break;
 
         case FrameMode::dynamic_free:
             oc.endl();
-            oc.os << "callee = malloc(sizeof(" << strFrame() << "));";
+            oc.os << "inner = malloc(sizeof(" << strFrame() << "));";
             break;
     }
-
-    oc.endl();
-    oc.os << "/* call */";
-    oc.enter();
 
     // get callee
     // notice: "callee" here is actually "closure"
@@ -73,7 +77,7 @@ void NodeCall::build(
     Type &callee_type {
         callee->buildOut(
             instance,
-            output, strCallee() + "->parent"
+            output, strInner() + "->parent"
         )
     };
 
@@ -95,9 +99,16 @@ void NodeCall::build(
                     block.inArg(
                         instance, child,
                         i, args[i],
-                        output, strCallee()
+                        output, strInner()
                     );
                 }
+
+                // render (in)
+
+                oc.endl();
+                oc.os << strInner() << "->outer = callee;";
+                oc.endl();
+                oc.os << "callee = inner;";
             },
             [&](Instance &child, Block &block) {
                 // render (header)
@@ -120,18 +131,23 @@ void NodeCall::build(
 
                 oc.endl();
                 oc.os << strCallee() << "->caller" << " = self;";
-
                 oc.endl();
                 oc.os << "self = callee;";
+
                 oc.endl();
                 oc.os << "goto **(void ***) callee;";
                 oc.endl();
                 oc.os << strLabel() << ":";
-                oc.endl();
-                oc.os << "callee = self;";
 
                 oc.endl();
+                oc.os << "callee = self;";
+                oc.endl();
                 oc.os << "self = " << strCallee() << "->caller;";
+
+                // render (out)
+
+                oc.endl();
+                oc.os << "callee = " << strInner() << "->outer;";
 
                 // out
 
@@ -139,7 +155,7 @@ void NodeCall::build(
                     block.outArg(
                         instance, child,
                         i, args[i],
-                        output, strCallee()
+                        output, strInner()
                     );
                 }
 
@@ -162,7 +178,7 @@ void NodeCall::build(
 
         case FrameMode::dynamic_stack:
             oc.endl();
-            oc.os << "callee = alloca(-sizeof(" << strFrame() << "));";
+            oc.os << "alloca(-sizeof(" << strFrame() << "));";
             break;
 
         case FrameMode::dynamic_gc:

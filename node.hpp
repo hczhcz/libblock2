@@ -96,6 +96,7 @@ private:
 
     std::string strFrame() const;
     std::string strObject() const;
+    std::string strInner() const;
     std::string strCallee() const;
     std::string strLabel() const;
 
