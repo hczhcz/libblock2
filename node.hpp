@@ -52,7 +52,6 @@ using NodeLiteralStr = NodeLiteral<std::string>;
 
 class NodeSymbol: public Node {
 private:
-    std::vector<std::string> path;
     std::string name;
 
     size_t level {0};
@@ -60,11 +59,34 @@ private:
     void renderPath(std::ostream &os) const;
 
 public:
-    inline NodeSymbol(std::vector<std::string> &&_path):
-        path {std::move(_path)},
-        name {path.back()} {
-            path.pop_back();
-        }
+    inline NodeSymbol(std::string &&_name):
+        name {std::move(_name)} {}
+
+    virtual void buildProc(
+        Instance &instance,
+        Output &output
+    );
+    virtual Type &buildOut(
+        Instance &instance,
+        Output &output, const std::string &target
+    );
+    virtual void buildIn(
+        Instance &instance, Type &type,
+        Output &output, const std::string &target
+    );
+};
+
+class NodePath: public Node {
+private:
+    std::unique_ptr<Node> source;
+    std::string name;
+
+    void renderPath(std::ostream &os) const;
+
+public:
+    inline NodePath(Node *_source, std::string &&_name):
+        source {_source},
+        name {_name} {}
 
     virtual void buildProc(
         Instance &instance,

@@ -18,7 +18,7 @@ int main() {
                                 $("__set__"), $("c"), _("hell")
                             ),
                             call(
-                                $("__set__"), $("parent", "c"), _("o")
+                                $("__set__"), $($("parent"), "c"), _("o")
                             ),
                             call(
                                 $("__set__"), $("result"), $("self")
@@ -45,7 +45,7 @@ int main() {
                 ),
                 call(
                     $("print"),
-                    call($("b"), _("bye"), $("d", "c"))
+                    call($("b"), _("bye"), $($("d"), "c"))
                 ),
                 call(
                     $("print"),

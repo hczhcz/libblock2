@@ -1,23 +1,19 @@
 #include "output.hpp"
 #include "node.hpp"
 
-void NodeSymbol::renderPath(std::ostream &os) const {
-    for (size_t i = 0; i < level; ++i) {
-        os << "->parent";
-    }
-
+void NodePath::renderPath(std::ostream &os) const {
     if (name != "self") {
         os << "->" << name;
     }
 }
 
-void NodeSymbol::buildProc(
+void NodePath::buildProc(
     Instance &instance,
     Output &output
 ) {
     // gen type
 
-    instance.lookup(name, level);
+    source->buildOut(instance, output, "???").at(name);
 
     // render
 
@@ -29,14 +25,14 @@ void NodeSymbol::buildProc(
     oc.os << ";";
 }
 
-Type &NodeSymbol::buildOut(
+Type &NodePath::buildOut(
     Instance &instance,
     Output &output, const std::string &target
 ) {
     // get type
 
     Type &type {
-        instance.lookup(name, level)
+        source->buildOut(instance, output, "???").at(name)
     };
 
     // render
@@ -53,13 +49,13 @@ Type &NodeSymbol::buildOut(
     return type;
 }
 
-void NodeSymbol::buildIn(
+void NodePath::buildIn(
     Instance &instance, Type &type,
     Output &output, const std::string &target
 ) {
     // set type
 
-    instance.insert(name, type);
+    source->buildOut(instance, output, "???").insert(name, type);
 
     // render
 
