@@ -66,13 +66,13 @@ public:
         size_t &level
     ); // also lookup parent->path->name
 
-    void renderStruct(OutputContext &oc) const;
-    void renderFuncHead(OutputContext &oc) const;
-    void renderFuncTail(OutputContext &oc) const;
-
     std::string strFunc() const;
     std::string strStruct() const;
     std::string strCast() const;
+
+    void renderStruct(OutputContext &oc) const;
+    void renderFuncHead(OutputContext &oc) const;
+    void renderFuncTail(OutputContext &oc) const;
 
     virtual std::string strDecl(const std::string &name) const;
 };

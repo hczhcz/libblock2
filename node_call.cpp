@@ -10,16 +10,16 @@ std::string NodeCall::strObject() const {
     return "object_" + std::to_string(nuid());
 }
 
+std::string NodeCall::strLabel() const {
+    return "label_" + std::to_string(nuid());
+}
+
 std::string NodeCall::strInner() const {
     return "((" + strFrame() + " *) inner)";
 }
 
 std::string NodeCall::strCallee() const {
     return "((" + strFrame() + " *) callee)";
-}
-
-std::string NodeCall::strLabel() const {
-    return "label_" + std::to_string(nuid());
 }
 
 void NodeCall::build(
@@ -102,13 +102,6 @@ void NodeCall::build(
                         output, strInner()
                     );
                 }
-
-                // render (in)
-
-                oc.endl();
-                oc.os << strInner() << "->outer = callee;";
-                oc.endl();
-                oc.os << "callee = inner;";
             },
             [&](Instance &child, Block &block) {
                 // render (header)
@@ -118,6 +111,13 @@ void NodeCall::build(
                 och.endl();
                 och.os << "typedef " << child.strStruct()
                        << " " << strFrame() << ";";
+
+                // render (in)
+
+                oc.endl();
+                oc.os << strInner() << "->outer = callee;";
+                oc.endl();
+                oc.os << "callee = inner;";
 
                 // render (call)
 

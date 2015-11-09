@@ -58,8 +58,8 @@ void Output::getContent(std::ostream &os, Instance &root) const {
           "    root.caller = &exit_addr;\n"
           "\n"
           "    void *self = &root;\n"
-          "    void *inner = 0;\n"
           "    void *callee = 0;\n"
+          "    void *inner = 0;\n"
           "\n"
           "    goto **(void ***) self;\n";
 

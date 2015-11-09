@@ -73,6 +73,18 @@ Type &Instance::fullLookup(
     }
 }
 
+std::string Instance::strFunc() const {
+    return "func_" + std::to_string(tuid());
+}
+
+std::string Instance::strStruct() const {
+    return "struct struct_" + std::to_string(tuid());
+}
+
+std::string Instance::strCast() const {
+    return "((" + strStruct() + " *) self)";
+}
+
 void Instance::renderStruct(OutputContext &oc) const {
     oc.endl();
     oc.os << strStruct() << " {";
@@ -80,9 +92,9 @@ void Instance::renderStruct(OutputContext &oc) const {
     oc.endl();
     oc.os << "void *func;";
     oc.endl();
-    oc.os << "void *outer;";
-    oc.endl();
     oc.os << "void *caller;";
+    oc.endl();
+    oc.os << "void *outer;";
     oc.endl();
 
     for (const auto &symbol: symbol_types) {
@@ -107,18 +119,6 @@ void Instance::renderFuncTail(OutputContext &oc) const {
     oc.os << "goto **(void ***) " << strCast() << "->caller;";
     oc.leave();
     oc.endl();
-}
-
-std::string Instance::strFunc() const {
-    return "func_" + std::to_string(tuid());
-}
-
-std::string Instance::strStruct() const {
-    return "struct struct_" + std::to_string(tuid());
-}
-
-std::string Instance::strCast() const {
-    return "((" + strStruct() + " *) self)";
 }
 
 std::string Instance::strDecl(const std::string &name) const {
