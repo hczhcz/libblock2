@@ -21,11 +21,9 @@ protected:
     }
 
 public:
-    virtual std::string strDecl(const std::string &name) const = 0;
+    Instance &prepareLookup();
 
-    virtual Type &at(const std::string &name);
-    virtual void insert(const std::string &name, Type &type);
-    virtual Type &lookup(const std::string &name, size_t &level);
+    virtual std::string strDecl(const std::string &name) const = 0;
 };
 
 template <class T>
@@ -71,7 +69,7 @@ public:
 
     virtual std::string strDecl(const std::string &name) const;
 
-    virtual Type &at(const std::string &name);
-    virtual void insert(const std::string &name, Type &type);
-    virtual Type &lookup(const std::string &name, size_t &level);
+    Type &at(const std::string &name);
+    void insert(const std::string &name, Type &type);
+    Type &lookup(const std::string &name, size_t &level);
 };

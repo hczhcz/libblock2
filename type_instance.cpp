@@ -95,7 +95,7 @@ Type &Instance::lookup(const std::string &name, size_t &level) {
         } else {
             ++level;
 
-            return at("parent").lookup(name, level); // TODO
+            return at("parent").prepareLookup().lookup(name, level);
         }
     }
 }

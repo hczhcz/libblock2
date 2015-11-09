@@ -9,14 +9,14 @@ uintptr_t Type::tuid() const {
     return (uintptr_t) this - (uintptr_t) heap.get();
 }
 
-Type &Type::at(const std::string &name) {
-    throw ErrorLookupNotAllowed {};
-}
+Instance &Type::prepareLookup() {
+    Instance *instance_p {
+        dynamic_cast<Instance *>(this)
+    };
 
-void Type::insert(const std::string &name, Type &type) {
-    throw ErrorLookupNotAllowed {};
-}
-
-Type &Type::lookup(const std::string &name, size_t &level) {
-    throw ErrorLookupNotAllowed {};
+    if (instance_p) {
+        return *instance_p;
+    } else {
+        throw ErrorLookupNotAllowed {};
+    }
 }
