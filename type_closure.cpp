@@ -7,15 +7,13 @@ std::string TypeClosure::strDecl(const std::string &name) const {
 
 void TypeClosure::call(
     Output &output,
-    std::function<void (Instance &, Block &)> &&before,
+    std::function<void (Instance &, Block &, Instance &)> &&before,
     std::function<void (Instance &, Block &)> &&after
 ) {
     block.build(
         output,
         [&](Instance &child) {
-            child.insert("parent", parent);
-
-            before(child, block);
+            before(child, block, parent);
         },
         [&](Instance &child) {
             after(child, block);

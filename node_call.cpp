@@ -31,53 +31,12 @@ void NodeCall::build(
     //     lookup: self, input, result, parent
     //     control flow: func, outer, caller
 
-    // render (init call frame)
-
-    OutputContext &oc {output.content(instance)};
-
-    oc.endl();
-    oc.os << "/* call */";
-    oc.enter();
-
-    switch (mode) {
-        case FrameMode::static_global:
-            oc.endl();
-            oc.os << "static " << strFrame() << " " << strObject() << ";";
-            oc.endl();
-            oc.os << "inner = &" << strObject() << ";";
-            break;
-
-        case FrameMode::static_local:
-            oc.endl();
-            oc.os << strFrame() << " " << strObject() << ";";
-            oc.endl();
-            oc.os << "inner = &" << strObject() << ";";
-            break;
-
-        case FrameMode::dynamic_stack:
-            oc.endl();
-            oc.os << "inner = alloca(sizeof(" << strFrame() << "));";
-            break;
-
-        case FrameMode::dynamic_gc:
-            oc.endl();
-            oc.os << "inner = GC_malloc(sizeof(" << strFrame() << "));";
-            break;
-
-        case FrameMode::dynamic_free:
-            oc.endl();
-            oc.os << "inner = malloc(sizeof(" << strFrame() << "));";
-            break;
-    }
-
     // get callee
-    // notice: "callee" here is actually "closure"
-    //         this may change if value could be callee
 
     Type &callee_type {
         callee->buildOut(
             instance,
-            output, strInner() + "->parent"
+            output, "tmp"
         )
     };
 
@@ -86,11 +45,60 @@ void NodeCall::build(
             dynamic_cast<TypeClosure *>(&callee_type)
         }
     ) {
-        // call
+        // callee is closure
+        // create a frame and call the function
 
         closure_p->call(
             output,
-            [&](Instance &child, Block &block) {
+            [&](Instance &child, Block &block, Instance &parent) {
+                // parent
+
+                child.insert("parent", parent);
+
+                // render (alloc the call frame)
+
+                OutputContext &oc {output.content(instance)};
+
+                oc.endl();
+                oc.os << "/* call */";
+                oc.enter();
+
+                switch (mode) {
+                    case FrameMode::static_global:
+                        oc.endl();
+                        oc.os << "static " << strFrame() << " " << strObject() << ";";
+                        oc.endl();
+                        oc.os << "inner = &" << strObject() << ";";
+                        break;
+
+                    case FrameMode::static_local:
+                        oc.endl();
+                        oc.os << strFrame() << " " << strObject() << ";";
+                        oc.endl();
+                        oc.os << "inner = &" << strObject() << ";";
+                        break;
+
+                    case FrameMode::dynamic_stack:
+                        oc.endl();
+                        oc.os << "inner = alloca(sizeof(" << strFrame() << "));";
+                        break;
+
+                    case FrameMode::dynamic_gc:
+                        oc.endl();
+                        oc.os << "inner = GC_malloc(sizeof(" << strFrame() << "));";
+                        break;
+
+                    case FrameMode::dynamic_free:
+                        oc.endl();
+                        oc.os << "inner = malloc(sizeof(" << strFrame() << "));";
+                        break;
+                }
+
+                // render (parent)
+
+                oc.endl();
+                oc.os << strInner() << "->parent = " << parent.strCastTmp() << ";";
+
                 // in
 
                 before(child);
@@ -112,7 +120,9 @@ void NodeCall::build(
                 och.os << "typedef " << child.strStruct()
                        << " " << strFrame() << ";";
 
-                // render (in)
+                // render (load the callee)
+
+                OutputContext &oc {output.content(instance)};
 
                 oc.endl();
                 oc.os << strInner() << "->outer = callee;";
@@ -144,7 +154,7 @@ void NodeCall::build(
                 oc.endl();
                 oc.os << "self = " << strCallee() << "->caller;";
 
-                // render (out)
+                // render (unload the callee)
 
                 oc.endl();
                 oc.os << "callee = " << strInner() << "->outer;";
@@ -160,30 +170,30 @@ void NodeCall::build(
                 }
 
                 after(child);
+
+                // render (free the call frame)
+
+                oc.leave();
+
+                switch (mode) {
+                    case FrameMode::static_global:
+                    case FrameMode::static_local:
+                        break;
+
+                    case FrameMode::dynamic_stack:
+                        oc.endl();
+                        oc.os << "alloca(-sizeof(" << strFrame() << "));";
+                        break;
+
+                    case FrameMode::dynamic_gc:
+                    case FrameMode::dynamic_free:
+                        break;
+                }
             }
         );
     } else {
-        // error: value as callee
+        // error: value as callee // TODO
         throw ErrorCallNotAllowed {};
-    }
-
-    // render (exit)
-
-    oc.leave();
-
-    switch (mode) {
-        case FrameMode::static_global:
-        case FrameMode::static_local:
-            break;
-
-        case FrameMode::dynamic_stack:
-            oc.endl();
-            oc.os << "alloca(-sizeof(" << strFrame() << "));";
-            break;
-
-        case FrameMode::dynamic_gc:
-        case FrameMode::dynamic_free:
-            break;
     }
 }
 

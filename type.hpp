@@ -44,7 +44,7 @@ public:
 
     void call(
         Output &output,
-        std::function<void (Instance &, Block &)> &&before,
+        std::function<void (Instance &, Block &, Instance &)> &&before,
         std::function<void (Instance &, Block &)> &&after
     );
 
