@@ -99,15 +99,24 @@ void NodeCall::build(
                 oc.endl();
                 oc.os << strInner() << "->parent = " << parent.strCast("tmp") << ";";
 
-                // in
+                // input
 
                 before(child);
+
+                // render (load the callee)
+
+                oc.endl();
+                oc.os << strInner() << "->outer = callee;";
+                oc.endl();
+                oc.os << "callee = inner;";
+
+                // in args
 
                 for (size_t i = 0; i < args.size(); ++i) {
                     block.inArg(
                         instance, child,
                         i, args[i],
-                        output, strInner()
+                        output, strCallee()
                     );
                 }
             },
@@ -120,16 +129,9 @@ void NodeCall::build(
                 och.os << "typedef " << child.strStruct()
                        << " " << strFrame() << ";";
 
-                // render (load the callee)
+                // render (call)
 
                 OutputContext &oc {output.content(instance)};
-
-                oc.endl();
-                oc.os << strInner() << "->outer = callee;";
-                oc.endl();
-                oc.os << "callee = inner;";
-
-                // render (call)
 
                 oc.endl();
                 oc.os << instance.strCast("self") << "->func = &&"
@@ -154,20 +156,24 @@ void NodeCall::build(
                 oc.endl();
                 oc.os << "self = " << strCallee() << "->caller;";
 
-                // render (unload the callee)
-
-                oc.endl();
-                oc.os << "callee = " << strInner() << "->outer;";
-
-                // out
+                // out args
 
                 for (size_t i = 0; i < args.size(); ++i) {
                     block.outArg(
                         instance, child,
                         i, args[i],
-                        output, strInner()
+                        output, strCallee()
                     );
                 }
+
+                // render (unload the callee)
+
+                oc.endl();
+                oc.os << "inner = callee;";
+                oc.endl();
+                oc.os << "callee = " << strInner() << "->outer;";
+
+                // result
 
                 after(child);
 
@@ -231,7 +237,7 @@ Type &NodeCall::buildOut(
             OutputContext &oc {output.content(instance)};
 
             oc.endl();
-            oc.os << target << " = " << strCallee() << "->result;";
+            oc.os << target << " = " << strInner() << "->result;";
         }
     );
 
@@ -252,7 +258,7 @@ void NodeCall::buildIn(
             OutputContext &oc {output.content(instance)};
 
             oc.endl();
-            oc.os << strCallee() << "->input = " << target << ";";
+            oc.os << strInner() << "->input = " << target << ";";
         },
         [](Instance &) {
             // nothing
