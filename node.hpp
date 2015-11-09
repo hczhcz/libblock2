@@ -54,9 +54,7 @@ class NodeSymbol: public Node {
 private:
     std::string name;
 
-    size_t level {0};
-
-    void renderPath(std::ostream &os) const;
+    void renderPath(std::ostream &os, size_t level) const;
 
 public:
     inline NodeSymbol(std::string &&_name):

@@ -1,7 +1,7 @@
 #include "output.hpp"
 #include "node.hpp"
 
-void NodeSymbol::renderPath(std::ostream &os) const {
+void NodeSymbol::renderPath(std::ostream &os, size_t level) const {
     for (size_t i = 0; i < level; ++i) {
         os << "->parent";
     }
@@ -17,6 +17,8 @@ void NodeSymbol::buildProc(
 ) {
     // gen type
 
+    size_t level {0};
+
     instance.lookup(name, level);
 
     // render
@@ -25,7 +27,7 @@ void NodeSymbol::buildProc(
 
     oc.endl();
     oc.os << instance.strCast();
-    renderPath(oc.os);
+    renderPath(oc.os, level);
     oc.os << ";";
 }
 
@@ -34,6 +36,8 @@ Type &NodeSymbol::buildOut(
     Output &output, const std::string &target
 ) {
     // get type
+
+    size_t level {0};
 
     Type &type {
         instance.lookup(name, level)
@@ -45,7 +49,7 @@ Type &NodeSymbol::buildOut(
 
     oc.endl();
     oc.os << target << " = " << instance.strCast();
-    renderPath(oc.os);
+    renderPath(oc.os, level);
     oc.os << ";";
 
     // return
@@ -67,6 +71,6 @@ void NodeSymbol::buildIn(
 
     oc.endl();
     oc.os << instance.strCast();
-    renderPath(oc.os);
+    renderPath(oc.os, 0);
     oc.os << " = " << target << ";";
 }
