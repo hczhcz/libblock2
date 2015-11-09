@@ -62,6 +62,7 @@ public:
     std::string strFunc() const;
     std::string strStruct() const;
     std::string strCast() const;
+    std::string strCastTmp() const;
 
     void renderStruct(OutputContext &oc) const;
     void renderFuncHead(OutputContext &oc) const;

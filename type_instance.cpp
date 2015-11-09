@@ -14,6 +14,10 @@ std::string Instance::strCast() const {
     return "((" + strStruct() + " *) self)";
 }
 
+std::string Instance::strCastTmp() const {
+    return "((" + strStruct() + " *) tmp)";
+}
+
 void Instance::renderStruct(OutputContext &oc) const {
     oc.endl();
     oc.os << strStruct() << " {";

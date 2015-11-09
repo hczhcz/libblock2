@@ -60,6 +60,7 @@ void Output::getContent(std::ostream &os, Instance &root) const {
           "    void *self = &root;\n"
           "    void *callee = 0;\n"
           "    void *inner = 0;\n"
+          "    void *tmp = 0;\n"
           "\n"
           "    goto **(void ***) self;\n";
 

@@ -6,7 +6,7 @@ class Instance;
 
 class OutputContext {
 private:
-    size_t indent;
+    size_t indent {0};
     // std::ostringstream os; // TODO
 
     friend class Output;
