@@ -10,12 +10,8 @@ std::string Instance::strStruct() const {
     return "struct struct_" + std::to_string(tuid());
 }
 
-std::string Instance::strCast() const {
-    return "((" + strStruct() + " *) self)";
-}
-
-std::string Instance::strCastTmp() const {
-    return "((" + strStruct() + " *) tmp)";
+std::string Instance::strCast(const std::string &name) const {
+    return "((" + strStruct() + " *) " + name + ")";
 }
 
 void Instance::renderStruct(OutputContext &oc) const {
@@ -49,7 +45,7 @@ void Instance::renderFuncHead(OutputContext &oc) const {
 
 void Instance::renderFuncTail(OutputContext &oc) const {
     oc.endl();
-    oc.os << "goto **(void ***) " << strCast() << "->caller;";
+    oc.os << "goto **(void ***) " << strCast("self") << "->caller;";
     oc.leave();
     oc.endl();
 }

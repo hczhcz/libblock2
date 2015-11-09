@@ -26,7 +26,7 @@ void NodeSymbol::buildProc(
     OutputContext &oc {output.content(instance)};
 
     oc.endl();
-    oc.os << instance.strCast();
+    oc.os << instance.strCast("self");
     renderPath(oc.os, level);
     oc.os << ";";
 }
@@ -48,7 +48,7 @@ Type &NodeSymbol::buildOut(
     OutputContext &oc {output.content(instance)};
 
     oc.endl();
-    oc.os << target << " = " << instance.strCast();
+    oc.os << target << " = " << instance.strCast("self");
     renderPath(oc.os, level);
     oc.os << ";";
 
@@ -70,7 +70,7 @@ void NodeSymbol::buildIn(
     OutputContext &oc {output.content(instance)};
 
     oc.endl();
-    oc.os << instance.strCast();
+    oc.os << instance.strCast("self");
     renderPath(oc.os, 0);
     oc.os << " = " << target << ";";
 }

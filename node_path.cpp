@@ -24,7 +24,7 @@ void NodePath::buildProc(
     OutputContext &oc {output.content(instance)};
 
     oc.endl();
-    oc.os << child.strCastTmp();
+    oc.os << child.strCast("tmp");
     renderPath(oc.os);
     oc.os << ";";
 }
@@ -48,7 +48,7 @@ Type &NodePath::buildOut(
     OutputContext &oc {output.content(instance)};
 
     oc.endl();
-    oc.os << target << " = " << child.strCastTmp();
+    oc.os << target << " = " << child.strCast("tmp");
     renderPath(oc.os);
     oc.os << ";";
 
@@ -74,7 +74,7 @@ void NodePath::buildIn(
     OutputContext &oc {output.content(instance)};
 
     oc.endl();
-    oc.os << child.strCastTmp();
+    oc.os << child.strCast("tmp");
     renderPath(oc.os);
     oc.os << " = " << target << ";";
 }

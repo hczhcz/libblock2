@@ -36,8 +36,8 @@ protected:
         OutputContext &oc {output.content(instance)};
 
         oc.endl();
-        oc.os << instance.strCast() << "->dest = "
-              << instance.strCast() << "->src;";
+        oc.os << instance.strCast("self") << "->dest = "
+              << instance.strCast("self") << "->src;";
     }
 
 public:
@@ -55,7 +55,7 @@ protected:
         OutputContext &oc {output.content(instance)};
 
         oc.endl();
-        oc.os << "printf(\"%s\", " << instance.strCast() << "->value);";
+        oc.os << "printf(\"%s\", " << instance.strCast("self") << "->value);";
     }
 
 public:

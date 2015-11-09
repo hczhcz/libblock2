@@ -97,7 +97,7 @@ void NodeCall::build(
                 // render (parent)
 
                 oc.endl();
-                oc.os << strInner() << "->parent = " << parent.strCastTmp() << ";";
+                oc.os << strInner() << "->parent = " << parent.strCast("tmp") << ";";
 
                 // in
 
@@ -132,7 +132,7 @@ void NodeCall::build(
                 // render (call)
 
                 oc.endl();
-                oc.os << instance.strCast() << "->func = &&"
+                oc.os << instance.strCast("self") << "->func = &&"
                       << strLabel() << ";";
                 // notice: reset callee->func
                 oc.endl();
