@@ -3,7 +3,7 @@
 #include "node.hpp"
 
 NodePath::NodePath(Node *_source, std::string &&_name):
-    source {_source},
+    source_p {_source},
     name {_name} {}
 
 void NodePath::renderPath(std::ostream &os) const {
@@ -19,7 +19,7 @@ void NodePath::buildProc(
     // gen type
 
     Instance &child {
-        source->buildOut(instance, output, "tmp").prepareLookup()
+        source_p->buildOut(instance, output, "tmp").prepareLookup()
     };
 
     instance.at(name);
@@ -41,7 +41,7 @@ Type &NodePath::buildOut(
     // get type
 
     Instance &child {
-        source->buildOut(instance, output, "tmp").prepareLookup()
+        source_p->buildOut(instance, output, "tmp").prepareLookup()
     };
 
     Type &type {
@@ -69,7 +69,7 @@ void NodePath::buildIn(
     // set type
 
     Instance &child {
-        source->buildOut(instance, output, "tmp").prepareLookup()
+        source_p->buildOut(instance, output, "tmp").prepareLookup()
     };
 
     child.insert(name, type);

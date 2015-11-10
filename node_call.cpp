@@ -42,7 +42,7 @@ void NodeCall::build(
     // get callee
 
     Type &callee_type {
-        callee->buildOut(
+        callee_p->buildOut(
             instance,
             output, "tmp"
         )

@@ -80,7 +80,7 @@ public:
 
 class NodePath: public Node {
 private:
-    std::unique_ptr<Node> source;
+    std::unique_ptr<Node> source_p;
     std::string name;
 
     void renderPath(std::ostream &os) const;
@@ -112,7 +112,7 @@ enum class FrameMode {
 
 class NodeCall: public Node {
 private:
-    std::unique_ptr<Node> callee;
+    std::unique_ptr<Node> callee_p;
     FrameMode mode;
     std::vector<std::unique_ptr<Node>> args;
 
@@ -131,13 +131,13 @@ private:
 public:
     template <class... Args>
     NodeCall(Node *_callee, FrameMode _mode, Args... _args):
-        callee {_callee},
+        callee_p {_callee},
         mode {_mode} {
             Node *init[] {_args...};
 
             args.reserve(sizeof...(_args));
-            for (Node *arg: init) {
-                args.push_back(std::unique_ptr<Node> {arg});
+            for (Node *arg_p: init) {
+                args.push_back(std::unique_ptr<Node> {arg_p});
             }
         }
 
@@ -169,8 +169,8 @@ public:
         Block *init[] {_blocks...};
 
         blocks.reserve(sizeof...(_blocks));
-        for (Block *block: init) {
-            blocks.push_back(std::unique_ptr<Block> {block});
+        for (Block *block_p: init) {
+            blocks.push_back(std::unique_ptr<Block> {block_p});
         }
     }
 

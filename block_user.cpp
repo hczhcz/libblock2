@@ -5,7 +5,7 @@
 void BlockUser::buildContent(Instance &instance, Output &output) {
     // gen type
 
-    ast->buildProc(instance, output);
+    ast_p->buildProc(instance, output);
 }
 
 BlockUser::BlockUser(
@@ -13,4 +13,4 @@ BlockUser::BlockUser(
     Node *_ast
 ):
     Block {std::move(_params)},
-    ast {_ast} {}
+    ast_p {_ast} {}

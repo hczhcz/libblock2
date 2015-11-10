@@ -78,7 +78,7 @@ public:
 
 class BlockUser: public Block {
 private:
-    std::unique_ptr<Node> ast;
+    std::unique_ptr<Node> ast_p;
 
 protected:
     // as block
