@@ -12,7 +12,7 @@ void Builtin::apply(Instance &instance) {
     for (const auto &builtin: builtins()) {
         instance.insert(
             builtin.first,
-            builtin.second->addClosureType(instance)
+            instance.addClosure(*builtin.second)
         );
     }
 }

@@ -4,21 +4,6 @@
 #include "node.hpp"
 #include "block.hpp"
 
-Type &NodeBlock::addClosureType(Instance &instance) {
-    if (
-        closure_types.find(instance.tuid()) != closure_types.end()
-    ) {
-        return *closure_types.at(instance.tuid());
-    }
-
-    return *closure_types.insert({
-        instance.tuid(),
-        std::make_shared<TypeClosure>(
-            instance, *this
-        )
-    }).first->second;
-}
-
 void NodeBlock::buildProc(
     Instance &,
     Output &
@@ -32,7 +17,7 @@ Type &NodeBlock::buildOut(
 ) {
     // get type
 
-    Type &type {addClosureType(instance)};
+    Type &type {instance.addClosure(*this)};
 
     // render
 

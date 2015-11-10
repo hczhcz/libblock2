@@ -51,6 +51,7 @@ public:
 class Instance: public Type {
 private:
     std::map<std::string, Type &> symbol_types;
+    std::map<uintptr_t, std::shared_ptr<TypeClosure>> closure_types;
 
     friend class Block;
 
@@ -66,6 +67,8 @@ public:
     Type &at(const std::string &name);
     void insert(const std::string &name, Type &type);
     Type &lookup(const std::string &name, size_t &level);
+
+    Type &addClosure(NodeBlock &blocks);
 
     virtual std::string strDecl(const std::string &name) const;
 };

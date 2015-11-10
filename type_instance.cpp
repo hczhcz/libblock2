@@ -1,6 +1,7 @@
 #include "exception.hpp"
 #include "output.hpp"
 #include "type.hpp"
+#include "node.hpp"
 
 std::string Instance::strFunc() const {
     return "func_" + std::to_string(tuid());
@@ -89,6 +90,21 @@ Type &Instance::lookup(const std::string &name, size_t &level) {
 
             return at("parent").prepareLookup().lookup(name, level);
         }
+    }
+}
+
+Type &Instance::addClosure(NodeBlock &blocks) {
+    const auto &closure = closure_types.find(blocks.nuid());
+
+    if (closure != closure_types.end()) {
+        return *closure->second;
+    } else {
+        return *closure_types.insert({
+            blocks.nuid(),
+            std::make_shared<TypeClosure>(
+                *this, blocks
+            )
+        }).first->second;
     }
 }
 

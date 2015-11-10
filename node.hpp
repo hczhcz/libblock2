@@ -9,10 +9,9 @@ class Instance;
 class Block;
 
 class Node {
-protected:
+public:
     uintptr_t nuid() const;
 
-public:
     virtual void buildProc(
         Instance &instance,
         Output &output
@@ -159,8 +158,6 @@ class NodeBlock: public Node {
 private:
     std::vector<std::unique_ptr<Block>> blocks;
 
-    std::map<uintptr_t, std::shared_ptr<TypeClosure>> closure_types;
-
     friend class TypeClosure;
 
 public:
@@ -173,8 +170,6 @@ public:
             blocks.push_back(std::unique_ptr<Block> {block_p});
         }
     }
-
-    Type &addClosureType(Instance &instance);
 
     virtual void buildProc(
         Instance &instance,
