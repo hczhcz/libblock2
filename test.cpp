@@ -69,7 +69,7 @@ int main() {
     block_p->build(
         output,
         [&](Instance &root) {
-            BuiltinManager::apply(root);
+            Builtin::apply(root);
         },
         [&](Instance &root) {
             root_p = &root;

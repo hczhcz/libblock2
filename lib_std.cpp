@@ -1,7 +1,7 @@
 #include "output.hpp"
 #include "builder.hpp"
 
-namespace {
+namespace lib {
 
 using namespace builder;
 
@@ -23,7 +23,7 @@ public:
     Then():
         BlockBuiltin {{}} {}
 };
-// BuiltinManager::insert("__then__", new Then {});
+Builtin __then__ {"__then__", new Then {}};
 
 class Set: public BlockBuiltin {
 protected:
@@ -43,7 +43,7 @@ public:
     Set():
         BlockBuiltin {{out("dest"), in("src")}} {}
 };
-// BuiltinManager::insert("__set__", new Set {});
+Builtin __set__ {"__set__", new Set {}};
 
 class Print: public BlockBuiltin {
 protected:
@@ -60,6 +60,6 @@ public:
     Print():
         BlockBuiltin {{in("value")}} {}
 };
-// BuiltinManager::insert("print", new Print {});
+Builtin print {"print", new Print {}};
 
 }
