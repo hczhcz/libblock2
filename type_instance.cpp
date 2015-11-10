@@ -46,10 +46,6 @@ void Instance::renderFuncTail(OutputContext &oc) const {
     oc.endl();
 }
 
-std::string Instance::strDecl(const std::string &name) const {
-    return strStruct() + " *" + name;
-}
-
 Type &Instance::at(const std::string &name) {
     if (name == "self") {
         return *this;
@@ -94,4 +90,8 @@ Type &Instance::lookup(const std::string &name, size_t &level) {
             return at("parent").prepareLookup().lookup(name, level);
         }
     }
+}
+
+std::string Instance::strDecl(const std::string &name) const {
+    return strStruct() + " *" + name;
 }

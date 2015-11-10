@@ -9,22 +9,21 @@ class Node;
 class Block;
 
 class Type {
-protected:
+public:
     uintptr_t tuid() const;
 
-    friend inline bool operator==(const Type &a, const Type &b) {
-        return a.tuid() == b.tuid();
-    }
-
-    friend inline bool operator!=(const Type &a, const Type &b) {
-        return !(a == b);
-    }
-
-public:
     Instance &prepareLookup();
 
     virtual std::string strDecl(const std::string &name) const = 0;
 };
+
+inline bool operator==(const Type &a, const Type &b) {
+    return a.tuid() == b.tuid();
+}
+
+inline bool operator!=(const Type &a, const Type &b) {
+    return !(a == b);
+}
 
 template <class T>
 class TypeNative: public Type {
@@ -55,8 +54,6 @@ class Instance: public Type {
 private:
     std::map<std::string, Type &> symbol_types;
 
-    friend class Output;
-    friend class NodeCall; // TODO: remove
     friend class Block;
 
 public:
@@ -68,9 +65,9 @@ public:
     void renderFuncHead(OutputContext &oc) const;
     void renderFuncTail(OutputContext &oc) const;
 
-    virtual std::string strDecl(const std::string &name) const;
-
     Type &at(const std::string &name);
     void insert(const std::string &name, Type &type);
     Type &lookup(const std::string &name, size_t &level);
+
+    virtual std::string strDecl(const std::string &name) const;
 };

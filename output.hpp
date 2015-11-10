@@ -7,12 +7,11 @@ class Instance;
 class OutputContext {
 private:
     size_t indent {0};
-    // std::ostringstream os; // TODO
 
     friend class Output;
 
 public:
-    std::ostringstream os; // TODO
+    std::ostringstream os;
 
     void enter();
     void leave();

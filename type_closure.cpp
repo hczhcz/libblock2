@@ -1,9 +1,5 @@
 #include "node.hpp"
 
-std::string TypeClosure::strDecl(const std::string &name) const {
-    // type: struct <parent object> *
-    return parent.strDecl(name);
-}
 
 void TypeClosure::call(
     Output &output,
@@ -19,4 +15,9 @@ void TypeClosure::call(
             after(child, block);
         }
     );
+}
+
+std::string TypeClosure::strDecl(const std::string &name) const {
+    // type: struct <parent object> *
+    return parent.strDecl(name);
 }
