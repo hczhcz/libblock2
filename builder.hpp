@@ -1,6 +1,8 @@
 #pragma once
 
+#include "type.hpp"
 #include "node.hpp"
+#include "block.hpp"
 
 namespace builder {
 
@@ -44,6 +46,11 @@ inline NodeCall *call(Node *callee, Args... args) {
 template <class... Args>
 inline NodeCall *call(Node *callee, FrameMode mode, Args... args) {
     return new NodeCall {callee, mode, args...};
+}
+
+template <class... Blocks>
+inline NodeBlock *blocks(Blocks... blocks) {
+    return new NodeBlock {blocks...};
 }
 
 inline BlockUser *block(

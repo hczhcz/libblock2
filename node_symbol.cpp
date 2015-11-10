@@ -1,4 +1,5 @@
 #include "output.hpp"
+#include "type.hpp"
 #include "node.hpp"
 
 void NodeSymbol::renderPath(std::ostream &os, size_t level) const {
@@ -10,6 +11,9 @@ void NodeSymbol::renderPath(std::ostream &os, size_t level) const {
         os << "->" << name;
     }
 }
+
+NodeSymbol::NodeSymbol(std::string &&_name):
+    name {std::move(_name)} {}
 
 void NodeSymbol::buildProc(
     Instance &instance,

@@ -20,11 +20,10 @@ protected:
     }
 
 public:
-    using BlockBuiltin::BlockBuiltin;
-} then {
-    {},
-    "__then__"
+    Then():
+        BlockBuiltin {{}} {}
 };
+// BuiltinManager::insert("__then__", new Then {});
 
 class Set: public BlockBuiltin {
 protected:
@@ -41,11 +40,10 @@ protected:
     }
 
 public:
-    using BlockBuiltin::BlockBuiltin;
-} set {
-    {out("dest"), in("src")},
-    "__set__"
+    Set():
+        BlockBuiltin {{out("dest"), in("src")}} {}
 };
+// BuiltinManager::insert("__set__", new Set {});
 
 class Print: public BlockBuiltin {
 protected:
@@ -59,10 +57,9 @@ protected:
     }
 
 public:
-    using BlockBuiltin::BlockBuiltin;
-} print {
-    {in("value")},
-    "print"
+    Print():
+        BlockBuiltin {{in("value")}} {}
 };
+// BuiltinManager::insert("print", new Print {});
 
 }

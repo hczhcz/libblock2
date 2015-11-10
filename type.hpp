@@ -5,7 +5,7 @@
 class Output;
 class OutputContext;
 class Instance;
-class Node;
+class NodeBlock;
 class Block;
 
 class Type {
@@ -34,12 +34,10 @@ public:
 class TypeClosure: public Type {
 private:
     Instance &parent;
-    Block &block;
+    NodeBlock &blocks;
 
 public:
-    inline TypeClosure(Instance &_parent, Block &_block):
-        parent {_parent},
-        block {_block} {}
+    TypeClosure(Instance &_parent, NodeBlock &_blocks);
 
     void call(
         Output &output,

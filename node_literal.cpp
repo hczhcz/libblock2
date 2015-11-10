@@ -1,5 +1,6 @@
 #include "exception.hpp"
 #include "output.hpp"
+#include "type.hpp"
 #include "node.hpp"
 
 template <>
@@ -35,6 +36,10 @@ void NodeLiteral<std::string>::renderValue(
 
     os << "0}";
 }
+
+template <class T>
+NodeLiteral<T>::NodeLiteral(T &&_value):
+    value {std::move(_value)} {}
 
 template <class T>
 void NodeLiteral<T>::buildProc(

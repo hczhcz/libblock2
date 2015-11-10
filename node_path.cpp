@@ -1,5 +1,10 @@
 #include "output.hpp"
+#include "type.hpp"
 #include "node.hpp"
+
+NodePath::NodePath(Node *_source, std::string &&_name):
+    source {_source},
+    name {_name} {}
 
 void NodePath::renderPath(std::ostream &os) const {
     if (name != "self") {

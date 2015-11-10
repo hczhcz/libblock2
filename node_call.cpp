@@ -1,6 +1,8 @@
 #include "exception.hpp"
 #include "output.hpp"
+#include "type.hpp"
 #include "node.hpp"
+#include "block.hpp"
 
 std::string NodeCall::strFrame(Instance &instance) const {
     return "frame_"

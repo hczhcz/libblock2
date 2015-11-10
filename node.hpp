@@ -1,6 +1,12 @@
 #pragma once
 
-#include "type.hpp"
+#include "include.hpp"
+
+class Output;
+class Type;
+class TypeClosure;
+class Instance;
+class Block;
 
 class Node {
 protected:
@@ -29,8 +35,7 @@ private:
     void renderValue(std::ostream &os) const;
 
 public:
-    inline NodeLiteral(T &&_value):
-        value {std::move(_value)} {}
+    NodeLiteral(T &&_value);
 
     virtual void buildProc(
         Instance &instance,
@@ -57,8 +62,7 @@ private:
     void renderPath(std::ostream &os, size_t level) const;
 
 public:
-    inline NodeSymbol(std::string &&_name):
-        name {std::move(_name)} {}
+    NodeSymbol(std::string &&_name);
 
     virtual void buildProc(
         Instance &instance,
@@ -82,9 +86,7 @@ private:
     void renderPath(std::ostream &os) const;
 
 public:
-    inline NodePath(Node *_source, std::string &&_name):
-        source {_source},
-        name {_name} {}
+    NodePath(Node *_source, std::string &&_name);
 
     virtual void buildProc(
         Instance &instance,
@@ -100,7 +102,7 @@ public:
     );
 };
 
-enum class FrameMode { // TODO: implement
+enum class FrameMode {
     static_global,
     static_local,
     dynamic_stack,
@@ -128,7 +130,7 @@ private:
 
 public:
     template <class... Args>
-    inline NodeCall(Node *_callee, FrameMode _mode, Args... _args):
+    NodeCall(Node *_callee, FrameMode _mode, Args... _args):
         callee {_callee},
         mode {_mode} {
             Node *init[] {_args...};
@@ -153,59 +155,27 @@ public:
     );
 };
 
-enum class SymbolMode {
-    in, out, var, special
-};
-
-class Block: public Node {
+class NodeBlock: public Node {
 private:
-    // TODO: multiple signature (overloading and SFINAE)
-    std::vector<std::pair<std::string, SymbolMode>> params;
+    std::vector<std::unique_ptr<Block>> blocks;
 
     std::map<uintptr_t, std::shared_ptr<TypeClosure>> closure_types;
-    std::vector<std::unique_ptr<Instance>> instances;
 
-protected:
-    Instance &matchInstance(
-        std::unique_ptr<Instance> &&instance,
-        Output &output
-    );
-
-    virtual void inSpecialArg(
-        Instance &caller, Instance &instance,
-        size_t index, std::unique_ptr<Node> &arg,
-        Output &output, const std::string &target
-    );
-    virtual void buildContent(Instance &instance, Output &output) = 0;
-    virtual void outSpecialArg(
-        Instance &caller, Instance &instance,
-        size_t index, std::unique_ptr<Node> &arg,
-        Output &output, const std::string &target
-    );
+    friend class TypeClosure;
 
 public:
-    inline Block(std::vector<std::pair<std::string, SymbolMode>> &&_params):
-        params {std::move(_params)} {}
+    template <class... Blocks>
+    NodeBlock(Blocks... _blocks) {
+        Block *init[] {_blocks...};
 
-    void inArg(
-        Instance &caller, Instance &instance,
-        size_t index, std::unique_ptr<Node> &arg,
-        Output &output, const std::string &target
-    );
-    void outArg(
-        Instance &caller, Instance &instance,
-        size_t index, std::unique_ptr<Node> &arg,
-        Output &output, const std::string &target
-    );
-    void build(
-        Output &output,
-        std::function<void (Instance &)> &&before,
-        std::function<void (Instance &)> &&after
-    );
+        blocks.reserve(sizeof...(_blocks));
+        for (Block *block: init) {
+            blocks.push_back(std::unique_ptr<Block> {block});
+        }
+    }
 
     Type &addClosureType(Instance &instance);
 
-    // as node
     virtual void buildProc(
         Instance &instance,
         Output &output
@@ -218,40 +188,4 @@ public:
         Instance &instance, Type &type,
         Output &output, const std::string &target
     );
-};
-
-class BlockBuiltin: public Block {
-private:
-    std::string name;
-
-    static std::map<std::string, BlockBuiltin &> &builtins();
-
-public:
-    inline BlockBuiltin(
-        std::vector<std::pair<std::string, SymbolMode>> &&_params,
-        std::string &&_name
-    ):
-        Block {std::move(_params)},
-        name {std::move(_name)} {
-            builtins().insert({name, *this});
-        }
-
-    static void applyBuiltin(Instance &instance);
-};
-
-class BlockUser: public Block {
-private:
-    std::unique_ptr<Node> ast;
-
-protected:
-    // as block
-    virtual void buildContent(Instance &instance, Output &output);
-
-public:
-    inline BlockUser(
-        std::vector<std::pair<std::string, SymbolMode>> &&_params,
-        Node *_ast
-    ):
-        Block {std::move(_params)},
-        ast {_ast} {}
 };

@@ -10,32 +10,36 @@ int main() {
             call(
                 $("__then__"),
                 call(
-                    $("__set__"), $("a"), block( // function a
-                        {},
-                        call(
-                            $("__then__"),
+                    $("__set__"), $("a"), blocks( // function a
+                        block(
+                            {},
                             call(
-                                $("__set__"), $("c"), _("hell")
-                            ),
-                            call(
-                                $("__set__"), $($("parent"), "c"), _("o")
-                            ),
-                            call(
-                                $("__set__"), $("result"), $("self")
+                                $("__then__"),
+                                call(
+                                    $("__set__"), $("c"), _("hell")
+                                ),
+                                call(
+                                    $("__set__"), $($("parent"), "c"), _("o")
+                                ),
+                                call(
+                                    $("__set__"), $("result"), $("self")
+                                )
                             )
                         )
                     )
                 ),
                 call(
-                    $("__set__"), $("b"), block( // function b
-                        {in("a"), in("b")},
-                        call(
-                            $("__then__"),
+                    $("__set__"), $("b"), blocks( // function b
+                        block(
+                            {in("a"), in("b")},
                             call(
-                                $("__set__"), $("t"), $("b")
-                            ),
-                            call(
-                                $("__set__"), $("result"), $("t")
+                                $("__then__"),
+                                call(
+                                    $("__set__"), $("t"), $("b")
+                                ),
+                                call(
+                                    $("__set__"), $("result"), $("t")
+                                )
                             )
                         )
                     )
@@ -65,7 +69,7 @@ int main() {
     block_p->build(
         output,
         [&](Instance &root) {
-            BlockBuiltin::applyBuiltin(root);
+            BuiltinManager::apply(root);
         },
         [&](Instance &root) {
             root_p = &root;
