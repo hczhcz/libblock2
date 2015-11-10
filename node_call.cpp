@@ -35,7 +35,7 @@ void NodeCall::build(
 ) {
     // special symbols:
     //     lookup: self, input, result, parent
-    //     control flow: func, outer, caller
+    //     control flow: frame (func, outer, caller)
 
     // get callee
 
@@ -75,7 +75,8 @@ void NodeCall::build(
                         oc.os << "static " << strFrame(instance) << " "
                               << strObject(instance) << ";";
                         oc.endl();
-                        oc.os << "inner = &" << strObject(instance) << ";";
+                        oc.os << "inner = (struct frame *) &"
+                              << strObject(instance) << ";";
                         break;
 
                     case FrameMode::static_local:
@@ -83,7 +84,8 @@ void NodeCall::build(
                         oc.os << strFrame(instance) << " "
                               << strObject(instance) << ";";
                         oc.endl();
-                        oc.os << "inner = &" << strObject(instance) << ";";
+                        oc.os << "inner = (struct frame *) &"
+                              << strObject(instance) << ";";
                         break;
 
                     case FrameMode::dynamic_stack:
@@ -121,7 +123,7 @@ void NodeCall::build(
                 // render (load the callee)
 
                 oc.endl();
-                oc.os << strInner(instance) << "->outer = callee;";
+                oc.os << "inner->outer = callee;";
                 oc.endl();
                 oc.os << "callee = inner;";
 
@@ -149,27 +151,27 @@ void NodeCall::build(
                 OutputContext &oc {output.content(instance)};
 
                 oc.endl();
-                oc.os << instance.strCast("self") << "->func = &&"
+                oc.os << "self->func = &&"
                       << strLabel(instance) << ";";
                 // notice: reset callee->func
                 oc.endl();
-                oc.os << strCallee(instance) << "->func" << " = &&"
+                oc.os << "callee->func" << " = &&"
                       << child.strFunc() << ";";
 
                 oc.endl();
-                oc.os << strCallee(instance) << "->caller" << " = self;";
+                oc.os << "callee->caller" << " = self;";
                 oc.endl();
                 oc.os << "self = callee;";
 
                 oc.endl();
-                oc.os << "goto **(void ***) callee;";
+                oc.os << "goto *callee->func;";
                 oc.endl();
                 oc.os << strLabel(instance) << ":";
 
                 oc.endl();
                 oc.os << "callee = self;";
                 oc.endl();
-                oc.os << "self = " << strCallee(instance) << "->caller;";
+                oc.os << "self = callee->caller;";
 
                 // out args
 
@@ -186,7 +188,7 @@ void NodeCall::build(
                 oc.endl();
                 oc.os << "inner = callee;";
                 oc.endl();
-                oc.os << "callee = " << strInner(instance) << "->outer;";
+                oc.os << "callee = inner->outer;";
 
                 // result
 

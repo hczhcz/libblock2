@@ -19,11 +19,7 @@ void Instance::renderStruct(OutputContext &oc) const {
     oc.os << strStruct() << " {";
     oc.enter();
     oc.endl();
-    oc.os << "void *func;";
-    oc.endl();
-    oc.os << "void *caller;";
-    oc.endl();
-    oc.os << "void *outer;";
+    oc.os << "struct frame frame;";
     oc.endl();
 
     for (const auto &symbol: symbol_types) {
@@ -45,7 +41,7 @@ void Instance::renderFuncHead(OutputContext &oc) const {
 
 void Instance::renderFuncTail(OutputContext &oc) const {
     oc.endl();
-    oc.os << "goto **(void ***) " << strCast("self") << "->caller;";
+    oc.os << "goto *self->caller->func;";
     oc.leave();
     oc.endl();
 }

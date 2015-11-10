@@ -36,12 +36,16 @@ void Output::insert(Instance &instance) {
     });
 }
 
-void Output::getHeader(std::ostream &os, Instance &root) const {
+void Output::getHeader(std::ostream &os, Instance &) const {
     os << "#include <stdlib.h>\n"
        << "#include <stdio.h>\n"
        << "#include <gc/gc.h>\n"
        << "\n"
-       << "typedef " << root.strStruct() << " frame_root;\n";
+       << "struct frame {\n"
+       << "    void *func;\n"
+       << "    struct frame *caller;\n"
+       << "    struct frame *outer;\n"
+       << "};\n";
 
     for (const auto &member: headers) {
         os << member.second->os.str();
@@ -49,20 +53,20 @@ void Output::getHeader(std::ostream &os, Instance &root) const {
 }
 
 void Output::getContent(std::ostream &os, Instance &root) const {
-    os << "frame_root root;\n"
+    os << root.strStruct() << " root;\n"
           "\n"
           "int main() {\n"
           "    void *exit_addr = &&exit;\n"
           "\n"
-          "    root.func = &&" << root.strFunc() << ";\n"
-          "    root.caller = &exit_addr;\n"
-          "\n"
-          "    void *self = &root;\n"
-          "    void *callee = 0;\n"
-          "    void *inner = 0;\n"
+          "    struct frame *self = &root.frame;\n"
+          "    struct frame *callee = 0;\n"
+          "    struct frame *inner = 0;\n"
           "    void *tmp = 0;\n"
           "\n"
-          "    goto **(void ***) self;\n";
+          "    self->func = &&" << root.strFunc() << ";\n"
+          "    self->caller = (struct frame *) &exit_addr;\n"
+          "\n"
+          "    goto *self->func;\n";
 
     for (const auto &member: contents) {
         os << member.second->os.str();
