@@ -114,11 +114,11 @@ private:
     FrameMode mode;
     std::vector<std::unique_ptr<Node>> args;
 
-    std::string strFrame() const;
-    std::string strObject() const;
-    std::string strLabel() const;
-    std::string strInner() const;
-    std::string strCallee() const;
+    std::string strFrame(Instance &instance) const;
+    std::string strObject(Instance &instance) const;
+    std::string strLabel(Instance &instance) const;
+    std::string strInner(Instance &instance) const;
+    std::string strCallee(Instance &instance) const;
 
     void build(
         Instance &instance, Output &output,

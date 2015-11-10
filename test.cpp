@@ -48,7 +48,7 @@ int main() {
                     call($("b"), _("bye"), $($("d"), "c"))
                 ),
                 call(
-                    $("print"),
+                    call($("b"), _(1), $("print")),
                     call($("b"), _("bye"), $("c"))
                 ),
                 call($("print"), FrameMode::static_global, _(", ")),

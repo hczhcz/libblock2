@@ -2,24 +2,30 @@
 #include "output.hpp"
 #include "node.hpp"
 
-std::string NodeCall::strFrame() const { // TODO: actually not unique
-    return "frame_" + std::to_string(nuid());
+std::string NodeCall::strFrame(Instance &instance) const {
+    return "frame_"
+        + std::to_string(instance.tuid()) + "_"
+        + std::to_string(nuid());
 }
 
-std::string NodeCall::strObject() const {
-    return "object_" + std::to_string(nuid());
+std::string NodeCall::strObject(Instance &instance) const {
+    return "object_"
+        + std::to_string(instance.tuid()) + "_"
+        + std::to_string(nuid());
 }
 
-std::string NodeCall::strLabel() const {
-    return "label_" + std::to_string(nuid());
+std::string NodeCall::strLabel(Instance &instance) const {
+    return "label_"
+        + std::to_string(instance.tuid()) + "_"
+        + std::to_string(nuid());
 }
 
-std::string NodeCall::strInner() const {
-    return "((" + strFrame() + " *) inner)";
+std::string NodeCall::strInner(Instance &instance) const {
+    return "((" + strFrame(instance) + " *) inner)";
 }
 
-std::string NodeCall::strCallee() const {
-    return "((" + strFrame() + " *) callee)";
+std::string NodeCall::strCallee(Instance &instance) const {
+    return "((" + strFrame(instance) + " *) callee)";
 }
 
 void NodeCall::build(
@@ -66,38 +72,47 @@ void NodeCall::build(
                 switch (mode) {
                     case FrameMode::static_global:
                         oc.endl();
-                        oc.os << "static " << strFrame() << " " << strObject() << ";";
+                        oc.os << "static " << strFrame(instance) << " "
+                              << strObject(instance) << ";";
                         oc.endl();
-                        oc.os << "inner = &" << strObject() << ";";
+                        oc.os << "inner = &" << strObject(instance) << ";";
                         break;
 
                     case FrameMode::static_local:
                         oc.endl();
-                        oc.os << strFrame() << " " << strObject() << ";";
+                        oc.os << strFrame(instance) << " "
+                              << strObject(instance) << ";";
                         oc.endl();
-                        oc.os << "inner = &" << strObject() << ";";
+                        oc.os << "inner = &" << strObject(instance) << ";";
                         break;
 
                     case FrameMode::dynamic_stack:
                         oc.endl();
-                        oc.os << "inner = alloca(sizeof(" << strFrame() << "));";
+                        oc.os << "inner = alloca(sizeof("
+                              << strFrame(instance)
+                              << "));";
                         break;
 
                     case FrameMode::dynamic_gc:
                         oc.endl();
-                        oc.os << "inner = GC_malloc(sizeof(" << strFrame() << "));";
+                        oc.os << "inner = GC_malloc(sizeof("
+                              << strFrame(instance)
+                              << "));";
                         break;
 
                     case FrameMode::dynamic_free:
                         oc.endl();
-                        oc.os << "inner = malloc(sizeof(" << strFrame() << "));";
+                        oc.os << "inner = malloc(sizeof("
+                              << strFrame(instance)
+                              << "));";
                         break;
                 }
 
                 // render (parent)
 
                 oc.endl();
-                oc.os << strInner() << "->parent = " << parent.strCast("tmp") << ";";
+                oc.os << strInner(instance) << "->parent = "
+                      << parent.strCast("tmp") << ";";
 
                 // input
 
@@ -106,7 +121,7 @@ void NodeCall::build(
                 // render (load the callee)
 
                 oc.endl();
-                oc.os << strInner() << "->outer = callee;";
+                oc.os << strInner(instance) << "->outer = callee;";
                 oc.endl();
                 oc.os << "callee = inner;";
 
@@ -116,7 +131,7 @@ void NodeCall::build(
                     block.inArg(
                         instance, child,
                         i, args[i],
-                        output, strCallee()
+                        output, strCallee(instance)
                     );
                 }
             },
@@ -127,7 +142,7 @@ void NodeCall::build(
 
                 och.endl();
                 och.os << "typedef " << child.strStruct()
-                       << " " << strFrame() << ";";
+                       << " " << strFrame(instance) << ";";
 
                 // render (call)
 
@@ -135,26 +150,26 @@ void NodeCall::build(
 
                 oc.endl();
                 oc.os << instance.strCast("self") << "->func = &&"
-                      << strLabel() << ";";
+                      << strLabel(instance) << ";";
                 // notice: reset callee->func
                 oc.endl();
-                oc.os << strCallee() << "->func" << " = &&"
+                oc.os << strCallee(instance) << "->func" << " = &&"
                       << child.strFunc() << ";";
 
                 oc.endl();
-                oc.os << strCallee() << "->caller" << " = self;";
+                oc.os << strCallee(instance) << "->caller" << " = self;";
                 oc.endl();
                 oc.os << "self = callee;";
 
                 oc.endl();
                 oc.os << "goto **(void ***) callee;";
                 oc.endl();
-                oc.os << strLabel() << ":";
+                oc.os << strLabel(instance) << ":";
 
                 oc.endl();
                 oc.os << "callee = self;";
                 oc.endl();
-                oc.os << "self = " << strCallee() << "->caller;";
+                oc.os << "self = " << strCallee(instance) << "->caller;";
 
                 // out args
 
@@ -162,7 +177,7 @@ void NodeCall::build(
                     block.outArg(
                         instance, child,
                         i, args[i],
-                        output, strCallee()
+                        output, strCallee(instance)
                     );
                 }
 
@@ -171,7 +186,7 @@ void NodeCall::build(
                 oc.endl();
                 oc.os << "inner = callee;";
                 oc.endl();
-                oc.os << "callee = " << strInner() << "->outer;";
+                oc.os << "callee = " << strInner(instance) << "->outer;";
 
                 // result
 
@@ -188,7 +203,7 @@ void NodeCall::build(
 
                     case FrameMode::dynamic_stack:
                         oc.endl();
-                        oc.os << "alloca(-sizeof(" << strFrame() << "));";
+                        oc.os << "alloca(-sizeof(" << strFrame(instance) << "));";
                         break;
 
                     case FrameMode::dynamic_gc:
@@ -237,7 +252,7 @@ Type &NodeCall::buildOut(
             OutputContext &oc {output.content(instance)};
 
             oc.endl();
-            oc.os << target << " = " << strInner() << "->result;";
+            oc.os << target << " = " << strInner(instance) << "->result;";
         }
     );
 
@@ -258,7 +273,7 @@ void NodeCall::buildIn(
             OutputContext &oc {output.content(instance)};
 
             oc.endl();
-            oc.os << strInner() << "->input = " << target << ";";
+            oc.os << strInner(instance) << "->input = " << target << ";";
         },
         [](Instance &) {
             // nothing

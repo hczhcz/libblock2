@@ -55,8 +55,9 @@ class Instance: public Type {
 private:
     std::map<std::string, Type &> symbol_types;
 
-    friend class Block;
     friend class Output;
+    friend class NodeCall; // TODO: remove
+    friend class Block;
 
 public:
     std::string strFunc() const;
