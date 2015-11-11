@@ -15,11 +15,11 @@ void TypeClosure::call(
 
     block.build(
         output,
-        [&](Instance &child) {
-            before(child, block, parent);
+        [&](Instance &callee) {
+            before(callee, block, parent);
         },
-        [&](Instance &child) {
-            after(child, block);
+        [&](Instance &callee) {
+            after(callee, block);
         }
     );
 }

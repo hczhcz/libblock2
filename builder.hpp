@@ -39,13 +39,13 @@ inline NodePath *$(Node *source, std::string &&name) {
 }
 
 template <class... Args>
-inline NodeCall *call(Node *callee, Args... args) {
-    return new NodeCall {callee, FrameMode::dynamic_gc, args...};
+inline NodeCall *call(Node *source, Args... args) {
+    return new NodeCall {source, CallMode::dynamic_gc, args...};
 }
 
 template <class... Args>
-inline NodeCall *call(Node *callee, FrameMode mode, Args... args) {
-    return new NodeCall {callee, mode, args...};
+inline NodeCall *call(Node *source, CallMode mode, Args... args) {
+    return new NodeCall {source, mode, args...};
 }
 
 template <class... Blocks>

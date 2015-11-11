@@ -42,7 +42,7 @@ void NodeCall::build(
     // get callee
 
     Type &callee_type {
-        callee_p->buildOut(
+        source_p->buildOut(
             instance,
             output, "tmp"
         )
@@ -58,10 +58,10 @@ void NodeCall::build(
 
         closure_p->call(
             output,
-            [&](Instance &child, Block &block, Instance &parent) {
+            [&](Instance &callee, Block &block, Instance &parent) {
                 // parent
 
-                child.insert("parent", parent);
+                callee.insert("parent", parent);
 
                 // render (alloc the call frame)
 
@@ -73,7 +73,7 @@ void NodeCall::build(
                         oc.enter();
 
                         switch (mode) {
-                            case FrameMode::static_global:
+                            case CallMode::static_global:
                                 oc.endl();
                                 oc.os << "static " << strFrame(instance) << " "
                                       << strObject(instance) << ";";
@@ -82,7 +82,7 @@ void NodeCall::build(
                                       << strObject(instance) << ";";
                                 break;
 
-                            case FrameMode::static_local:
+                            case CallMode::static_local:
                                 oc.endl();
                                 oc.os << strFrame(instance) << " "
                                       << strObject(instance) << ";";
@@ -91,21 +91,21 @@ void NodeCall::build(
                                       << strObject(instance) << ";";
                                 break;
 
-                            case FrameMode::dynamic_stack:
+                            case CallMode::dynamic_stack:
                                 oc.endl();
                                 oc.os << "inner = alloca(sizeof("
                                       << strFrame(instance)
                                       << "));";
                                 break;
 
-                            case FrameMode::dynamic_gc:
+                            case CallMode::dynamic_gc:
                                 oc.endl();
                                 oc.os << "inner = GC_malloc(sizeof("
                                       << strFrame(instance)
                                       << "));";
                                 break;
 
-                            case FrameMode::dynamic_free:
+                            case CallMode::dynamic_free:
                                 oc.endl();
                                 oc.os << "inner = malloc(sizeof("
                                       << strFrame(instance)
@@ -128,7 +128,7 @@ void NodeCall::build(
 
                 // input
 
-                before(child);
+                before(callee);
 
                 // render (load the callee)
 
@@ -146,20 +146,20 @@ void NodeCall::build(
 
                 for (size_t i = 0; i < args.size(); ++i) {
                     block.inArg(
-                        instance, child,
+                        instance, callee,
                         i, args[i],
                         output, strCallee(instance)
                     );
                 }
             },
-            [&](Instance &child, Block &block) {
+            [&](Instance &callee, Block &block) {
                 // render (header) // TODO: remove
 
                 output.header(
                     instance,
                     [&](OutputContext &och) {
                         och.endl();
-                        och.os << "typedef " << child.strStruct()
+                        och.os << "typedef " << callee.strStruct()
                                << " " << strFrame(instance) << ";";
                     }
                 );
@@ -175,7 +175,7 @@ void NodeCall::build(
                         // notice: reset callee->func
                         oc.endl();
                         oc.os << "callee->func" << " = &&"
-                              << child.strFunc() << ";";
+                              << callee.strFunc() << ";";
 
                         oc.endl();
                         oc.os << "callee->caller" << " = self;";
@@ -198,7 +198,7 @@ void NodeCall::build(
 
                 for (size_t i = 0; i < args.size(); ++i) {
                     block.outArg(
-                        instance, child,
+                        instance, callee,
                         i, args[i],
                         output, strCallee(instance)
                     );
@@ -219,7 +219,7 @@ void NodeCall::build(
 
                 // result
 
-                after(child);
+                after(callee);
 
                 // render (free the call frame)
 
@@ -227,19 +227,19 @@ void NodeCall::build(
                     instance,
                     [&](OutputContext &oc) {
                         switch (mode) {
-                            case FrameMode::static_global:
-                            case FrameMode::static_local:
+                            case CallMode::static_global:
+                            case CallMode::static_local:
                                 break;
 
-                            case FrameMode::dynamic_stack:
+                            case CallMode::dynamic_stack:
                                 oc.endl();
                                 oc.os << "alloca(-sizeof("
                                       << strFrame(instance)
                                       << "));";
                                 break;
 
-                            case FrameMode::dynamic_gc:
-                            case FrameMode::dynamic_free:
+                            case CallMode::dynamic_gc:
+                            case CallMode::dynamic_free:
                                 break;
                         }
 
@@ -280,8 +280,8 @@ Type &NodeCall::buildOut(
         [](Instance &) {
             // nothing
         },
-        [&](Instance &child) {
-            type_p = &child.at("result");
+        [&](Instance &callee) {
+            type_p = &callee.at("result");
 
             // render
 
@@ -305,8 +305,8 @@ void NodeCall::buildIn(
 ) {
     build(
         instance, output,
-        [&](Instance &child) {
-            child.insert("input", type);
+        [&](Instance &callee) {
+            callee.insert("input", type);
 
             // render
 

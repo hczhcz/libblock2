@@ -55,10 +55,10 @@ int main() {
                     call($("b"), _(1), $("print")),
                     call($("b"), _("bye"), $("c"))
                 ),
-                call($("print"), FrameMode::static_global, _(", ")),
-                call($("print"), FrameMode::static_local, _("wo")),
-                call($("print"), FrameMode::dynamic_stack, _("rl")),
-                call($("print"), FrameMode::dynamic_free, _("d!"))
+                call($("print"), CallMode::static_global, _(", ")),
+                call($("print"), CallMode::static_local, _("wo")),
+                call($("print"), CallMode::dynamic_stack, _("rl")),
+                call($("print"), CallMode::dynamic_free, _("d!"))
             )
         )
     };

@@ -18,7 +18,7 @@ void NodePath::buildProc(
 ) {
     // gen type
 
-    Instance &child {
+    Instance &inner {
         source_p->buildOut(instance, output, "tmp").prepareLookup()
     };
 
@@ -30,7 +30,7 @@ void NodePath::buildProc(
         instance,
         [&](OutputContext &oc) {
             oc.endl();
-            oc.os << child.strCast("tmp");
+            oc.os << inner.strCast("tmp");
             renderPath(oc.os);
             oc.os << ";";
         }
@@ -43,7 +43,7 @@ Type &NodePath::buildOut(
 ) {
     // get type
 
-    Instance &child {
+    Instance &inner {
         source_p->buildOut(instance, output, "tmp").prepareLookup()
     };
 
@@ -57,7 +57,7 @@ Type &NodePath::buildOut(
         instance,
         [&, target](OutputContext &oc) {
             oc.endl();
-            oc.os << target << " = " << child.strCast("tmp");
+            oc.os << target << " = " << inner.strCast("tmp");
             renderPath(oc.os);
             oc.os << ";";
         }
@@ -74,11 +74,11 @@ void NodePath::buildIn(
 ) {
     // set type
 
-    Instance &child {
+    Instance &inner {
         source_p->buildOut(instance, output, "tmp").prepareLookup()
     };
 
-    child.insert(name, type);
+    inner.insert(name, type);
 
     // render
 
@@ -86,7 +86,7 @@ void NodePath::buildIn(
         instance,
         [&, target](OutputContext &oc) {
             oc.endl();
-            oc.os << child.strCast("tmp");
+            oc.os << inner.strCast("tmp");
             renderPath(oc.os);
             oc.os << " = " << target << ";";
         }
