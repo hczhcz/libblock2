@@ -23,7 +23,7 @@ Type &NodeBlock::buildOut(
 
     output.content(
         instance,
-        [&](OutputContext &oc) {
+        [&, target](OutputContext &oc) {
             oc.endl();
             oc.os << target << " = " << instance.strCast("self") << ";";
         }

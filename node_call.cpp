@@ -287,7 +287,7 @@ Type &NodeCall::buildOut(
 
             output.content(
                 instance,
-                [&](OutputContext &oc) {
+                [&, target](OutputContext &oc) {
                     oc.endl();
                     oc.os << target << " = "
                           << strInner(instance) << "->result;";
@@ -312,7 +312,7 @@ void NodeCall::buildIn(
 
             output.content(
                 instance,
-                [&](OutputContext &oc) {
+                [&, target](OutputContext &oc) {
                     oc.endl();
                     oc.os << strInner(instance) << "->input = "
                           << target << ";";
