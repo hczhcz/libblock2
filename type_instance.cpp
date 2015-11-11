@@ -3,18 +3,6 @@
 #include "type.hpp"
 #include "node.hpp"
 
-std::string Instance::strFunc() const {
-    return "func_" + std::to_string(tuid());
-}
-
-std::string Instance::strStruct() const {
-    return "struct struct_" + std::to_string(tuid());
-}
-
-std::string Instance::strCast(const std::string &name) const {
-    return "((" + strStruct() + " *) " + name + ")";
-}
-
 void Instance::renderStruct(OutputContext &oc) const {
     oc.endl();
     oc.os << strStruct() << " {";
@@ -45,6 +33,18 @@ void Instance::renderFuncTail(OutputContext &oc) const {
     oc.os << "goto *self->caller->func;";
     oc.leave();
     oc.endl();
+}
+
+std::string Instance::strFunc() const {
+    return "func_" + std::to_string(tuid());
+}
+
+std::string Instance::strStruct() const {
+    return "struct struct_" + std::to_string(tuid());
+}
+
+std::string Instance::strCast(const std::string &name) const {
+    return "((" + strStruct() + " *) " + name + ")";
 }
 
 Type &Instance::at(const std::string &name) {

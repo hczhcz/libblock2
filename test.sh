@@ -3,7 +3,7 @@ mkdir -p ./build
 cc='clang++'
 flags='-std=c++11 -O0 -g -Wall -Wextra -ferror-limit=3'
 flags_pp='-E -DSKIP_STD_LIB'
-flags_pch='-emit_pch'
+flags_pch=''
 flags_obj='-c'
 flags_out=''
 

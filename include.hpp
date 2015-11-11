@@ -2,6 +2,7 @@
     #define SKIP_STD_LIB
     #include <memory>
     #include <string>
+    #include <list>
     #include <vector>
     #include <map>
     #include <sstream>

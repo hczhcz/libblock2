@@ -15,7 +15,7 @@ class Block {
 private:
     std::vector<std::pair<std::string, SymbolMode>> params;
 
-    std::vector<std::unique_ptr<Instance>> instances;
+    std::list<std::unique_ptr<Instance>> instances;
 
 protected:
     Instance &matchInstance(

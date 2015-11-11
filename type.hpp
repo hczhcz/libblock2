@@ -53,16 +53,16 @@ private:
     std::map<std::string, Type &> symbol_types;
     std::map<uintptr_t, std::shared_ptr<TypeClosure>> closure_types;
 
+    void renderStruct(OutputContext &oc) const;
+    void renderFuncHead(OutputContext &oc) const;
+    void renderFuncTail(OutputContext &oc) const;
+
     friend class Block;
 
 public:
     std::string strFunc() const;
     std::string strStruct() const;
     std::string strCast(const std::string &name) const;
-
-    void renderStruct(OutputContext &oc) const;
-    void renderFuncHead(OutputContext &oc) const;
-    void renderFuncTail(OutputContext &oc) const;
 
     Type &at(const std::string &name);
     void insert(const std::string &name, Type &type);
