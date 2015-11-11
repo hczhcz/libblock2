@@ -35,11 +35,11 @@ private:
 public:
     void header(
         Instance &instance,
-        std::function<void (OutputContext &)> &&task
+        std::function<void (OutputContext &)> &&render
     );
     void content(
         Instance &instance,
-        std::function<void (OutputContext &)> &&task
+        std::function<void (OutputContext &)> &&render
     );
 
     void insert(Instance &instance);

@@ -33,16 +33,16 @@ void OutputTask::generate(OutputContext &oc) {
 
 void Output::header(
     Instance &instance,
-    std::function<void (OutputContext &)> &&task
+    std::function<void (OutputContext &)> &&render
 ) {
-    headers.at(instance.tuid())->insert(std::move(task));
+    headers.at(instance.tuid())->insert(std::move(render));
 }
 
 void Output::content(
     Instance &instance,
-    std::function<void (OutputContext &)> &&task
+    std::function<void (OutputContext &)> &&render
 ) {
-    contents.at(instance.tuid())->insert(std::move(task));
+    contents.at(instance.tuid())->insert(std::move(render));
 }
 
 void Output::insert(Instance &instance) {

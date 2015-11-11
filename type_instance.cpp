@@ -47,6 +47,30 @@ std::string Instance::strCast(const std::string &name) const {
     return "((" + strStruct() + " *) " + name + ")";
 }
 
+std::string Instance::strLabel(NodeCall &call) const {
+    return "label_"
+        + std::to_string(tuid()) + "_"
+        + std::to_string(call.nuid());
+}
+
+std::string Instance::strCalleeType(NodeCall &call) const {
+    return callee_types.at(call.nuid()).strStruct();
+}
+
+std::string Instance::strCalleeName(NodeCall &call) const {
+    return "object_"
+        + std::to_string(tuid()) + "_"
+        + std::to_string(call.nuid());
+}
+
+std::string Instance::strInner(NodeCall &call) const {
+    return "((" + strCalleeType(call) + " *) inner)";
+}
+
+std::string Instance::strCallee(NodeCall &call) const {
+    return "((" + strCalleeType(call) + " *) callee)";
+}
+
 Type &Instance::at(const std::string &name) {
     if (name == "self") {
         return *this;
@@ -106,6 +130,10 @@ Type &Instance::addClosure(NodeBlock &blocks) {
             )
         }).first->second;
     }
+}
+
+void Instance::addCallee(NodeCall &call, Instance &callee) {
+    callee_types.insert({call.nuid(), callee});
 }
 
 std::string Instance::strDecl(const std::string &name) const {
