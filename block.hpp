@@ -26,13 +26,15 @@ protected:
     virtual void inSpecialArg(
         Instance &caller, Instance &instance,
         size_t index, std::unique_ptr<Node> &arg,
-        Output &output, const std::string &target
+        Output &output,
+        std::function<std::string ()> &&target
     );
     virtual void buildContent(Instance &instance, Output &output) = 0;
     virtual void outSpecialArg(
         Instance &caller, Instance &instance,
         size_t index, std::unique_ptr<Node> &arg,
-        Output &output, const std::string &target
+        Output &output,
+        std::function<std::string ()> &&target
     );
 
 public:
@@ -41,12 +43,14 @@ public:
     void inArg(
         Instance &caller, Instance &instance,
         size_t index, std::unique_ptr<Node> &arg,
-        Output &output, const std::string &target
+        Output &output,
+        std::function<std::string ()> &&target
     );
     void outArg(
         Instance &caller, Instance &instance,
         size_t index, std::unique_ptr<Node> &arg,
-        Output &output, const std::string &target
+        Output &output,
+        std::function<std::string ()> &&target
     );
     void build(
         Output &output,

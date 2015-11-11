@@ -19,7 +19,13 @@ void NodePath::buildProc(
     // gen type
 
     Instance &inner {
-        source_p->buildOut(instance, output, "tmp").prepareLookup()
+        source_p->buildOut(
+            instance,
+            output,
+            []() {
+                return "tmp";
+            }
+        ).prepareLookup()
     };
 
     instance.at(name);
@@ -39,12 +45,19 @@ void NodePath::buildProc(
 
 Type &NodePath::buildOut(
     Instance &instance,
-    Output &output, const std::string &target
+    Output &output,
+    std::function<std::string ()> &&target
 ) {
     // get type
 
     Instance &inner {
-        source_p->buildOut(instance, output, "tmp").prepareLookup()
+        source_p->buildOut(
+            instance,
+            output,
+            []() {
+                return "tmp";
+            }
+        ).prepareLookup()
     };
 
     Type &type {
@@ -57,7 +70,7 @@ Type &NodePath::buildOut(
         instance,
         [&, target](OutputContext &oc) {
             oc.endl();
-            oc.os << target << " = " << inner.strCast("tmp");
+            oc.os << target() << " = " << inner.strCast("tmp");
             renderPath(oc.os);
             oc.os << ";";
         }
@@ -70,12 +83,19 @@ Type &NodePath::buildOut(
 
 void NodePath::buildIn(
     Instance &instance, Type &type,
-    Output &output, const std::string &target
+    Output &output,
+    std::function<std::string ()> &&target
 ) {
     // set type
 
     Instance &inner {
-        source_p->buildOut(instance, output, "tmp").prepareLookup()
+        source_p->buildOut(
+            instance,
+            output,
+            []() {
+                return "tmp";
+            }
+        ).prepareLookup()
     };
 
     inner.insert(name, type);
@@ -88,7 +108,7 @@ void NodePath::buildIn(
             oc.endl();
             oc.os << inner.strCast("tmp");
             renderPath(oc.os);
-            oc.os << " = " << target << ";";
+            oc.os << " = " << target() << ";";
         }
     );
 }

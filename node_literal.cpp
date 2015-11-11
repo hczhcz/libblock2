@@ -52,7 +52,8 @@ void NodeLiteral<T>::buildProc(
 template <class T>
 Type &NodeLiteral<T>::buildOut(
     Instance &instance,
-    Output &output, const std::string &target
+    Output &output,
+    std::function<std::string ()> &&target
 ) {
     // get type
 
@@ -64,7 +65,7 @@ Type &NodeLiteral<T>::buildOut(
         instance,
         [&, target](OutputContext &oc) {
             oc.endl();
-            oc.os << target << " = ";
+            oc.os << target() << " = ";
             renderValue(oc.os);
             oc.os << ";";
         }
@@ -78,7 +79,8 @@ Type &NodeLiteral<T>::buildOut(
 template <class T>
 void NodeLiteral<T>::buildIn(
     Instance &, Type &,
-    Output &, const std::string &
+    Output &,
+    std::function<std::string ()> &&
 ) {
     throw ErrorWriteNotAllowed {};
 }

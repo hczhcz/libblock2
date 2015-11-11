@@ -71,7 +71,8 @@ Instance &Block::matchInstance(
 void Block::inSpecialArg(
     Instance &, Instance &,
     size_t, std::unique_ptr<Node> &,
-    Output &, const std::string &
+    Output &,
+    std::function<std::string ()> &&
 ) {
     throw ErrorTooManyArguments {}; // TODO: va_args?
 }
@@ -79,7 +80,8 @@ void Block::inSpecialArg(
 void Block::outSpecialArg(
     Instance &, Instance &,
     size_t, std::unique_ptr<Node> &,
-    Output &, const std::string &
+    Output &,
+    std::function<std::string ()> &&
 ) {
     // nothing, by default // TODO: va_args?
 }
@@ -90,13 +92,18 @@ Block::Block(std::vector<std::pair<std::string, SymbolMode>> &&_params):
 void Block::inArg(
     Instance &caller, Instance &instance,
     size_t index, std::unique_ptr<Node> &arg,
-    Output &output, const std::string &target
+    Output &output,
+    std::function<std::string ()> &&target
 ) {
     if (
         index >= params.size()
         || params[index].second == SymbolMode::special
     ) {
-        inSpecialArg(caller, instance, index, arg, output, target);
+        inSpecialArg(
+            caller, instance,
+            index, arg,
+            output, std::move(target)
+        );
     } else if (
         params[index].second == SymbolMode::in
         || params[index].second == SymbolMode::var
@@ -105,7 +112,10 @@ void Block::inArg(
             params[index].first,
             arg->buildOut(
                 caller,
-                output, target + "->" + params[index].first // TODO: use callback?
+                output,
+                [&, index, target]() {
+                    return target() + "->" + params[index].first;
+                }
             )
         );
     }
@@ -114,13 +124,18 @@ void Block::inArg(
 void Block::outArg(
     Instance &caller, Instance &instance,
     size_t index, std::unique_ptr<Node> &arg,
-    Output &output, const std::string &target
+    Output &output,
+    std::function<std::string ()> &&target
 ) {
     if (
         index >= params.size()
         || params[index].second == SymbolMode::special
     ) {
-        outSpecialArg(caller, instance, index, arg, output, target);
+        outSpecialArg(
+            caller, instance,
+            index, arg,
+            output, std::move(target)
+        );
     } else if (
         params[index].second == SymbolMode::out
         || params[index].second == SymbolMode::var
@@ -128,7 +143,10 @@ void Block::outArg(
         arg->buildIn(
             caller,
             instance.at(params[index].first),
-            output, target + "->" + params[index].first // TODO: use callback?
+            output,
+            [&, index, target]() {
+                return target() + "->" + params[index].first;
+            }
         );
     }
 }

@@ -18,7 +18,10 @@ void NodeCall::build(
     Type &callee_type {
         source_p->buildOut(
             instance,
-            output, "tmp"
+            output,
+            []() {
+                return "tmp";
+            }
         )
     };
 
@@ -123,7 +126,10 @@ void NodeCall::build(
                     block.inArg(
                         instance, callee,
                         i, args[i],
-                        output, instance.strCallee(*this)
+                        output,
+                        [&]() {
+                            return instance.strCallee(*this);
+                        }
                     );
                 }
             },
@@ -166,7 +172,10 @@ void NodeCall::build(
                     block.outArg(
                         instance, callee,
                         i, args[i],
-                        output, instance.strCallee(*this)
+                        output,
+                        [&]() {
+                            return instance.strCallee(*this);
+                        }
                     );
                 }
 
@@ -237,7 +246,8 @@ void NodeCall::buildProc(
 
 Type &NodeCall::buildOut(
     Instance &instance,
-    Output &output, const std::string &target
+    Output &output,
+    std::function<std::string ()> &&target
 ) {
     Type *type_p {nullptr}; // return value
 
@@ -255,7 +265,7 @@ Type &NodeCall::buildOut(
                 instance,
                 [&, target](OutputContext &oc) {
                     oc.endl();
-                    oc.os << target << " = "
+                    oc.os << target() << " = "
                           << instance.strInner(*this) << "->result;";
                 }
             );
@@ -267,7 +277,8 @@ Type &NodeCall::buildOut(
 
 void NodeCall::buildIn(
     Instance &instance, Type &type,
-    Output &output, const std::string &target
+    Output &output,
+    std::function<std::string ()> &&target
 ) {
     build(
         instance, output,
@@ -281,7 +292,7 @@ void NodeCall::buildIn(
                 [&, target](OutputContext &oc) {
                     oc.endl();
                     oc.os << instance.strInner(*this) << "->input = "
-                          << target << ";";
+                          << target() << ";";
                 }
             );
         },

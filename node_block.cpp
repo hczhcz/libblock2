@@ -13,7 +13,8 @@ void NodeBlock::buildProc(
 
 Type &NodeBlock::buildOut(
     Instance &instance,
-    Output &output, const std::string &target
+    Output &output,
+    std::function<std::string ()> &&target
 ) {
     // get type
 
@@ -25,7 +26,7 @@ Type &NodeBlock::buildOut(
         instance,
         [&, target](OutputContext &oc) {
             oc.endl();
-            oc.os << target << " = " << instance.strCast("self") << ";";
+            oc.os << target() << " = " << instance.strCast("self") << ";";
         }
     );
 
@@ -36,7 +37,8 @@ Type &NodeBlock::buildOut(
 
 void NodeBlock::buildIn(
     Instance &, Type &,
-    Output &, const std::string &
+    Output &,
+    std::function<std::string ()> &&
 ) {
     throw ErrorWriteNotAllowed {};
 }

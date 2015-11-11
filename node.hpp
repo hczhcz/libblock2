@@ -18,11 +18,13 @@ public:
     ) = 0;
     virtual Type &buildOut(
         Instance &instance,
-        Output &output, const std::string &target
+        Output &output,
+        std::function<std::string ()> &&target
     ) = 0;
     virtual void buildIn(
         Instance &instance, Type &type,
-        Output &output, const std::string &target
+        Output &output,
+        std::function<std::string ()> &&target
     ) = 0;
 };
 
@@ -42,11 +44,13 @@ public:
     );
     virtual Type &buildOut(
         Instance &instance,
-        Output &output, const std::string &target
+        Output &output,
+        std::function<std::string ()> &&target
     );
     virtual void buildIn(
         Instance &instance, Type &type,
-        Output &output, const std::string &target
+        Output &output,
+        std::function<std::string ()> &&target
     );
 };
 using NodeLiteralBool = NodeLiteral<bool>;
@@ -69,11 +73,13 @@ public:
     );
     virtual Type &buildOut(
         Instance &instance,
-        Output &output, const std::string &target
+        Output &output,
+        std::function<std::string ()> &&target
     );
     virtual void buildIn(
         Instance &instance, Type &type,
-        Output &output, const std::string &target
+        Output &output,
+        std::function<std::string ()> &&target
     );
 };
 
@@ -93,11 +99,13 @@ public:
     );
     virtual Type &buildOut(
         Instance &instance,
-        Output &output, const std::string &target
+        Output &output,
+        std::function<std::string ()> &&target
     );
     virtual void buildIn(
         Instance &instance, Type &type,
-        Output &output, const std::string &target
+        Output &output,
+        std::function<std::string ()> &&target
     );
 };
 
@@ -140,11 +148,13 @@ public:
     );
     virtual Type &buildOut(
         Instance &instance,
-        Output &output, const std::string &target
+        Output &output,
+        std::function<std::string ()> &&target
     );
     virtual void buildIn(
         Instance &instance, Type &type,
-        Output &output, const std::string &target
+        Output &output,
+        std::function<std::string ()> &&target
     );
 };
 
@@ -171,10 +181,12 @@ public:
     );
     virtual Type &buildOut(
         Instance &instance,
-        Output &output, const std::string &target
+        Output &output,
+        std::function<std::string ()> &&target
     );
     virtual void buildIn(
         Instance &instance, Type &type,
-        Output &output, const std::string &target
+        Output &output,
+        std::function<std::string ()> &&target
     );
 };
