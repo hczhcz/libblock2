@@ -9,21 +9,39 @@ private:
     size_t indent {0};
 
 public:
-    std::ostringstream os;
+    std::ostream &os;
+
+    OutputContext(std::ostream &_os);
 
     void enter();
     void leave();
     void endl();
 };
 
-class Output {
+class OutputTask {
 private:
-    std::map<uintptr_t, std::shared_ptr<OutputContext>> headers;
-    std::map<uintptr_t, std::shared_ptr<OutputContext>> contents;
+    std::list<std::function<void (OutputContext &)>> render_funcs;
 
 public:
-    OutputContext &header(Instance &instance);
-    OutputContext &content(Instance &instance);
+    void insert(std::function<void (OutputContext &)> &&render);
+    void generate(OutputContext &oc);
+};
+
+class Output {
+private:
+    std::map<uintptr_t, std::shared_ptr<OutputTask>> headers;
+    std::map<uintptr_t, std::shared_ptr<OutputTask>> contents;
+
+public:
+    void header(
+        Instance &instance,
+        std::function<void (OutputContext &)> &&task
+    );
+    void content(
+        Instance &instance,
+        std::function<void (OutputContext &)> &&task
+    );
+
     void insert(Instance &instance);
 
     void getHeader(std::ostream &os, Instance &root) const;

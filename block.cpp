@@ -32,25 +32,36 @@ Instance &Block::matchInstance(
 
     output.insert(instance);
 
+    // render header
+
+    output.header(
+        instance,
+        [&](OutputContext &och) {
+            instance.renderStruct(och);
+        }
+    );
+
     // render (before body)
 
-    OutputContext &oc {output.content(instance)};
-
-    instance.renderFuncHead(oc);
+    output.content(
+        instance,
+        [&](OutputContext &oc) {
+            instance.renderFuncHead(oc);
+        }
+    );
 
     // build
 
     buildContent(instance, output);
 
-    // render header
-
-    OutputContext &och {output.header(instance)};
-
-    instance.renderStruct(och);
-
     // render (after body)
 
-    instance.renderFuncTail(oc);
+    output.content(
+        instance,
+        [&](OutputContext &oc) {
+            instance.renderFuncTail(oc);
+        }
+    );
 
     // return
 

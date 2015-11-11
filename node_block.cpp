@@ -21,10 +21,13 @@ Type &NodeBlock::buildOut(
 
     // render
 
-    OutputContext &oc {output.content(instance)};
-
-    oc.endl();
-    oc.os << target << " = " << instance.strCast("self") << ";";
+    output.content(
+        instance,
+        [&](OutputContext &oc) {
+            oc.endl();
+            oc.os << target << " = " << instance.strCast("self") << ";";
+        }
+    );
 
     // return
 

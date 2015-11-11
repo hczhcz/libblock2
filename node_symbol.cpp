@@ -27,12 +27,15 @@ void NodeSymbol::buildProc(
 
     // render
 
-    OutputContext &oc {output.content(instance)};
-
-    oc.endl();
-    oc.os << instance.strCast("self");
-    renderPath(oc.os, level);
-    oc.os << ";";
+    output.content(
+        instance,
+        [&](OutputContext &oc) {
+            oc.endl();
+            oc.os << instance.strCast("self");
+            renderPath(oc.os, level);
+            oc.os << ";";
+        }
+    );
 }
 
 Type &NodeSymbol::buildOut(
@@ -49,12 +52,15 @@ Type &NodeSymbol::buildOut(
 
     // render
 
-    OutputContext &oc {output.content(instance)};
-
-    oc.endl();
-    oc.os << target << " = " << instance.strCast("self");
-    renderPath(oc.os, level);
-    oc.os << ";";
+    output.content(
+        instance,
+        [&](OutputContext &oc) {
+            oc.endl();
+            oc.os << target << " = " << instance.strCast("self");
+            renderPath(oc.os, level);
+            oc.os << ";";
+        }
+    );
 
     // return
 
@@ -71,10 +77,13 @@ void NodeSymbol::buildIn(
 
     // render
 
-    OutputContext &oc {output.content(instance)};
-
-    oc.endl();
-    oc.os << instance.strCast("self");
-    renderPath(oc.os, 0);
-    oc.os << " = " << target << ";";
+    output.content(
+        instance,
+        [&](OutputContext &oc) {
+            oc.endl();
+            oc.os << instance.strCast("self");
+            renderPath(oc.os, 0);
+            oc.os << " = " << target << ";";
+        }
+    );
 }

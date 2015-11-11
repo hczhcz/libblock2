@@ -32,11 +32,14 @@ protected:
 
         // render
 
-        OutputContext &oc {output.content(instance)};
-
-        oc.endl();
-        oc.os << instance.strCast("self") << "->dest = "
-              << instance.strCast("self") << "->src;";
+        output.content(
+            instance,
+            [&](OutputContext &oc) {
+                oc.endl();
+                oc.os << instance.strCast("self") << "->dest = "
+                      << instance.strCast("self") << "->src;";
+            }
+        );
     }
 
 public:
@@ -50,10 +53,15 @@ protected:
     virtual void buildContent(Instance &instance, Output &output) {
         // render
 
-        OutputContext &oc {output.content(instance)};
-
-        oc.endl();
-        oc.os << "printf(\"%s\", " << instance.strCast("self") << "->value);";
+        output.content(
+            instance,
+            [&](OutputContext &oc) {
+                oc.endl();
+                oc.os << "printf(\"%s\", "
+                      << instance.strCast("self")
+                      << "->value);";
+            }
+        );
     }
 
 public:

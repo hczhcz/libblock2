@@ -26,12 +26,15 @@ void NodePath::buildProc(
 
     // render
 
-    OutputContext &oc {output.content(instance)};
-
-    oc.endl();
-    oc.os << child.strCast("tmp");
-    renderPath(oc.os);
-    oc.os << ";";
+    output.content(
+        instance,
+        [&](OutputContext &oc) {
+            oc.endl();
+            oc.os << child.strCast("tmp");
+            renderPath(oc.os);
+            oc.os << ";";
+        }
+    );
 }
 
 Type &NodePath::buildOut(
@@ -50,12 +53,15 @@ Type &NodePath::buildOut(
 
     // render
 
-    OutputContext &oc {output.content(instance)};
-
-    oc.endl();
-    oc.os << target << " = " << child.strCast("tmp");
-    renderPath(oc.os);
-    oc.os << ";";
+    output.content(
+        instance,
+        [&](OutputContext &oc) {
+            oc.endl();
+            oc.os << target << " = " << child.strCast("tmp");
+            renderPath(oc.os);
+            oc.os << ";";
+        }
+    );
 
     // return
 
@@ -76,10 +82,13 @@ void NodePath::buildIn(
 
     // render
 
-    OutputContext &oc {output.content(instance)};
-
-    oc.endl();
-    oc.os << child.strCast("tmp");
-    renderPath(oc.os);
-    oc.os << " = " << target << ";";
+    output.content(
+        instance,
+        [&](OutputContext &oc) {
+            oc.endl();
+            oc.os << child.strCast("tmp");
+            renderPath(oc.os);
+            oc.os << " = " << target << ";";
+        }
+    );
 }

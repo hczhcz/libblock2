@@ -65,58 +65,66 @@ void NodeCall::build(
 
                 // render (alloc the call frame)
 
-                OutputContext &oc {output.content(instance)};
+                output.content(
+                    instance,
+                    [&](OutputContext &oc) {
+                        oc.endl();
+                        oc.os << "/* call */";
+                        oc.enter();
 
-                oc.endl();
-                oc.os << "/* call */";
-                oc.enter();
+                        switch (mode) {
+                            case FrameMode::static_global:
+                                oc.endl();
+                                oc.os << "static " << strFrame(instance) << " "
+                                      << strObject(instance) << ";";
+                                oc.endl();
+                                oc.os << "inner = (struct frame *) &"
+                                      << strObject(instance) << ";";
+                                break;
 
-                switch (mode) {
-                    case FrameMode::static_global:
-                        oc.endl();
-                        oc.os << "static " << strFrame(instance) << " "
-                              << strObject(instance) << ";";
-                        oc.endl();
-                        oc.os << "inner = (struct frame *) &"
-                              << strObject(instance) << ";";
-                        break;
+                            case FrameMode::static_local:
+                                oc.endl();
+                                oc.os << strFrame(instance) << " "
+                                      << strObject(instance) << ";";
+                                oc.endl();
+                                oc.os << "inner = (struct frame *) &"
+                                      << strObject(instance) << ";";
+                                break;
 
-                    case FrameMode::static_local:
-                        oc.endl();
-                        oc.os << strFrame(instance) << " "
-                              << strObject(instance) << ";";
-                        oc.endl();
-                        oc.os << "inner = (struct frame *) &"
-                              << strObject(instance) << ";";
-                        break;
+                            case FrameMode::dynamic_stack:
+                                oc.endl();
+                                oc.os << "inner = alloca(sizeof("
+                                      << strFrame(instance)
+                                      << "));";
+                                break;
 
-                    case FrameMode::dynamic_stack:
-                        oc.endl();
-                        oc.os << "inner = alloca(sizeof("
-                              << strFrame(instance)
-                              << "));";
-                        break;
+                            case FrameMode::dynamic_gc:
+                                oc.endl();
+                                oc.os << "inner = GC_malloc(sizeof("
+                                      << strFrame(instance)
+                                      << "));";
+                                break;
 
-                    case FrameMode::dynamic_gc:
-                        oc.endl();
-                        oc.os << "inner = GC_malloc(sizeof("
-                              << strFrame(instance)
-                              << "));";
-                        break;
-
-                    case FrameMode::dynamic_free:
-                        oc.endl();
-                        oc.os << "inner = malloc(sizeof("
-                              << strFrame(instance)
-                              << "));";
-                        break;
-                }
+                            case FrameMode::dynamic_free:
+                                oc.endl();
+                                oc.os << "inner = malloc(sizeof("
+                                      << strFrame(instance)
+                                      << "));";
+                                break;
+                        }
+                    }
+                );
 
                 // render (parent)
 
-                oc.endl();
-                oc.os << strInner(instance) << "->parent = "
-                      << parent.strCast("tmp") << ";";
+                output.content(
+                    instance,
+                    [&](OutputContext &oc) {
+                        oc.endl();
+                        oc.os << strInner(instance) << "->parent = "
+                              << parent.strCast("tmp") << ";";
+                    }
+                );
 
                 // input
 
@@ -124,10 +132,15 @@ void NodeCall::build(
 
                 // render (load the callee)
 
-                oc.endl();
-                oc.os << "inner->outer = callee;";
-                oc.endl();
-                oc.os << "callee = inner;";
+                output.content(
+                    instance,
+                    [&](OutputContext &oc) {
+                        oc.endl();
+                        oc.os << "inner->outer = callee;";
+                        oc.endl();
+                        oc.os << "callee = inner;";
+                    }
+                );
 
                 // in args
 
@@ -140,40 +153,46 @@ void NodeCall::build(
                 }
             },
             [&](Instance &child, Block &block) {
-                // render (header)
+                // render (header) // TODO: remove
 
-                OutputContext &och {output.header(instance)};
-
-                och.endl();
-                och.os << "typedef " << child.strStruct()
-                       << " " << strFrame(instance) << ";";
+                output.header(
+                    instance,
+                    [&](OutputContext &och) {
+                        och.endl();
+                        och.os << "typedef " << child.strStruct()
+                               << " " << strFrame(instance) << ";";
+                    }
+                );
 
                 // render (call)
 
-                OutputContext &oc {output.content(instance)};
+                output.content(
+                    instance,
+                    [&](OutputContext &oc) {
+                        oc.endl();
+                        oc.os << "self->func = &&"
+                              << strLabel(instance) << ";";
+                        // notice: reset callee->func
+                        oc.endl();
+                        oc.os << "callee->func" << " = &&"
+                              << child.strFunc() << ";";
 
-                oc.endl();
-                oc.os << "self->func = &&"
-                      << strLabel(instance) << ";";
-                // notice: reset callee->func
-                oc.endl();
-                oc.os << "callee->func" << " = &&"
-                      << child.strFunc() << ";";
+                        oc.endl();
+                        oc.os << "callee->caller" << " = self;";
+                        oc.endl();
+                        oc.os << "self = callee;";
 
-                oc.endl();
-                oc.os << "callee->caller" << " = self;";
-                oc.endl();
-                oc.os << "self = callee;";
+                        oc.endl();
+                        oc.os << "goto *self->func;";
+                        oc.endl();
+                        oc.os << strLabel(instance) << ":";
 
-                oc.endl();
-                oc.os << "goto *self->func;";
-                oc.endl();
-                oc.os << strLabel(instance) << ":";
-
-                oc.endl();
-                oc.os << "callee = self;";
-                oc.endl();
-                oc.os << "self = callee->caller;";
+                        oc.endl();
+                        oc.os << "callee = self;";
+                        oc.endl();
+                        oc.os << "self = callee->caller;";
+                    }
+                );
 
                 // out args
 
@@ -187,10 +206,16 @@ void NodeCall::build(
 
                 // render (unload the callee)
 
-                oc.endl();
-                oc.os << "inner = callee;";
-                oc.endl();
-                oc.os << "callee = inner->outer;";
+                output.content(
+                    instance,
+                    [&](OutputContext &oc) {
+
+                        oc.endl();
+                        oc.os << "inner = callee;";
+                        oc.endl();
+                        oc.os << "callee = inner->outer;";
+                    }
+                );
 
                 // result
 
@@ -198,22 +223,29 @@ void NodeCall::build(
 
                 // render (free the call frame)
 
-                oc.leave();
+                output.content(
+                    instance,
+                    [&](OutputContext &oc) {
+                        switch (mode) {
+                            case FrameMode::static_global:
+                            case FrameMode::static_local:
+                                break;
 
-                switch (mode) {
-                    case FrameMode::static_global:
-                    case FrameMode::static_local:
-                        break;
+                            case FrameMode::dynamic_stack:
+                                oc.endl();
+                                oc.os << "alloca(-sizeof("
+                                      << strFrame(instance)
+                                      << "));";
+                                break;
 
-                    case FrameMode::dynamic_stack:
-                        oc.endl();
-                        oc.os << "alloca(-sizeof(" << strFrame(instance) << "));";
-                        break;
+                            case FrameMode::dynamic_gc:
+                            case FrameMode::dynamic_free:
+                                break;
+                        }
 
-                    case FrameMode::dynamic_gc:
-                    case FrameMode::dynamic_free:
-                        break;
-                }
+                        oc.leave();
+                    }
+                );
             }
         );
     } else {
@@ -253,10 +285,14 @@ Type &NodeCall::buildOut(
 
             // render
 
-            OutputContext &oc {output.content(instance)};
-
-            oc.endl();
-            oc.os << target << " = " << strInner(instance) << "->result;";
+            output.content(
+                instance,
+                [&](OutputContext &oc) {
+                    oc.endl();
+                    oc.os << target << " = "
+                          << strInner(instance) << "->result;";
+                }
+            );
         }
     );
 
@@ -274,10 +310,14 @@ void NodeCall::buildIn(
 
             // render
 
-            OutputContext &oc {output.content(instance)};
-
-            oc.endl();
-            oc.os << strInner(instance) << "->input = " << target << ";";
+            output.content(
+                instance,
+                [&](OutputContext &oc) {
+                    oc.endl();
+                    oc.os << strInner(instance) << "->input = "
+                          << target << ";";
+                }
+            );
         },
         [](Instance &) {
             // nothing

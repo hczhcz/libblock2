@@ -60,12 +60,15 @@ Type &NodeLiteral<T>::buildOut(
 
     // render
 
-    OutputContext &oc {output.content(instance)};
-
-    oc.endl();
-    oc.os << target << " = ";
-    renderValue(oc.os);
-    oc.os << ";";
+    output.content(
+        instance,
+        [&](OutputContext &oc) {
+            oc.endl();
+            oc.os << target << " = ";
+            renderValue(oc.os);
+            oc.os << ";";
+        }
+    );
 
     // return
 

@@ -76,16 +76,16 @@ int main() {
         }
     );
 
-    std::cout << "======== header ========" << std::endl;
-    output.getHeader(std::cout, *root_p);
+    // std::cout << "======== header ========" << std::endl;
+    // output.getHeader(std::cout, *root_p);
     std::cout << "======== content ========" << std::endl;
     output.getContent(std::cout, *root_p);
 
     std::fstream fs {
         "./build/test.gen.c", std::fstream::out
     };
-    output.getHeader(fs, *root_p);
-    output.getContent(fs, *root_p);
+    // output.getHeader(fs, *root_p);
+    // output.getContent(fs, *root_p);
 
     return 0;
 }
