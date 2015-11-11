@@ -8,8 +8,6 @@ class OutputContext {
 private:
     size_t indent {0};
 
-    friend class Output;
-
 public:
     std::ostringstream os;
 

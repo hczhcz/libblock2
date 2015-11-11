@@ -166,7 +166,7 @@ void NodeCall::build(
                 oc.os << "self = callee;";
 
                 oc.endl();
-                oc.os << "goto *callee->func;";
+                oc.os << "goto *self->func;";
                 oc.endl();
                 oc.os << strLabel(instance) << ":";
 
