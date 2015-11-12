@@ -1,11 +1,14 @@
 mkdir -p ./build
 
 cc='clang++'
-flags='-std=c++11 -O0 -g -Wall -Wextra -ferror-limit=3'
+flags='-std=c++14 -O0 -g -Wall -Wextra -ferror-limit=3'
 flags_pp='-E -DSKIP_STD_LIB'
 flags_pch=''
 flags_obj='-c'
 flags_out=''
+
+lint='cppcheck'
+lint_flags='-q --std=c++14 --enable=all --inconclusive'
 
 test_cc='clang'
 test_flags='-O0 -g -Wall -Wextra -ferror-limit=3'
@@ -71,7 +74,7 @@ done
 echo '======== lint ========'
 echo
 
-cppcheck -q --std=c++11 --enable=all --inconclusive ./*.cpp
+$lint $lint_flags ./*.cpp
 echo
 
 echo '======== build the test ========'
