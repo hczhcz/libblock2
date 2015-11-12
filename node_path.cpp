@@ -21,7 +21,7 @@ void NodePath::buildProc(
     Instance &instance,
     Output &output
 ) {
-    // gen type
+    // get inner
 
     Instance &inner {
         source_p->buildOut(
@@ -32,6 +32,8 @@ void NodePath::buildProc(
             }
         ).prepareLookup()
     };
+
+    // gen type
 
     size_t level {0};
 
@@ -59,7 +61,7 @@ Type &NodePath::buildOut(
     Output &output,
     std::function<std::string ()> &&target
 ) {
-    // get type
+    // get inner
 
     Instance &inner {
         source_p->buildOut(
@@ -70,6 +72,8 @@ Type &NodePath::buildOut(
             }
         ).prepareLookup()
     };
+
+    // get type
 
     Type *type_p {nullptr}; // return value
 
@@ -103,7 +107,7 @@ void NodePath::buildIn(
     Output &output,
     std::function<std::string ()> &&target
 ) {
-    // set type
+    // get inner
 
     Instance &inner {
         source_p->buildOut(
@@ -114,6 +118,8 @@ void NodePath::buildIn(
             }
         ).prepareLookup()
     };
+
+    // set type
 
     size_t level {0};
 

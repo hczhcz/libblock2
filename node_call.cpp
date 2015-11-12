@@ -36,10 +36,6 @@ void NodeCall::build(
         closure_p->call(
             output,
             [&](Instance &callee, Block &block, Instance &parent) {
-                // parent
-
-                callee.insert("parent", parent);
-
                 // render (alloc the call frame)
 
                 output.content(
@@ -92,6 +88,10 @@ void NodeCall::build(
                         }
                     }
                 );
+
+                // parent
+
+                callee.insert("parent", parent);
 
                 // render (parent)
 
@@ -224,7 +224,10 @@ void NodeCall::build(
             }
         );
     } else {
-        // error: value as callee // TODO
+        // TODO: object as callee
+        //           return (func point to error)
+        //           yield (func point to next label)
+        //           reset (func point to func entry)
         throw ErrorCallNotAllowed {};
     }
 }
