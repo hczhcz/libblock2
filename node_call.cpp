@@ -263,7 +263,7 @@ Type &NodeCall::buildOut(
 
             output.content(
                 instance,
-                [&, target](OutputContext &oc) {
+                [&, target = std::move(target)](OutputContext &oc) {
                     oc.endl();
                     oc.os << target() << " = "
                           << instance.strInner(*this) << "->result;";
@@ -289,7 +289,7 @@ void NodeCall::buildIn(
 
             output.content(
                 instance,
-                [&, target](OutputContext &oc) {
+                [&, target = std::move(target)](OutputContext &oc) {
                     oc.endl();
                     oc.os << instance.strInner(*this) << "->input = "
                           << target() << ";";

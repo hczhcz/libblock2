@@ -63,7 +63,7 @@ Type &NodeLiteral<T>::buildOut(
 
     output.content(
         instance,
-        [&, target](OutputContext &oc) {
+        [&, target = std::move(target)](OutputContext &oc) {
             oc.endl();
             oc.os << target() << " = ";
             renderValue(oc.os);

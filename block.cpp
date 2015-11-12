@@ -113,7 +113,7 @@ void Block::inArg(
             arg->buildOut(
                 caller,
                 output,
-                [&, index, target]() {
+                [&, index, target = std::move(target)]() {
                     return target() + "->" + params[index].first;
                 }
             )
@@ -144,7 +144,7 @@ void Block::outArg(
             caller,
             instance.at(params[index].first),
             output,
-            [&, index, target]() {
+            [&, index, target = std::move(target)]() {
                 return target() + "->" + params[index].first;
             }
         );

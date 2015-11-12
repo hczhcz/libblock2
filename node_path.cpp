@@ -68,7 +68,7 @@ Type &NodePath::buildOut(
 
     output.content(
         instance,
-        [&, target](OutputContext &oc) {
+        [&, target = std::move(target)](OutputContext &oc) {
             oc.endl();
             oc.os << target() << " = " << inner.strCast("tmp");
             renderPath(oc.os);
@@ -104,7 +104,7 @@ void NodePath::buildIn(
 
     output.content(
         instance,
-        [&, target](OutputContext &oc) {
+        [&, target = std::move(target)](OutputContext &oc) {
             oc.endl();
             oc.os << inner.strCast("tmp");
             renderPath(oc.os);
