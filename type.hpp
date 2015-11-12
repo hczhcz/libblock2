@@ -72,6 +72,7 @@ public:
     std::string strInner(NodeCall &call) const;
     std::string strCallee(NodeCall &call) const;
 
+    void check(Type &type1, Type &type2);
     Type &at(const std::string &name);
     void insert(const std::string &name, Type &type);
     Type &lookup(const std::string &name, size_t &level);

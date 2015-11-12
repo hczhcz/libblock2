@@ -58,14 +58,19 @@ using NodeLiteralInt = NodeLiteral<int64_t>;
 using NodeLiteralReal = NodeLiteral<double>;
 using NodeLiteralStr = NodeLiteral<std::string>;
 
+enum class LookupMode {
+    global, mixed, local
+};
+
 class NodeSymbol: public Node {
 private:
     std::string name;
+    LookupMode mode;
 
     void renderPath(std::ostream &os, size_t level) const;
 
 public:
-    NodeSymbol(std::string &&_name);
+    NodeSymbol(std::string &&_name, LookupMode _mode);
 
     virtual void buildProc(
         Instance &instance,
@@ -86,12 +91,13 @@ public:
 class NodePath: public Node {
 private:
     std::unique_ptr<Node> source_p;
+    LookupMode mode;
     std::string name;
 
-    void renderPath(std::ostream &os) const;
+    void renderPath(std::ostream &os, size_t level) const;
 
 public:
-    NodePath(Node *_source, std::string &&_name);
+    NodePath(Node *_source, LookupMode _mode, std::string &&_name);
 
     virtual void buildProc(
         Instance &instance,

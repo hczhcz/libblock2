@@ -12,8 +12,9 @@ void NodeSymbol::renderPath(std::ostream &os, size_t level) const {
     }
 }
 
-NodeSymbol::NodeSymbol(std::string &&_name):
-    name {std::move(_name)} {}
+NodeSymbol::NodeSymbol(std::string &&_name, LookupMode _mode):
+    name {std::move(_name)},
+    mode {_mode} {}
 
 void NodeSymbol::buildProc(
     Instance &instance,
@@ -23,7 +24,11 @@ void NodeSymbol::buildProc(
 
     size_t level {0};
 
-    instance.lookup(name, level);
+    if (mode == LookupMode::local) {
+        instance.at(name);
+    } else {
+        instance.lookup(name, level);
+    }
 
     // render
 
@@ -45,11 +50,15 @@ Type &NodeSymbol::buildOut(
 ) {
     // get type
 
+    Type *type_p {nullptr}; // return value
+
     size_t level {0};
 
-    Type &type {
-        instance.lookup(name, level)
-    };
+    if (mode == LookupMode::local) {
+        type_p = &instance.at(name);
+    } else {
+        type_p = &instance.lookup(name, level);
+    }
 
     // render
 
@@ -65,7 +74,7 @@ Type &NodeSymbol::buildOut(
 
     // return
 
-    return type;
+    return *type_p;
 }
 
 void NodeSymbol::buildIn(
@@ -75,16 +84,24 @@ void NodeSymbol::buildIn(
 ) {
     // set type
 
-    instance.insert(name, type);
+    size_t level {0};
+
+    if (mode == LookupMode::global) {
+        instance.check(
+            instance.lookup(name, level), type
+        );
+    } else {
+        instance.insert(name, type);
+    }
 
     // render
 
     output.content(
         instance,
-        [&, target = std::move(target)](OutputContext &oc) {
+        [&, target = std::move(target), level](OutputContext &oc) {
             oc.endl();
             oc.os << instance.strCast("self");
-            renderPath(oc.os, 0);
+            renderPath(oc.os, level);
             oc.os << " = " << target() << ";";
         }
     );

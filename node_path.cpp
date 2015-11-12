@@ -2,14 +2,19 @@
 #include "type.hpp"
 #include "node.hpp"
 
-void NodePath::renderPath(std::ostream &os) const {
+void NodePath::renderPath(std::ostream &os, size_t level) const {
+    for (size_t i = 0; i < level; ++i) {
+        os << "->parent";
+    }
+
     if (name != "self") {
         os << "->" << name;
     }
 }
 
-NodePath::NodePath(Node *_source, std::string &&_name):
+NodePath::NodePath(Node *_source, LookupMode _mode, std::string &&_name):
     source_p {_source},
+    mode {_mode},
     name {_name} {}
 
 void NodePath::buildProc(
@@ -28,16 +33,22 @@ void NodePath::buildProc(
         ).prepareLookup()
     };
 
-    instance.at(name);
+    size_t level {0};
+
+    if (mode == LookupMode::local) {
+        inner.at(name);
+    } else {
+        inner.lookup(name, level);
+    }
 
     // render
 
     output.content(
         instance,
-        [&](OutputContext &oc) {
+        [&, level](OutputContext &oc) {
             oc.endl();
             oc.os << inner.strCast("tmp");
-            renderPath(oc.os);
+            renderPath(oc.os, level);
             oc.os << ";";
         }
     );
@@ -60,25 +71,31 @@ Type &NodePath::buildOut(
         ).prepareLookup()
     };
 
-    Type &type {
-        instance.at(name)
-    };
+    Type *type_p {nullptr}; // return value
+
+    size_t level {0};
+
+    if (mode == LookupMode::local) {
+        type_p = &inner.at(name);
+    } else {
+        type_p = &inner.lookup(name, level);
+    }
 
     // render
 
     output.content(
         instance,
-        [&, target = std::move(target)](OutputContext &oc) {
+        [&, target = std::move(target), level](OutputContext &oc) {
             oc.endl();
             oc.os << target() << " = " << inner.strCast("tmp");
-            renderPath(oc.os);
+            renderPath(oc.os, level);
             oc.os << ";";
         }
     );
 
     // return
 
-    return type;
+    return *type_p;
 }
 
 void NodePath::buildIn(
@@ -98,16 +115,24 @@ void NodePath::buildIn(
         ).prepareLookup()
     };
 
-    inner.insert(name, type);
+    size_t level {0};
+
+    if (mode == LookupMode::global) {
+        inner.check(
+            inner.lookup(name, level), type
+        );
+    } else {
+        inner.insert(name, type);
+    }
 
     // render
 
     output.content(
         instance,
-        [&, target = std::move(target)](OutputContext &oc) {
+        [&, target = std::move(target), level](OutputContext &oc) {
             oc.endl();
             oc.os << inner.strCast("tmp");
-            renderPath(oc.os);
+            renderPath(oc.os, level);
             oc.os << " = " << target() << ";";
         }
     );

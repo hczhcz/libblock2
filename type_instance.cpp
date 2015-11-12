@@ -73,6 +73,12 @@ std::string Instance::strCallee(NodeCall &call) const {
     return "((" + strCalleeType(call) + " *) callee)";
 }
 
+void Instance::check(Type &type1, Type &type2) {
+    if (type1 != type2) {
+        throw ErrorTypeCollision {};
+    }
+}
+
 Type &Instance::at(const std::string &name) {
     if (name == "self") {
         return *this;
@@ -94,9 +100,7 @@ void Instance::insert(const std::string &name, Type &type) {
         const auto &symbol = symbol_types.find(name);
 
         if (symbol != symbol_types.end()) {
-            if (symbol->second != type) {
-                throw ErrorTypeCollision {};
-            }
+            check(symbol->second, type);
         } else {
             symbol_types.insert({name, type});
         }
