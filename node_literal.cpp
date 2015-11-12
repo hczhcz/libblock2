@@ -46,7 +46,7 @@ void NodeLiteral<T>::buildProc(
     Instance &,
     Output &
 ) {
-    // nothing
+    throw ErrorDiscardNotAllowed {};
 }
 
 template <class T>

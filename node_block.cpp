@@ -8,7 +8,7 @@ void NodeBlock::buildProc(
     Instance &,
     Output &
 ) {
-    // nothing
+    throw ErrorDiscardNotAllowed {};
 }
 
 Type &NodeBlock::buildOut(
