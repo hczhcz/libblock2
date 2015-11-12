@@ -7,6 +7,7 @@ void Instance::renderStruct(OutputContext &oc) const {
     oc.endl();
     oc.os << strStruct() << " {";
     oc.enter();
+
     oc.endl();
     oc.os << "struct frame frame;";
     oc.endl();
@@ -31,6 +32,7 @@ void Instance::renderFuncHead(OutputContext &oc) const {
 void Instance::renderFuncTail(OutputContext &oc) const {
     oc.endl();
     oc.os << "goto *self->caller->func;";
+
     oc.leave();
     oc.endl();
 }

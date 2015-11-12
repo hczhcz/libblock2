@@ -57,50 +57,94 @@ void Output::insert(Instance &instance) {
 }
 
 void Output::getHeader(std::ostream &os, Instance &) const {
-    OutputContext oc {os};
+    OutputContext och {os};
 
-    oc.os << "#include <stdlib.h>\n"
-             "#include <stdio.h>\n"
-             "#include <gc/gc.h>\n"
-             "\n"
-             "struct frame {\n"
-             "    void *func;\n"
-             "    struct frame *caller;\n"
-             "    struct frame *outer;\n"
-             "};\n";
+    och.os << "#include <stdlib.h>";
+    och.endl();
+    och.os << "#include <stdio.h>";
+    och.endl();
+    och.os << "#include <gc/gc.h>";
+    och.endl();
+
+    och.endl();
+    och.os << "struct frame {";
+    och.enter();
+    och.endl();
+
+    och.os << "void *func;";
+    och.endl();
+    och.os << "struct frame *caller;";
+    och.endl();
+    och.os << "struct frame *outer;";
+
+    och.leave();
+    och.endl();
+    och.os << "};";
+    och.endl();
 
     for (const auto &task: headers) {
-        task.second->generate(oc);
+        task.second->generate(och);
     }
 }
 
 void Output::getContent(std::ostream &os, Instance &root) const {
     OutputContext oc {os};
 
-    oc.os << root.strStruct()
-          << " root;\n"
-             "\n"
-             "int main() {\n"
-             "    void *exit_addr = &&exit;\n"
-             "\n"
-             "    struct frame *self = &root.frame;\n"
-             "    struct frame *callee = 0;\n"
-             "    struct frame *inner = 0;\n"
-             "    void *tmp = 0;\n"
-             "\n"
-             "    self->func = &&" << root.strFunc() << ";\n"
-             "    self->caller = (struct frame *) &exit_addr;\n"
-             "\n"
-             "    goto *self->func;\n";
+    // exec
 
+    oc.os << "void exec(struct frame *frame, size_t func) {";
     oc.enter();
+
+    oc.endl();
+    oc.os << "void *exports[] = {&&label_exit, &&" << root.strFunc() << "};";
+    oc.endl();
+    oc.endl();
+    oc.os << "struct frame *self = frame;";
+    oc.endl();
+    oc.os << "struct frame *callee = 0;";
+    oc.endl();
+    oc.os << "struct frame *inner = 0;";
+    oc.endl();
+    oc.os << "void *tmp = 0;";
+    oc.endl();
+    oc.endl();
+    oc.os << "self->func = exports[func];";
+    oc.endl();
+    oc.os << "self->caller = (struct frame *) &exports[0];";
+    oc.endl();
+    oc.os << "goto *self->func;";
+    oc.endl();
+
     for (const auto &task: contents) {
         task.second->generate(oc);
     }
-    oc.leave();
 
-    oc.os << "\n"
-             "    exit:\n"
-             "    return 0;\n"
-             "}\n";
+    oc.endl();
+    oc.os << "label_exit:;";
+
+    oc.leave();
+    oc.endl();
+    oc.os << "}";
+    oc.endl();
+
+    // main
+
+    oc.endl();
+    oc.os << "int main() {";
+    oc.enter();
+
+    oc.endl();
+    oc.os << root.strStruct() << " root;";
+    oc.endl();
+    oc.endl();
+    oc.os << "exec(&root.frame, 1);";
+    oc.endl();
+    oc.endl();
+    oc.os << "return 0;";
+
+    oc.leave();
+    oc.endl();
+    oc.os << "}";
+    oc.endl();
+
 }
