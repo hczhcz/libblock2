@@ -54,34 +54,34 @@ inline NodeBlock *blocks(Blocks... blocks) {
 }
 
 inline BlockUser *block(
-    std::vector<std::pair<std::string, SymbolMode>> &&params,
+    std::vector<std::pair<std::string, ParamMode>> &&params,
     Node *ast
 ) {
     return new BlockUser {std::move(params), ast};
 }
 
-inline std::pair<std::string, SymbolMode> in(
+inline std::pair<std::string, ParamMode> in(
     std::string &&name
 ) {
-    return {std::move(name), SymbolMode::in};
+    return {std::move(name), ParamMode::in};
 }
 
-inline std::pair<std::string, SymbolMode> out(
+inline std::pair<std::string, ParamMode> out(
     std::string &&name
 ) {
-    return {std::move(name), SymbolMode::out};
+    return {std::move(name), ParamMode::out};
 }
 
-inline std::pair<std::string, SymbolMode> var(
+inline std::pair<std::string, ParamMode> var(
     std::string &&name
 ) {
-    return {std::move(name), SymbolMode::var};
+    return {std::move(name), ParamMode::var};
 }
 
-inline std::pair<std::string, SymbolMode> special(
+inline std::pair<std::string, ParamMode> special(
     std::string &&name
 ) {
-    return {std::move(name), SymbolMode::special};
+    return {std::move(name), ParamMode::special};
 }
 
 }

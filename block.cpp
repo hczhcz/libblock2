@@ -86,7 +86,7 @@ void Block::outSpecialArg(
     // nothing, by default // TODO: va_args?
 }
 
-Block::Block(std::vector<std::pair<std::string, SymbolMode>> &&_params):
+Block::Block(std::vector<std::pair<std::string, ParamMode>> &&_params):
     params {std::move(_params)} {}
 
 void Block::inArg(
@@ -97,7 +97,7 @@ void Block::inArg(
 ) {
     if (
         index >= params.size()
-        || params[index].second == SymbolMode::special
+        || params[index].second == ParamMode::special
     ) {
         inSpecialArg(
             caller, instance,
@@ -105,8 +105,8 @@ void Block::inArg(
             output, std::move(target)
         );
     } else if (
-        params[index].second == SymbolMode::in
-        || params[index].second == SymbolMode::var
+        params[index].second == ParamMode::in
+        || params[index].second == ParamMode::var
     ) {
         instance.insert(
             params[index].first,
@@ -129,7 +129,7 @@ void Block::outArg(
 ) {
     if (
         index >= params.size()
-        || params[index].second == SymbolMode::special
+        || params[index].second == ParamMode::special
     ) {
         outSpecialArg(
             caller, instance,
@@ -137,8 +137,8 @@ void Block::outArg(
             output, std::move(target)
         );
     } else if (
-        params[index].second == SymbolMode::out
-        || params[index].second == SymbolMode::var
+        params[index].second == ParamMode::out
+        || params[index].second == ParamMode::var
     ) {
         arg->buildIn(
             caller,

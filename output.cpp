@@ -146,5 +146,4 @@ void Output::getContent(std::ostream &os, Instance &root) const {
     oc.endl();
     oc.os << "}";
     oc.endl();
-
 }

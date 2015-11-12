@@ -9,7 +9,7 @@ void BlockUser::buildContent(Instance &instance, Output &output) {
 }
 
 BlockUser::BlockUser(
-    std::vector<std::pair<std::string, SymbolMode>> &&_params,
+    std::vector<std::pair<std::string, ParamMode>> &&_params,
     Node *_ast
 ):
     Block {std::move(_params)},

@@ -7,13 +7,13 @@ class Instance;
 class Node;
 class NodeBlock;
 
-enum class SymbolMode {
+enum class ParamMode {
     in, out, var, special
 };
 
 class Block {
 private:
-    std::vector<std::pair<std::string, SymbolMode>> params;
+    std::vector<std::pair<std::string, ParamMode>> params;
 
     std::list<std::unique_ptr<Instance>> instances;
 
@@ -38,7 +38,7 @@ protected:
     );
 
 public:
-    Block(std::vector<std::pair<std::string, SymbolMode>> &&_params);
+    Block(std::vector<std::pair<std::string, ParamMode>> &&_params);
 
     void inArg(
         Instance &caller, Instance &instance,
@@ -90,7 +90,7 @@ protected:
 
 public:
     BlockUser(
-        std::vector<std::pair<std::string, SymbolMode>> &&_params,
+        std::vector<std::pair<std::string, ParamMode>> &&_params,
         Node *_ast
     );
 };
