@@ -19,7 +19,7 @@ void NodeCall::build(
         source_p->buildOut(
             instance,
             output,
-            []() {
+            []() -> std::string {
                 return "tmp";
             }
         )

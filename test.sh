@@ -8,7 +8,7 @@ flags_obj='-c'
 flags_out=''
 
 lint='cppcheck'
-lint_flags='-q --std=c++14 --enable=all --inconclusive'
+lint_flags='-q --std=c++11 --enable=all --inconclusive' # c++14?
 
 test_cc='clang'
 test_flags='-O0 -g -Wall -Wextra -ferror-limit=3'

@@ -85,6 +85,7 @@ int main() {
         "./build/test.gen.c", std::fstream::out
     };
     output.getHeader(fs, *root_p);
+    fs << std::endl;
     output.getContent(fs, *root_p);
 
     return 0;

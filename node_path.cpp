@@ -22,7 +22,7 @@ void NodePath::buildProc(
         source_p->buildOut(
             instance,
             output,
-            []() {
+            []() -> std::string {
                 return "tmp";
             }
         ).prepareLookup()
@@ -54,7 +54,7 @@ Type &NodePath::buildOut(
         source_p->buildOut(
             instance,
             output,
-            []() {
+            []() -> std::string {
                 return "tmp";
             }
         ).prepareLookup()
@@ -92,7 +92,7 @@ void NodePath::buildIn(
         source_p->buildOut(
             instance,
             output,
-            []() {
+            []() -> std::string {
                 return "tmp";
             }
         ).prepareLookup()

@@ -93,9 +93,11 @@ void Output::getContent(std::ostream &os, Instance &root) const {
              "\n"
              "    goto *self->func;\n";
 
+    oc.enter();
     for (const auto &task: contents) {
         task.second->generate(oc);
     }
+    oc.leave();
 
     oc.os << "\n"
              "    exit:\n"

@@ -23,9 +23,9 @@ void Instance::renderStruct(OutputContext &oc) const {
 }
 
 void Instance::renderFuncHead(OutputContext &oc) const {
-    oc.enter();
     oc.endl();
     oc.os << strFunc() << ":";
+    oc.enter();
 }
 
 void Instance::renderFuncTail(OutputContext &oc) const {
