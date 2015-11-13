@@ -33,9 +33,12 @@ void NodeCall::build(
         // callee is closure
         // create a frame and call the function
 
-        closure_p->call(
+        Instance &parent {closure_p->parent};
+        Block &block {*closure_p->blocks.blocks[0]};
+
+        block.build(
             output,
-            [&](Instance &callee, Block &block, Instance &parent) {
+            [&](Instance &callee) {
                 // render (alloc the call frame)
 
                 output.content(
@@ -133,7 +136,7 @@ void NodeCall::build(
                     );
                 }
             },
-            [&](Instance &callee, Block &block) {
+            [&](Instance &callee) {
                 instance.addCallee(*this, callee);
 
                 // render (call)

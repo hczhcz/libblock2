@@ -168,7 +168,7 @@ class NodeBlock: public Node {
 private:
     std::vector<std::unique_ptr<Block>> blocks;
 
-    friend class TypeClosure;
+    friend class NodeCall;
 
 public:
     template <class... Blocks>

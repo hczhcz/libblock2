@@ -37,14 +37,9 @@ private:
     Instance &parent;
     NodeBlock &blocks;
 
+    friend class NodeCall;
 public:
     TypeClosure(Instance &_parent, NodeBlock &_blocks);
-
-    void call(
-        Output &output,
-        std::function<void (Instance &, Block &, Instance &)> &&before,
-        std::function<void (Instance &, Block &)> &&after
-    );
 
     virtual std::string strDecl(const std::string &name) const;
 };
