@@ -86,7 +86,11 @@ void Block::outSpecialArg(
     // nothing, by default // TODO: va_args?
 }
 
-Block::Block(std::vector<std::pair<std::string, ParamMode>> &&_params):
+Block::Block(
+    std::bitset<(size_t) BlockOption::END> &&_options,
+    std::vector<std::pair<std::string, ParamMode>> &&_params
+):
+    options {std::move(_options)},
     params {std::move(_params)} {}
 
 void Block::inArg(

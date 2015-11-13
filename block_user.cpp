@@ -9,8 +9,9 @@ void BlockUser::buildContent(Instance &instance, Output &output) {
 }
 
 BlockUser::BlockUser(
+    std::bitset<(size_t) BlockOption::END> &&_options,
     std::vector<std::pair<std::string, ParamMode>> &&_params,
     Node *_ast
 ):
-    Block {std::move(_params)},
+    Block {std::move(_options), std::move(_params)},
     ast_p {_ast} {}

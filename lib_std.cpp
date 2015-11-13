@@ -22,7 +22,7 @@ protected:
 
 public:
     Then():
-        BlockBuiltin {{}} {}
+        BlockBuiltin {0, {}} {}
 };
 Builtin __then__ {"__then__", new Then {}};
 
@@ -45,7 +45,7 @@ protected:
 
 public:
     Set():
-        BlockBuiltin {{out("dest"), in("src")}} {}
+        BlockBuiltin {0, {out("dest"), in("src")}} {}
 };
 Builtin __set__ {"__set__", new Set {}};
 
@@ -67,7 +67,7 @@ protected:
 
 public:
     Print():
-        BlockBuiltin {{in("value")}} {}
+        BlockBuiltin {0, {in("value")}} {}
 };
 Builtin print {"print", new Print {}};
 

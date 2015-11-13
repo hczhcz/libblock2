@@ -11,8 +11,17 @@ enum class ParamMode {
     in, out, var, special
 };
 
+enum class BlockOption {
+    parent,
+    allow_proc,
+    allow_out,
+    allow_in,
+    END
+};
+
 class Block {
 private:
+    std::bitset<(size_t) BlockOption::END> options;
     std::vector<std::pair<std::string, ParamMode>> params;
 
     std::list<std::unique_ptr<Instance>> instances;
@@ -38,7 +47,10 @@ protected:
     );
 
 public:
-    Block(std::vector<std::pair<std::string, ParamMode>> &&_params);
+    Block(
+        std::bitset<(size_t) BlockOption::END> &&_options,
+        std::vector<std::pair<std::string, ParamMode>> &&_params
+    );
 
     void inArg(
         Instance &caller, Instance &instance,
@@ -90,6 +102,7 @@ protected:
 
 public:
     BlockUser(
+        std::bitset<(size_t) BlockOption::END> &&_options,
         std::vector<std::pair<std::string, ParamMode>> &&_params,
         Node *_ast
     );
