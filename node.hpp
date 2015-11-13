@@ -3,6 +3,7 @@
 #include "include.hpp"
 
 class Output;
+class OutputContext;
 class Type;
 class TypeClosure;
 class Instance;
@@ -115,7 +116,7 @@ public:
     );
 };
 
-enum class CallMode {
+enum class FrameMode {
     static_global,
     static_local,
     dynamic_stack,
@@ -126,9 +127,11 @@ enum class CallMode {
 class NodeCall: public Node {
 private:
     std::unique_ptr<Node> source_p;
-    CallMode mode;
+    FrameMode mode;
     std::vector<std::unique_ptr<Node>> args;
 
+    void renderFrameAlloc(OutputContext &oc) const;
+    void renderFrameFree(OutputContext &oc) const;
     void build(
         Instance &instance, Output &output,
         std::function<void (Instance &)> &&before,
@@ -137,7 +140,7 @@ private:
 
 public:
     template <class... Args>
-    NodeCall(Node *_source, CallMode _mode, Args... _args):
+    NodeCall(Node *_source, FrameMode _mode, Args... _args):
         source_p {_source},
         mode {_mode} {
             Node *init[] {_args...};

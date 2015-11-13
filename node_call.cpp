@@ -4,6 +4,69 @@
 #include "node.hpp"
 #include "block.hpp"
 
+void NodeCall::renderFrameAlloc(OutputContext &oc) const {
+    switch (mode) {
+        case FrameMode::static_global:
+            oc.endl();
+            oc.os << "static "
+                  << instance.strCalleeType(*this) << " "
+                  << instance.strCalleeName(*this) << ";";
+            oc.endl();
+            oc.os << "inner = (struct frame *) &"
+                  << instance.strCalleeName(*this) << ";";
+            break;
+
+        case FrameMode::static_local:
+            oc.endl();
+            oc.os << instance.strCalleeType(*this) << " "
+                  << instance.strCalleeName(*this) << ";";
+            oc.endl();
+            oc.os << "inner = (struct frame *) &"
+                  << instance.strCalleeName(*this) << ";";
+            break;
+
+        case FrameMode::dynamic_stack:
+            oc.endl();
+            oc.os << "inner = alloca(sizeof("
+                  << instance.strCalleeType(*this)
+                  << "));";
+            break;
+
+        case FrameMode::dynamic_gc:
+            oc.endl();
+            oc.os << "inner = GC_malloc(sizeof("
+                  << instance.strCalleeType(*this)
+                  << "));";
+            break;
+
+        case FrameMode::dynamic_free:
+            oc.endl();
+            oc.os << "inner = malloc(sizeof("
+                  << instance.strCalleeType(*this)
+                  << "));";
+            break;
+    }
+}
+
+void NodeCall::renderFrameFree(OutputContext &oc) const {
+    switch (mode) {
+        case FrameMode::static_global:
+        case FrameMode::static_local:
+            break;
+
+        case FrameMode::dynamic_stack:
+            oc.endl();
+            oc.os << "alloca(-sizeof("
+                  << instance.strCalleeType(*this)
+                  << "));";
+            break;
+
+        case FrameMode::dynamic_gc:
+        case FrameMode::dynamic_free:
+            break;
+    }
+}
+
 void NodeCall::build(
     Instance &instance, Output &output,
     std::function<void (Instance &)> &&before,
@@ -48,47 +111,7 @@ void NodeCall::build(
                         oc.os << "/* call */";
                         oc.enter();
 
-                        switch (mode) {
-                            case CallMode::static_global:
-                                oc.endl();
-                                oc.os << "static "
-                                      << instance.strCalleeType(*this) << " "
-                                      << instance.strCalleeName(*this) << ";";
-                                oc.endl();
-                                oc.os << "inner = (struct frame *) &"
-                                      << instance.strCalleeName(*this) << ";";
-                                break;
-
-                            case CallMode::static_local:
-                                oc.endl();
-                                oc.os << instance.strCalleeType(*this) << " "
-                                      << instance.strCalleeName(*this) << ";";
-                                oc.endl();
-                                oc.os << "inner = (struct frame *) &"
-                                      << instance.strCalleeName(*this) << ";";
-                                break;
-
-                            case CallMode::dynamic_stack:
-                                oc.endl();
-                                oc.os << "inner = alloca(sizeof("
-                                      << instance.strCalleeType(*this)
-                                      << "));";
-                                break;
-
-                            case CallMode::dynamic_gc:
-                                oc.endl();
-                                oc.os << "inner = GC_malloc(sizeof("
-                                      << instance.strCalleeType(*this)
-                                      << "));";
-                                break;
-
-                            case CallMode::dynamic_free:
-                                oc.endl();
-                                oc.os << "inner = malloc(sizeof("
-                                      << instance.strCalleeType(*this)
-                                      << "));";
-                                break;
-                        }
+                        renderFrameAlloc(oc);
                     }
                 );
 
@@ -204,22 +227,7 @@ void NodeCall::build(
                 output.content(
                     instance,
                     [&](OutputContext &oc) {
-                        switch (mode) {
-                            case CallMode::static_global:
-                            case CallMode::static_local:
-                                break;
-
-                            case CallMode::dynamic_stack:
-                                oc.endl();
-                                oc.os << "alloca(-sizeof("
-                                      << instance.strCalleeType(*this)
-                                      << "));";
-                                break;
-
-                            case CallMode::dynamic_gc:
-                            case CallMode::dynamic_free:
-                                break;
-                        }
+                        renderFrameFree(oc);
 
                         oc.leave();
                     }
