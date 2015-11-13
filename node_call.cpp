@@ -4,7 +4,9 @@
 #include "node.hpp"
 #include "block.hpp"
 
-void NodeCall::renderFrameAlloc(OutputContext &oc) const {
+void NodeCall::renderFrameAlloc(
+    Instance &instance, OutputContext &oc
+) const {
     switch (mode) {
         case FrameMode::static_global:
             oc.endl();
@@ -48,7 +50,9 @@ void NodeCall::renderFrameAlloc(OutputContext &oc) const {
     }
 }
 
-void NodeCall::renderFrameFree(OutputContext &oc) const {
+void NodeCall::renderFrameFree(
+    Instance &instance, OutputContext &oc
+) const {
     switch (mode) {
         case FrameMode::static_global:
         case FrameMode::static_local:
@@ -111,7 +115,7 @@ void NodeCall::build(
                         oc.os << "/* call */";
                         oc.enter();
 
-                        renderFrameAlloc(oc);
+                        renderFrameAlloc(instance, oc);
                     }
                 );
 
@@ -158,11 +162,8 @@ void NodeCall::build(
                         }
                     );
                 }
-            },
-            [&](Instance &callee) {
-                instance.addCallee(*this, callee);
 
-                // render (call)
+                // render (before call)
 
                 output.content(
                     instance,
@@ -170,18 +171,29 @@ void NodeCall::build(
                         oc.endl();
                         oc.os << "self->func = &&"
                               << instance.strLabel(*this) << ";";
-                        // notice: reset callee->func
-                        oc.endl();
-                        oc.os << "callee->func" << " = &&"
-                              << callee.strFunc() << ";";
 
                         oc.endl();
-                        oc.os << "callee->caller" << " = self;";
+                        oc.os << "callee->caller = self;";
                         oc.endl();
                         oc.os << "self = callee;";
+                    }
+                );
+            },
+            [&](Instance &callee) {
+                instance.addCallee(*this, callee);
 
+                // render (after call)
+
+                output.content(
+                    instance,
+                    [&](OutputContext &oc) {
+                        // notice: reset self->func
+                        oc.endl();
+                        oc.os << "self->func = &&"
+                              << callee.strFunc() << ";";
                         oc.endl();
                         oc.os << "goto *self->func;";
+
                         oc.endl();
                         oc.os << instance.strLabel(*this) << ":";
 
@@ -227,7 +239,7 @@ void NodeCall::build(
                 output.content(
                     instance,
                     [&](OutputContext &oc) {
-                        renderFrameFree(oc);
+                        renderFrameFree(instance, oc);
 
                         oc.leave();
                     }

@@ -130,8 +130,8 @@ private:
     FrameMode mode;
     std::vector<std::unique_ptr<Node>> args;
 
-    void renderFrameAlloc(OutputContext &oc) const;
-    void renderFrameFree(OutputContext &oc) const;
+    void renderFrameAlloc(Instance &instance, OutputContext &oc) const;
+    void renderFrameFree(Instance &instance, OutputContext &oc) const;
     void build(
         Instance &instance, Output &output,
         std::function<void (Instance &)> &&before,

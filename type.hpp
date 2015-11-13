@@ -61,11 +61,11 @@ public:
     std::string strStruct() const;
     std::string strCast(const std::string &name) const;
 
-    std::string strLabel(NodeCall &call) const;
-    std::string strCalleeType(NodeCall &call) const;
-    std::string strCalleeName(NodeCall &call) const;
-    std::string strInner(NodeCall &call) const;
-    std::string strCallee(NodeCall &call) const;
+    std::string strLabel(const NodeCall &call) const;
+    std::string strCalleeType(const NodeCall &call) const;
+    std::string strCalleeName(const NodeCall &call) const;
+    std::string strInner(const NodeCall &call) const;
+    std::string strCallee(const NodeCall &call) const;
 
     void check(Type &type1, Type &type2);
     Type &at(const std::string &name);
