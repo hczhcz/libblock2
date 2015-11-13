@@ -65,13 +65,13 @@ enum class LookupMode {
 
 class NodeSymbol: public Node {
 private:
-    std::string name;
     LookupMode mode;
+    std::string name;
 
     void renderPath(std::ostream &os, size_t level) const;
 
 public:
-    NodeSymbol(std::string &&_name, LookupMode _mode);
+    NodeSymbol(LookupMode _mode, std::string &&_name);
 
     virtual void buildProc(
         Instance &instance,

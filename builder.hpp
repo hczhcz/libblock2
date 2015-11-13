@@ -31,18 +31,18 @@ inline NodeLiteralStr *_(std::string &&value) {
 }
 
 inline NodeSymbol *$(std::string &&name) {
-    return new NodeSymbol {std::move(name), LookupMode::mixed};
+    return new NodeSymbol {LookupMode::mixed, std::move(name)};
 }
 
-inline NodeSymbol *$(std::string &&name, LookupMode mode) {
-    return new NodeSymbol {std::move(name), mode};
+inline NodeSymbol *$(LookupMode mode, std::string &&name) {
+    return new NodeSymbol {mode, std::move(name)};
 }
 
 inline NodePath *$(Node *source, std::string &&name) {
     return new NodePath {source, LookupMode::local, std::move(name)};
 }
 
-inline NodePath *$(Node *source, std::string &&name, LookupMode mode) {
+inline NodePath *$(Node *source, LookupMode mode, std::string &&name) {
     return new NodePath {source, mode, std::move(name)};
 }
 

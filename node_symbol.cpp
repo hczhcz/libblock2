@@ -12,9 +12,9 @@ void NodeSymbol::renderPath(std::ostream &os, size_t level) const {
     }
 }
 
-NodeSymbol::NodeSymbol(std::string &&_name, LookupMode _mode):
-    name {std::move(_name)},
-    mode {_mode} {}
+NodeSymbol::NodeSymbol(LookupMode _mode, std::string &&_name):
+    mode {_mode},
+    name {std::move(_name)} {}
 
 void NodeSymbol::buildProc(
     Instance &instance,
