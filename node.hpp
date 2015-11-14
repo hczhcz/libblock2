@@ -132,8 +132,10 @@ private:
 
     void renderFrameAlloc(Instance &instance, OutputContext &oc) const;
     void renderFrameFree(Instance &instance, OutputContext &oc) const;
+
     void build(
         Instance &instance, Output &output,
+        std::function<void (Block &)> &&init,
         std::function<void (Instance &)> &&before,
         std::function<void (Instance &)> &&after
     );

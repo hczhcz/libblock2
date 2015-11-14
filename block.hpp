@@ -51,6 +51,8 @@ public:
         std::vector<std::pair<std::string, ParamMode>> &&_params
     );
 
+    bool getOption(BlockOption option);
+
     void inArg(
         Instance &caller, Instance &instance,
         size_t index, std::unique_ptr<Node> &arg,

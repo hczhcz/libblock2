@@ -6,6 +6,7 @@ int main() {
 
     BlockUser *block_p {
         block(
+            {BlockOption::allow_proc},
             {},
             call(
                 $("__then__"),

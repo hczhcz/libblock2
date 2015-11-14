@@ -93,6 +93,10 @@ Block::Block(
     options {std::move(_options)},
     params {std::move(_params)} {}
 
+bool Block::getOption(BlockOption option) {
+    return options.find(option) != options.end();
+}
+
 void Block::inArg(
     Instance &caller, Instance &instance,
     size_t index, std::unique_ptr<Node> &arg,

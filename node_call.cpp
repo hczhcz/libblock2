@@ -73,6 +73,7 @@ void NodeCall::renderFrameFree(
 
 void NodeCall::build(
     Instance &instance, Output &output,
+    std::function<void (Block &)> &&init,
     std::function<void (Instance &)> &&before,
     std::function<void (Instance &)> &&after
 ) {
@@ -119,20 +120,26 @@ void NodeCall::build(
                     }
                 );
 
-                // parent
+                // init
 
-                callee.insert("parent", parent);
+                init(block);
 
-                // render (parent)
+                if (block.getOption(BlockOption::parent)) {
+                    // parent
 
-                output.content(
-                    instance,
-                    [&](OutputContext &oc) {
-                        oc.endl();
-                        oc.os << instance.strInner(*this) << "->parent = "
-                              << parent.strCast("tmp") << ";";
-                    }
-                );
+                    callee.insert("parent", parent);
+
+                    // render (parent)
+
+                    output.content(
+                        instance,
+                        [&](OutputContext &oc) {
+                            oc.endl();
+                            oc.os << instance.strInner(*this) << "->parent = "
+                                  << parent.strCast("tmp") << ";";
+                        }
+                    );
+                }
 
                 // input
 
@@ -261,6 +268,11 @@ void NodeCall::buildProc(
 ) {
     build(
         instance, output,
+        [](Block &block) {
+            if (!block.getOption(BlockOption::allow_proc)) {
+                throw ErrorDiscardNotAllowed {};
+            }
+        },
         [](Instance &) {
             // nothing
         },
@@ -279,6 +291,11 @@ Type &NodeCall::buildOut(
 
     build(
         instance, output,
+        [](Block &block) {
+            if (!block.getOption(BlockOption::allow_out)) {
+                throw ErrorReadNotAllowed {};
+            }
+        },
         [](Instance &) {
             // nothing
         },
@@ -308,6 +325,11 @@ void NodeCall::buildIn(
 ) {
     build(
         instance, output,
+        [](Block &block) {
+            if (!block.getOption(BlockOption::allow_in)) {
+                throw ErrorWriteNotAllowed {};
+            }
+        },
         [&](Instance &callee) {
             callee.insert("input", type);
 
