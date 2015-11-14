@@ -22,7 +22,10 @@ protected:
 
 public:
     Then():
-        BlockBuiltin {0, {}} {}
+        BlockBuiltin {
+            {BlockOption::allow_proc},
+            {}
+        } {}
 };
 Builtin __then__ {"__then__", new Then {}};
 
@@ -45,7 +48,10 @@ protected:
 
 public:
     Set():
-        BlockBuiltin {0, {out("dest"), in("src")}} {}
+        BlockBuiltin {
+            {BlockOption::allow_proc},
+            {out("dest"), in("src")}
+        } {}
 };
 Builtin __set__ {"__set__", new Set {}};
 
@@ -67,7 +73,10 @@ protected:
 
 public:
     Print():
-        BlockBuiltin {0, {in("value")}} {}
+        BlockBuiltin {
+            {BlockOption::allow_proc},
+            {in("value")}
+        } {}
 };
 Builtin print {"print", new Print {}};
 

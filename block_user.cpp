@@ -9,7 +9,7 @@ void BlockUser::buildContent(Instance &instance, Output &output) {
 }
 
 BlockUser::BlockUser(
-    std::bitset<(size_t) BlockOption::END> &&_options,
+    std::set<BlockOption> &&_options,
     std::vector<std::pair<std::string, ParamMode>> &&_params,
     Node *_ast
 ):

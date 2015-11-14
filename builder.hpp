@@ -65,7 +65,27 @@ inline BlockUser *block(
     std::vector<std::pair<std::string, ParamMode>> &&params,
     Node *ast
 ) {
-    return new BlockUser {0, std::move(params), ast};
+    return new BlockUser {
+        {
+            BlockOption::parent,
+            BlockOption::allow_proc,
+            BlockOption::allow_out
+        },
+        std::move(params),
+        ast
+    };
+}
+
+inline BlockUser *block(
+    std::set<BlockOption> &&options,
+    std::vector<std::pair<std::string, ParamMode>> &&params,
+    Node *ast
+) {
+    return new BlockUser {
+        std::move(options),
+        std::move(params),
+        ast
+    };
 }
 
 inline std::pair<std::string, ParamMode> in(

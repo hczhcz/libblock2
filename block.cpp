@@ -87,7 +87,7 @@ void Block::outSpecialArg(
 }
 
 Block::Block(
-    std::bitset<(size_t) BlockOption::END> &&_options,
+    std::set<BlockOption> &&_options,
     std::vector<std::pair<std::string, ParamMode>> &&_params
 ):
     options {std::move(_options)},

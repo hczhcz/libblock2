@@ -15,13 +15,12 @@ enum class BlockOption {
     parent,
     allow_proc,
     allow_out,
-    allow_in,
-    END
+    allow_in
 };
 
 class Block {
 private:
-    std::bitset<(size_t) BlockOption::END> options;
+    std::set<BlockOption> options;
     std::vector<std::pair<std::string, ParamMode>> params;
 
     std::list<std::unique_ptr<Instance>> instances;
@@ -48,7 +47,7 @@ protected:
 
 public:
     Block(
-        std::bitset<(size_t) BlockOption::END> &&_options,
+        std::set<BlockOption> &&_options,
         std::vector<std::pair<std::string, ParamMode>> &&_params
     );
 
@@ -102,7 +101,7 @@ protected:
 
 public:
     BlockUser(
-        std::bitset<(size_t) BlockOption::END> &&_options,
+        std::set<BlockOption> &&_options,
         std::vector<std::pair<std::string, ParamMode>> &&_params,
         Node *_ast
     );
