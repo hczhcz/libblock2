@@ -46,9 +46,11 @@ public:
 
 class Instance: public Type {
 private:
+    size_t last_position {0}; // TODO
+
     std::map<std::string, Type &> symbol_types;
     std::map<uintptr_t, std::shared_ptr<TypeClosure>> closure_types;
-    std::map<uintptr_t, Instance &> callee_types;
+    std::map<size_t, Instance &> callee_types;
 
     void renderStruct(OutputContext &oc) const;
     void renderFuncHead(OutputContext &oc) const;
@@ -57,15 +59,19 @@ private:
     friend class Block;
 
 public:
+    Instance();
+
     std::string strFunc() const;
     std::string strStruct() const;
     std::string strCast(const std::string &name) const;
 
-    std::string strLabel(const NodeCall &call) const;
-    std::string strCalleeType(const NodeCall &call) const;
-    std::string strCalleeName(const NodeCall &call) const;
-    std::string strInner(const NodeCall &call) const;
-    std::string strCallee(const NodeCall &call) const;
+    std::string strLabel(size_t position) const;
+    std::string strCalleeType(size_t position) const;
+    std::string strCalleeName(size_t position) const;
+    std::string strInner(size_t position) const;
+    std::string strCallee(size_t position) const;
+
+    size_t addPosition();
 
     void check(Type &type1, Type &type2);
     Type &at(const std::string &name);
@@ -73,7 +79,7 @@ public:
     Type &lookup(const std::string &name, size_t &level);
 
     Type &addClosure(NodeBlock &blocks);
-    void addCallee(NodeCall &call, Instance &callee);
+    void addCallee(size_t position, Instance &callee);
 
     virtual std::string strDecl(const std::string &name) const;
 };

@@ -131,17 +131,19 @@ private:
     std::vector<std::unique_ptr<Node>> args;
 
     void renderFrameAlloc(
-        Instance &instance, OutputContext &oc
+        Instance &instance, size_t position,
+        OutputContext &oc
     ) const;
     void renderFrameFree(
-        Instance &instance, OutputContext &oc
+        Instance &instance, size_t position,
+        OutputContext &oc
     ) const;
 
     void build(
         Instance &instance, Output &output,
         std::function<void (Block &)> &&init,
-        std::function<void (Instance &)> &&before,
-        std::function<void (Instance &)> &&after
+        std::function<void (Instance &, size_t)> &&before,
+        std::function<void (Instance &, size_t)> &&after
     );
 
 public:

@@ -3,6 +3,8 @@
 #include "type.hpp"
 #include "node.hpp"
 
+Instance::Instance() {}
+
 void Instance::renderStruct(OutputContext &oc) const {
     oc.endl();
     oc.os << strStruct() << " {";
@@ -49,28 +51,32 @@ std::string Instance::strCast(const std::string &name) const {
     return "((" + strStruct() + " *) " + name + ")";
 }
 
-std::string Instance::strLabel(const NodeCall &call) const {
+std::string Instance::strLabel(size_t position) const {
     return "label_"
         + std::to_string(tuid()) + "_"
-        + std::to_string(call.nuid());
+        + std::to_string(position);
 }
 
-std::string Instance::strCalleeType(const NodeCall &call) const {
-    return callee_types.at(call.nuid()).strStruct();
+std::string Instance::strCalleeType(size_t position) const {
+    return callee_types.at(position).strStruct();
 }
 
-std::string Instance::strCalleeName(const NodeCall &call) const {
+std::string Instance::strCalleeName(size_t position) const {
     return "object_"
         + std::to_string(tuid()) + "_"
-        + std::to_string(call.nuid());
+        + std::to_string(position);
 }
 
-std::string Instance::strInner(const NodeCall &call) const {
-    return "((" + strCalleeType(call) + " *) inner)";
+std::string Instance::strInner(size_t position) const {
+    return "((" + strCalleeType(position) + " *) inner)";
 }
 
-std::string Instance::strCallee(const NodeCall &call) const {
-    return "((" + strCalleeType(call) + " *) callee)";
+std::string Instance::strCallee(size_t position) const {
+    return "((" + strCalleeType(position) + " *) callee)";
+}
+
+size_t Instance::addPosition() {
+    return ++last_position;
 }
 
 void Instance::check(Type &type1, Type &type2) {
@@ -138,8 +144,8 @@ Type &Instance::addClosure(NodeBlock &blocks) {
     }
 }
 
-void Instance::addCallee(NodeCall &call, Instance &callee) {
-    callee_types.insert({call.nuid(), callee});
+void Instance::addCallee(size_t position, Instance &callee) {
+    callee_types.insert({position, callee});
 }
 
 std::string Instance::strDecl(const std::string &name) const {

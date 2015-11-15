@@ -5,53 +5,55 @@
 #include "block.hpp"
 
 void NodeCall::renderFrameAlloc(
-    Instance &instance, OutputContext &oc
+    Instance &instance, size_t position,
+    OutputContext &oc
 ) const {
     switch (mode) {
         case FrameMode::static_global:
             oc.endl();
             oc.os << "static "
-                  << instance.strCalleeType(*this) << " "
-                  << instance.strCalleeName(*this) << ";";
+                  << instance.strCalleeType(position) << " "
+                  << instance.strCalleeName(position) << ";";
             oc.endl();
             oc.os << "inner = (struct frame *) &"
-                  << instance.strCalleeName(*this) << ";";
+                  << instance.strCalleeName(position) << ";";
             break;
 
         case FrameMode::static_local:
             oc.endl();
-            oc.os << instance.strCalleeType(*this) << " "
-                  << instance.strCalleeName(*this) << ";";
+            oc.os << instance.strCalleeType(position) << " "
+                  << instance.strCalleeName(position) << ";";
             oc.endl();
             oc.os << "inner = (struct frame *) &"
-                  << instance.strCalleeName(*this) << ";";
+                  << instance.strCalleeName(position) << ";";
             break;
 
         case FrameMode::dynamic_stack:
             oc.endl();
             oc.os << "inner = alloca(sizeof("
-                  << instance.strCalleeType(*this)
+                  << instance.strCalleeType(position)
                   << "));";
             break;
 
         case FrameMode::dynamic_gc:
             oc.endl();
             oc.os << "inner = GC_malloc(sizeof("
-                  << instance.strCalleeType(*this)
+                  << instance.strCalleeType(position)
                   << "));";
             break;
 
         case FrameMode::dynamic_free:
             oc.endl();
             oc.os << "inner = malloc(sizeof("
-                  << instance.strCalleeType(*this)
+                  << instance.strCalleeType(position)
                   << "));";
             break;
     }
 }
 
 void NodeCall::renderFrameFree(
-    Instance &instance, OutputContext &oc
+    Instance &instance, size_t position,
+    OutputContext &oc
 ) const {
     switch (mode) {
         case FrameMode::static_global:
@@ -61,7 +63,7 @@ void NodeCall::renderFrameFree(
         case FrameMode::dynamic_stack:
             oc.endl();
             oc.os << "alloca(-sizeof("
-                  << instance.strCalleeType(*this)
+                  << instance.strCalleeType(position)
                   << "));";
             break;
 
@@ -74,8 +76,8 @@ void NodeCall::renderFrameFree(
 void NodeCall::build(
     Instance &instance, Output &output,
     std::function<void (Block &)> &&init,
-    std::function<void (Instance &)> &&before,
-    std::function<void (Instance &)> &&after
+    std::function<void (Instance &, size_t)> &&before,
+    std::function<void (Instance &, size_t)> &&after
 ) {
     // special symbols:
     //     lookup: self, input, result, parent
@@ -98,6 +100,8 @@ void NodeCall::build(
             dynamic_cast<TypeClosure *>(&callee_type)
         }
     ) {
+        size_t position {instance.addPosition()};
+
         // callee is closure
         // create a frame and call the function
 
@@ -111,12 +115,12 @@ void NodeCall::build(
 
                 output.content(
                     instance,
-                    [&](OutputContext &oc) {
+                    [&, position](OutputContext &oc) {
                         oc.endl();
                         oc.os << "/* call */";
                         oc.enter();
 
-                        renderFrameAlloc(instance, oc);
+                        renderFrameAlloc(instance, position, oc);
                     }
                 );
 
@@ -133,9 +137,9 @@ void NodeCall::build(
 
                     output.content(
                         instance,
-                        [&](OutputContext &oc) {
+                        [&, position](OutputContext &oc) {
                             oc.endl();
-                            oc.os << instance.strInner(*this) << "->parent = "
+                            oc.os << instance.strInner(position) << "->parent = "
                                   << parent.strCast("tmp") << ";";
                         }
                     );
@@ -143,7 +147,7 @@ void NodeCall::build(
 
                 // input
 
-                before(callee);
+                before(callee, position);
 
                 // render (load the callee)
 
@@ -164,8 +168,8 @@ void NodeCall::build(
                         instance, callee,
                         i, args[i],
                         output,
-                        [&]() {
-                            return instance.strCallee(*this);
+                        [&, position]() {
+                            return instance.strCallee(position);
                         }
                     );
                 }
@@ -174,10 +178,10 @@ void NodeCall::build(
 
                 output.content(
                     instance,
-                    [&](OutputContext &oc) {
+                    [&, position](OutputContext &oc) {
                         oc.endl();
                         oc.os << "self->func = &&"
-                              << instance.strLabel(*this) << ";";
+                              << instance.strLabel(position) << ";";
 
                         oc.endl();
                         oc.os << "callee->caller = self;";
@@ -187,13 +191,13 @@ void NodeCall::build(
                 );
             },
             [&](Instance &callee) {
-                instance.addCallee(*this, callee);
+                instance.addCallee(position, callee);
 
                 // render (after call)
 
                 output.content(
                     instance,
-                    [&](OutputContext &oc) {
+                    [&, position](OutputContext &oc) {
                         // notice: reset self->func
                         oc.endl();
                         oc.os << "self->func = &&"
@@ -202,7 +206,7 @@ void NodeCall::build(
                         oc.os << "goto *self->func;";
 
                         oc.endl();
-                        oc.os << instance.strLabel(*this) << ":";
+                        oc.os << instance.strLabel(position) << ":";
 
                         oc.endl();
                         oc.os << "callee = self;";
@@ -218,8 +222,8 @@ void NodeCall::build(
                         instance, callee,
                         i, args[i],
                         output,
-                        [&]() {
-                            return instance.strCallee(*this);
+                        [&, position]() {
+                            return instance.strCallee(position);
                         }
                     );
                 }
@@ -229,7 +233,6 @@ void NodeCall::build(
                 output.content(
                     instance,
                     [&](OutputContext &oc) {
-
                         oc.endl();
                         oc.os << "inner = callee;";
                         oc.endl();
@@ -239,14 +242,14 @@ void NodeCall::build(
 
                 // result
 
-                after(callee);
+                after(callee, position);
 
                 // render (free the call frame)
 
                 output.content(
                     instance,
-                    [&](OutputContext &oc) {
-                        renderFrameFree(instance, oc);
+                    [&, position](OutputContext &oc) {
+                        renderFrameFree(instance, position, oc);
 
                         oc.leave();
                     }
@@ -273,10 +276,10 @@ void NodeCall::buildProc(
                 throw ErrorDiscardNotAllowed {};
             }
         },
-        [](Instance &) {
+        [](Instance &, size_t) {
             // nothing
         },
-        [](Instance &) {
+        [](Instance &, size_t) {
             // nothing
         }
     );
@@ -296,20 +299,20 @@ Type &NodeCall::buildOut(
                 throw ErrorReadNotAllowed {};
             }
         },
-        [](Instance &) {
+        [](Instance &, size_t) {
             // nothing
         },
-        [&](Instance &callee) {
+        [&](Instance &callee, size_t position) {
             type_p = &callee.at("result");
 
             // render
 
             output.content(
                 instance,
-                [&, target = std::move(target)](OutputContext &oc) {
+                [&, position, target = std::move(target)](OutputContext &oc) {
                     oc.endl();
                     oc.os << target() << " = "
-                          << instance.strInner(*this) << "->result;";
+                          << instance.strInner(position) << "->result;";
                 }
             );
         }
@@ -330,21 +333,21 @@ void NodeCall::buildIn(
                 throw ErrorWriteNotAllowed {};
             }
         },
-        [&](Instance &callee) {
+        [&](Instance &callee, size_t position) {
             callee.insert("input", type);
 
             // render
 
             output.content(
                 instance,
-                [&, target = std::move(target)](OutputContext &oc) {
+                [&, position, target = std::move(target)](OutputContext &oc) {
                     oc.endl();
-                    oc.os << instance.strInner(*this) << "->input = "
+                    oc.os << instance.strInner(position) << "->input = "
                           << target() << ";";
                 }
             );
         },
-        [](Instance &) {
+        [](Instance &, size_t) {
             // nothing
         }
     );
