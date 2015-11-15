@@ -75,15 +75,12 @@ Type &NodePath::buildOut(
 
     // get type
 
-    Type *type_p {nullptr}; // return value
-
     size_t level {0};
 
-    if (mode == LookupMode::local) {
-        type_p = &inner.at(name);
-    } else {
-        type_p = &inner.lookup(name, level);
-    }
+    Type &type {
+        mode == LookupMode::local ?
+        inner.at(name) : inner.lookup(name, level)
+    };
 
     // render
 
@@ -99,7 +96,7 @@ Type &NodePath::buildOut(
 
     // return
 
-    return *type_p;
+    return type;
 }
 
 void NodePath::buildIn(

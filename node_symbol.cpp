@@ -50,15 +50,12 @@ Type &NodeSymbol::buildOut(
 ) {
     // get type
 
-    Type *type_p {nullptr}; // return value
-
     size_t level {0};
 
-    if (mode == LookupMode::local) {
-        type_p = &instance.at(name);
-    } else {
-        type_p = &instance.lookup(name, level);
-    }
+    Type &type {
+        mode == LookupMode::local ?
+        instance.at(name) : instance.lookup(name, level)
+    };
 
     // render
 
@@ -74,7 +71,7 @@ Type &NodeSymbol::buildOut(
 
     // return
 
-    return *type_p;
+    return type;
 }
 
 void NodeSymbol::buildIn(
