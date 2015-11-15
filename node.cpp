@@ -5,5 +5,5 @@ static std::unique_ptr<std::nullptr_t> heap {
 };
 
 uintptr_t Node::nuid() const {
-    return (uintptr_t) this - (uintptr_t) heap.get();
+    return ((uintptr_t) this) - ((uintptr_t) heap.get());
 }

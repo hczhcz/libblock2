@@ -6,7 +6,7 @@ static std::unique_ptr<std::nullptr_t> heap {
 };
 
 uintptr_t Type::tuid() const {
-    return (uintptr_t) this - (uintptr_t) heap.get();
+    return ((uintptr_t) this) - ((uintptr_t) heap.get());
 }
 
 Instance &Type::prepareLookup() {

@@ -77,11 +77,6 @@ int main() {
         }
     );
 
-    std::cout << "======== header ========" << std::endl;
-    output.getHeader(std::cout, *root_p);
-    std::cout << "======== content ========" << std::endl;
-    output.getContent(std::cout, *root_p);
-
     std::fstream fs {
         "./build/test.gen.c", std::fstream::out
     };
