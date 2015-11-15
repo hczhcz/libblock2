@@ -134,6 +134,20 @@ private:
         Instance &instance, size_t position,
         OutputContext &oc
     ) const;
+    void renderLoadCallee(OutputContext &oc) const;
+    void renderBeforeCall(
+        OutputContext &oc,
+        const std::string &label
+    ) const;
+    void renderCall(
+        OutputContext &oc,
+        const std::string &func
+    ) const;
+    void renderAfterCall(
+        OutputContext &oc,
+        const std::string &label
+    ) const;
+    void renderUnloadCallee(OutputContext &oc) const;
     void renderFrameFree(
         Instance &instance, size_t position,
         OutputContext &oc

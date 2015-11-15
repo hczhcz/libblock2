@@ -51,6 +51,58 @@ void NodeCall::renderFrameAlloc(
     }
 }
 
+void NodeCall::renderLoadCallee(OutputContext &oc) const {
+    oc.endl();
+    oc.os << "inner->outer = callee;";
+    oc.endl();
+    oc.os << "callee = inner;";
+}
+
+void NodeCall::renderBeforeCall(
+    OutputContext &oc,
+    const std::string &label
+) const {
+    oc.endl();
+    oc.os << "self->func = &&" << label << ";";
+
+    oc.endl();
+    oc.os << "callee->caller = self;";
+    oc.endl();
+    oc.os << "self = callee;";
+}
+
+void NodeCall::renderCall(
+    OutputContext &oc,
+    const std::string &func
+) const {
+    // notice: reset self->func
+    oc.endl();
+    oc.os << "self->func = &&"
+          << func << ";";
+    oc.endl();
+    oc.os << "goto *self->func;";
+}
+
+void NodeCall::renderAfterCall(
+    OutputContext &oc,
+    const std::string &label
+) const {
+    oc.endl();
+    oc.os << label << ":";
+
+    oc.endl();
+    oc.os << "callee = self;";
+    oc.endl();
+    oc.os << "self = callee->caller;";
+}
+
+void NodeCall::renderUnloadCallee(OutputContext &oc) const {
+    oc.endl();
+    oc.os << "inner = callee;";
+    oc.endl();
+    oc.os << "callee = inner->outer;";
+}
+
 void NodeCall::renderFrameFree(
     Instance &instance, size_t position,
     OutputContext &oc
@@ -154,10 +206,7 @@ void NodeCall::build(
                 output.content(
                     instance,
                     [&](OutputContext &oc) {
-                        oc.endl();
-                        oc.os << "inner->outer = callee;";
-                        oc.endl();
-                        oc.os << "callee = inner;";
+                        renderLoadCallee(oc);
                     }
                 );
 
@@ -179,14 +228,7 @@ void NodeCall::build(
                 output.content(
                     instance,
                     [&, position](OutputContext &oc) {
-                        oc.endl();
-                        oc.os << "self->func = &&"
-                              << instance.strLabel(position) << ";";
-
-                        oc.endl();
-                        oc.os << "callee->caller = self;";
-                        oc.endl();
-                        oc.os << "self = callee;";
+                        renderBeforeCall(oc, instance.strLabel(position));
                     }
                 );
             },
@@ -198,20 +240,9 @@ void NodeCall::build(
                 output.content(
                     instance,
                     [&, position](OutputContext &oc) {
-                        // notice: reset self->func
-                        oc.endl();
-                        oc.os << "self->func = &&"
-                              << callee.strFunc() << ";";
-                        oc.endl();
-                        oc.os << "goto *self->func;";
+                        renderCall(oc, callee.strFunc());
 
-                        oc.endl();
-                        oc.os << instance.strLabel(position) << ":";
-
-                        oc.endl();
-                        oc.os << "callee = self;";
-                        oc.endl();
-                        oc.os << "self = callee->caller;";
+                        renderAfterCall(oc, instance.strLabel(position));
                     }
                 );
 
@@ -233,10 +264,7 @@ void NodeCall::build(
                 output.content(
                     instance,
                     [&](OutputContext &oc) {
-                        oc.endl();
-                        oc.os << "inner = callee;";
-                        oc.endl();
-                        oc.os << "callee = inner->outer;";
+                        renderUnloadCallee(oc);
                     }
                 );
 
