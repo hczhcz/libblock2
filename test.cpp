@@ -17,10 +17,10 @@ int main() {
                             call(
                                 $("__then__"),
                                 call(
-                                    $("__set__"), $("c"), _("hell")
+                                    $("__set__"), $("c"), "hell"_lit
                                 ),
                                 call(
-                                    $("__set__"), $($("parent"), "c"), _("o")
+                                    $("__set__"), $($("parent"), "c"), "o"_lit
                                 ),
                                 call(
                                     $("__set__"), $("result"), $("self")
@@ -50,16 +50,16 @@ int main() {
                 ),
                 call(
                     $("print"),
-                    call($("b"), _("bye"), $($("d"), "c"))
+                    call($("b"), "bye"_lit, $($("d"), "c"))
                 ),
                 call(
-                    call($("b"), _(1), $("print")),
-                    call($("b"), _("bye"), $("c"))
+                    call($("b"), 1_lit, $("print")),
+                    call($("b"), "bye"_lit, $("c"))
                 ),
-                call($("print"), FrameMode::static_global, _(", ")),
-                call($("print"), FrameMode::static_local, _("wo")),
-                call($("print"), FrameMode::dynamic_stack, _("rl")),
-                call($("print"), FrameMode::dynamic_free, _("d!"))
+                call($("print"), FrameMode::static_global, ", "_lit),
+                call($("print"), FrameMode::static_local, "wo"_lit),
+                call($("print"), FrameMode::dynamic_stack, "rl"_lit),
+                call($("print"), FrameMode::dynamic_free, "d!"_lit)
             )
         )
     };

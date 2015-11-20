@@ -6,28 +6,24 @@
 
 namespace builder {
 
-inline NodeLiteralBool *_true() {
+inline NodeLiteralBool *true_lit() {
     return new NodeLiteralBool {true};
 }
 
-inline NodeLiteralBool *_false() {
+inline NodeLiteralBool *false_lit() {
     return new NodeLiteralBool {false};
 }
 
-inline NodeLiteralInt *_(int32_t &&value) {
-    return new NodeLiteralInt {std::move(value)};
+inline NodeLiteralInt *operator ""_lit(unsigned long long value) {
+    return new NodeLiteralInt {value};
 }
 
-inline NodeLiteralInt *_(int64_t &&value) {
-    return new NodeLiteralInt {std::move(value)};
+inline NodeLiteralReal *operator ""_lit(long double value) {
+    return new NodeLiteralReal {value};
 }
 
-inline NodeLiteralReal *_(double &&value) {
-    return new NodeLiteralReal {std::move(value)};
-}
-
-inline NodeLiteralStr *_(std::string &&value) {
-    return new NodeLiteralStr {std::move(value)};
+inline NodeLiteralStr *operator ""_lit(const char *value, size_t size) {
+    return new NodeLiteralStr {{value, size}};
 }
 
 inline NodeSymbol *$(std::string &&name) {
