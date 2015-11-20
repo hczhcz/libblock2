@@ -58,7 +58,8 @@ int main() {
                     call($("b"), "bye"_lit, $("c"))
                 ),
                 call($("print"), FrameMode::static_global, ", "_lit),
-                call($("print"), FrameMode::static_local, "wo"_lit),
+                call($("print"), FrameMode::static_local, "w"_lit),
+                call($("print"), 0_lit),
                 call($("print"), FrameMode::dynamic_stack, "rl"_lit),
                 call($("print"), FrameMode::dynamic_free, "d!"_lit)
             )
