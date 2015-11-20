@@ -1,4 +1,5 @@
 #include "output.hpp"
+#include "type.hpp"
 #include "builder.hpp"
 
 namespace lib {

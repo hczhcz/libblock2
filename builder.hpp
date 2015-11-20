@@ -1,6 +1,5 @@
 #pragma once
 
-#include "type.hpp"
 #include "node.hpp"
 #include "block.hpp"
 
