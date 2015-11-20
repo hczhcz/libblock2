@@ -28,7 +28,12 @@ inline bool operator!=(const Type &a, const Type &b) {
 
 template <class T>
 class TypeNative: public Type {
+private:
+    TypeNative() = default;
+
 public:
+    static TypeNative<T> &get();
+
     virtual std::string strDecl(const std::string &name) const;
 };
 

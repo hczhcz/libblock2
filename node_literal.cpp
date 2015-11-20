@@ -57,7 +57,9 @@ Type &NodeLiteral<T>::buildOut(
 ) {
     // get type
 
-    static TypeNative<T> type;
+    Type &type {
+        TypeNative<T>::get()
+    };
 
     // render
 
