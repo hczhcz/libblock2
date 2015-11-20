@@ -30,55 +30,28 @@ public:
 };
 Builtin __then__ {"__then__", new Then {}};
 
-class Set: public BlockBuiltin {
-protected:
-    virtual void buildContent(Instance &instance, Output &output) {
-        instance.insert("dest", instance.at("src"));
-
-        // render
-
-        output.content(
-            instance,
-            [&](OutputContext &oc) {
-                oc.endl();
-                oc.os << instance.strCast("self") << "->dest = "
-                      << instance.strCast("self") << "->src;";
-            }
-        );
+Builtin __set__ {"__set__",
+    new BlockBuiltinFmt {
+        {BlockOption::allow_proc},
+        {out("dest"), in("src")},
+        {},
+        {
+            {"dest", "src"}
+        },
+        "$dest = $src;"
     }
-
-public:
-    Set():
-        BlockBuiltin {
-            {BlockOption::allow_proc},
-            {out("dest"), in("src")}
-        } {}
 };
-Builtin __set__ {"__set__", new Set {}};
 
-class Print: public BlockBuiltin {
-protected:
-    virtual void buildContent(Instance &instance, Output &output) {
-        // render
-
-        output.content(
-            instance,
-            [&](OutputContext &oc) {
-                oc.endl();
-                oc.os << "printf(\"%s\", "
-                      << instance.strCast("self")
-                      << "->value);";
-            }
-        );
+Builtin print {"print",
+    new BlockBuiltinFmt {
+        {BlockOption::allow_proc},
+        {in("value")},
+        {
+            {"value", TypeNativeStr::get()}
+        },
+        {},
+        "printf(\"%s\", $value);"
     }
-
-public:
-    Print():
-        BlockBuiltin {
-            {BlockOption::allow_proc},
-            {in("value")}
-        } {}
 };
-Builtin print {"print", new Print {}};
 
 }

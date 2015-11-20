@@ -36,6 +36,10 @@ public:
 
     virtual std::string strDecl(const std::string &name) const;
 };
+using TypeNativeBool = TypeNative<bool>;
+using TypeNativeInt = TypeNative<int64_t>;
+using TypeNativeReal = TypeNative<double>;
+using TypeNativeStr = TypeNative<std::string>;
 
 class TypeClosure: public Type {
 private:
