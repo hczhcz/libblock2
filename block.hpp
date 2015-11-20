@@ -93,6 +93,26 @@ public:
     using Block::Block;
 };
 
+class BlockBuiltinFmt: public BlockBuiltin {
+private:
+    std::map<std::string, Type &> static_types;
+    std::vector<std::pair<std::string, std::string>> dynamic_types;
+    std::string str;
+
+protected:
+    // as block
+    virtual void buildContent(Instance &instance, Output &output);
+
+public:
+    BlockBuiltinFmt(
+        std::set<BlockOption> &&_options,
+        std::vector<std::pair<std::string, ParamMode>> &&_params,
+        std::map<std::string, Type &> &&_static_types,
+        std::vector<std::pair<std::string, std::string>> &&_dynamic_types,
+        std::string &&_str
+    );
+};
+
 class BlockUser: public Block {
 private:
     std::unique_ptr<Node> ast_p;
