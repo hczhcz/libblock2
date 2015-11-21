@@ -130,13 +130,13 @@ Type &Instance::lookup(const std::string &name, size_t &level) {
 }
 
 Type &Instance::addClosure(NodeBlock &blocks) {
-    const auto &closure = closure_types.find(blocks.nuid());
+    const auto &closure = closure_types.find(std::ref(blocks));
 
     if (closure != closure_types.end()) {
         return *closure->second;
     } else {
         return *closure_types.insert({
-            blocks.nuid(),
+            std::ref(blocks),
             std::make_shared<TypeClosure>(
                 *this, blocks
             )

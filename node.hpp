@@ -29,6 +29,18 @@ public:
     ) = 0;
 };
 
+inline bool operator==(const Node &a, const Node &b) {
+    return a.nuid() == b.nuid();
+}
+
+inline bool operator!=(const Node &a, const Node &b) {
+    return !(a == b);
+}
+
+inline bool operator<(const Node &a, const Node &b) {
+    return a.nuid() < b.nuid();
+}
+
 template <class T>
 class NodeLiteral: public Node {
 private:

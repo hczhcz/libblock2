@@ -26,6 +26,10 @@ inline bool operator!=(const Type &a, const Type &b) {
     return !(a == b);
 }
 
+inline bool operator<(const Type &a, const Type &b) {
+    return a.tuid() < b.tuid();
+}
+
 template <class T>
 class TypeNative: public Type {
 private:
@@ -47,6 +51,7 @@ private:
     NodeBlock &blocks;
 
     friend class NodeCall;
+
 public:
     TypeClosure(Instance &_parent, NodeBlock &_blocks);
 
@@ -58,7 +63,10 @@ private:
     size_t last_position {0}; // TODO
 
     std::map<std::string, Type &> symbol_types;
-    std::map<uintptr_t, std::shared_ptr<TypeClosure>> closure_types;
+    std::map<
+        std::reference_wrapper<NodeBlock>,
+        std::shared_ptr<TypeClosure>
+    > closure_types;
     std::map<size_t, Instance &> callee_types;
 
     void renderStruct(OutputContext &oc) const;

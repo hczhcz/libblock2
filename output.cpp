@@ -35,23 +35,23 @@ void Output::header(
     Instance &instance,
     std::function<void (OutputContext &)> &&render
 ) {
-    headers.at(instance.tuid())->insert(std::move(render));
+    headers.at(std::ref(instance))->insert(std::move(render));
 }
 
 void Output::content(
     Instance &instance,
     std::function<void (OutputContext &)> &&render
 ) {
-    contents.at(instance.tuid())->insert(std::move(render));
+    contents.at(std::ref(instance))->insert(std::move(render));
 }
 
 void Output::insert(Instance &instance) {
     headers.insert({
-        instance.tuid(),
+        std::ref(instance),
         std::make_shared<OutputTask>()
     });
     contents.insert({
-        instance.tuid(),
+        std::ref(instance),
         std::make_shared<OutputTask>()
     });
 }

@@ -29,8 +29,14 @@ public:
 
 class Output {
 private:
-    std::map<uintptr_t, std::shared_ptr<OutputTask>> headers;
-    std::map<uintptr_t, std::shared_ptr<OutputTask>> contents;
+    std::map<
+        std::reference_wrapper<Instance>,
+        std::shared_ptr<OutputTask>
+    > headers;
+    std::map<
+        std::reference_wrapper<Instance>,
+        std::shared_ptr<OutputTask>
+    > contents;
 
 public:
     void header(
