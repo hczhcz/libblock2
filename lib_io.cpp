@@ -11,7 +11,7 @@ Builtin print {"print",
         {BlockOption::allow_proc},
         {in("value")},
         {
-            {"value", TypeNativeBool::get()}
+            {"value", TypeNativeBool::get()},
         },
         {},
         "printf($value ? \"true\" : \"false\");"
@@ -20,7 +20,7 @@ Builtin print {"print",
         {BlockOption::allow_proc},
         {in("value")},
         {
-            {"value", TypeNativeInt::get()}
+            {"value", TypeNativeInt::get()},
         },
         {},
         "printf(\"%ld\", $value);"
@@ -29,7 +29,7 @@ Builtin print {"print",
         {BlockOption::allow_proc},
         {in("value")},
         {
-            {"value", TypeNativeReal::get()}
+            {"value", TypeNativeReal::get()},
         },
         {},
         "printf(\"%lf\", $value);"
@@ -38,11 +38,11 @@ Builtin print {"print",
         {BlockOption::allow_proc},
         {in("value")},
         {
-            {"value", TypeNativeStr::get()}
+            {"value", TypeNativeStr::get()},
         },
         {},
         "printf(\"%s\", $value);"
-    }
+    },
 };
 
 }

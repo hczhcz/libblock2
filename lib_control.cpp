@@ -36,10 +36,10 @@ Builtin __set__ {"__set__",
         {out("dest"), in("src")},
         {},
         {
-            {"dest", "src"}
+            {"dest", "src"},
         },
         "$dest = $src;"
-    }
+    },
 };
 
 }

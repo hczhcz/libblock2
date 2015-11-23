@@ -17,15 +17,9 @@ int main() {
                             {},
                             call(
                                 $("__then__"),
-                                call(
-                                    $("__set__"), $("c"), "hell"_lit
-                                ),
-                                call(
-                                    $("__set__"), $($("parent"), "c"), "o"_lit
-                                ),
-                                call(
-                                    $("__set__"), $("result"), $("self")
-                                )
+                                call($("__set__"), $("c"), "hell"_lit),
+                                call($("__set__"), $($("parent"), "c"), "o"_lit),
+                                call($("__set__"), $("result"), $("self"))
                             )
                         )
                     )
@@ -36,16 +30,13 @@ int main() {
                             {in("a"), in("b")},
                             call(
                                 $("__then__"),
-                                call(
-                                    $("__set__"), $("t"), $("b")
-                                ),
-                                call(
-                                    $("__set__"), $("result"), $("t")
-                                )
+                                call($("__set__"), $("t"), $("b")),
+                                call($("__set__"), $("result"), $("t"))
                             )
                         )
                     )
                 ),
+
                 call(
                     $("__set__"), $("d"), call($("a"))
                 ),
@@ -58,10 +49,20 @@ int main() {
                     call($("b"), "bye"_lit, $("c"))
                 ),
                 call($("print"), FrameMode::static_global, ", "_lit),
-                call($("print"), FrameMode::static_local, "w"_lit),
-                call($("print"), 0_lit),
+                call($("print"), FrameMode::static_local, "wo"_lit),
                 call($("print"), FrameMode::dynamic_stack, "rl"_lit),
-                call($("print"), FrameMode::dynamic_free, "d!"_lit)
+                call($("print"), FrameMode::dynamic_free, "d!"_lit),
+
+                call(
+                    $("__set__"),
+                    $("n1"), call($("__add__"), 200_lit, 33_lit)
+                ),
+                call(
+                    $("__set__"),
+                    call($("__add__"), $("n2"), $("n1")), 566_lit
+                ),
+                call($("print"), $("n1")),
+                call($("print"), $("n2"))
             )
         )
     };
