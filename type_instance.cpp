@@ -75,6 +75,16 @@ std::string Instance::strCallee(size_t position) const {
     return "((" + strCalleeType(position) + " *) callee)";
 }
 
+bool Instance::in(Instance &instance) const {
+    for (const auto &symbol: symbol_types) {
+        if (symbol.second != instance.at(symbol.first)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 size_t Instance::addPosition() {
     return ++last_position;
 }

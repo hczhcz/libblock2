@@ -88,6 +88,8 @@ public:
     std::string strInner(size_t position) const;
     std::string strCallee(size_t position) const;
 
+    bool in(Instance &instance) const;
+
     size_t addPosition();
 
     void check(Type &type1, Type &type2);

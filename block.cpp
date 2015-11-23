@@ -8,19 +8,10 @@ Instance &Block::matchInstance(
     std::unique_ptr<Instance> &&instance_p,
     Output &output
 ) {
+    // find exist instance
+
     for (std::unique_ptr<Instance> &exist_p: instances) {
-        bool ok {true};
-
-        for (const auto &symbol: instance_p->symbol_types) {
-            if (symbol.second != exist_p->at(symbol.first)) {
-                ok = false;
-                break;
-            }
-        }
-
-        if (ok) {
-            // found
-
+        if (instance_p->in(*exist_p)) {
             return *exist_p;
         }
     }
