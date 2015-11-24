@@ -123,7 +123,9 @@ void NodePath::buildIn(
     if (mode == LookupMode::global) {
         inner.lookupCheck(name, type, level);
     } else {
-        inner.insert(name, type);
+        // notice: could not add symbol in other namespaces
+        // inner.insert(name, type);
+        inner.check(name, type);
     }
 
     // render

@@ -11,6 +11,7 @@ int main() {
             {},
             call(
                 $("__then__"),
+                call($("__set__"), $("c"), "what"_lit),
                 call(
                     $("__set__"), $("a"), blocks( // function a
                         block(
