@@ -121,9 +121,7 @@ void NodePath::buildIn(
     size_t level {0};
 
     if (mode == LookupMode::global) {
-        inner.check(
-            inner.lookup(name, level), type
-        );
+        inner.lookupCheck(name, type, level);
     } else {
         inner.insert(name, type);
     }

@@ -96,7 +96,14 @@ public:
 
     Type &at(const std::string &name);
     void insert(const std::string &name, Type &type);
-    Type &lookup(const std::string &name, size_t &level);
+    Type &lookup(
+        const std::string &name,
+        size_t &level
+    );
+    void lookupCheck(
+        const std::string &name, Type &type,
+        size_t &level
+    );
 
     Type &addClosure(NodeBlock &blocks);
     void addCallee(size_t position, Instance &callee);

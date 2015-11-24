@@ -116,14 +116,17 @@ void Instance::insert(const std::string &name, Type &type) {
         const auto &symbol = symbol_types.find(name);
 
         if (symbol != symbol_types.end()) {
-            check(symbol->second, type);
+            typeCheck(symbol->second, type);
         } else {
             symbol_types.insert({name, type});
         }
     }
 }
 
-Type &Instance::lookup(const std::string &name, size_t &level) {
+Type &Instance::lookup(
+    const std::string &name,
+    size_t &level
+) {
     if (name == "self") {
         return *this;
     } else {
@@ -135,6 +138,25 @@ Type &Instance::lookup(const std::string &name, size_t &level) {
             ++level;
 
             return at("parent").prepareLookup().lookup(name, level);
+        }
+    }
+}
+
+void Instance::lookupCheck(
+    const std::string &name, Type &type,
+    size_t &level
+) {
+    if (name == "self") {
+        typeCheck(*this, type);
+    } else {
+        const auto &symbol = symbol_types.find(name);
+
+        if (symbol != symbol_types.end()) {
+            typeCheck(symbol->second, type);
+        } else {
+            ++level;
+
+            at("parent").prepareLookup().lookupCheck(name, type, level);
         }
     }
 }

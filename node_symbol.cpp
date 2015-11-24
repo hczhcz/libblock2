@@ -84,9 +84,7 @@ void NodeSymbol::buildIn(
     size_t level {0};
 
     if (mode == LookupMode::global) {
-        instance.check(
-            instance.lookup(name, level), type
-        );
+        instance.lookupCheck(name, type, level);
     } else {
         instance.insert(name, type);
     }
