@@ -111,7 +111,7 @@ Type &Instance::at(const std::string &name) {
 
 void Instance::insert(const std::string &name, Type &type) {
     if (name == "self") {
-        throw ErrorWriteNotAllowed {}; // TODO: really?
+        typeCheck(*this, type);
     } else {
         const auto &symbol = symbol_types.find(name);
 
