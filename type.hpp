@@ -95,6 +95,7 @@ public:
     size_t addPosition();
 
     Type &at(const std::string &name);
+    void check(const std::string &name, Type &type);
     void insert(const std::string &name, Type &type);
     Type &lookup(
         const std::string &name,

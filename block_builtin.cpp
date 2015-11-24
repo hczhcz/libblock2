@@ -21,7 +21,7 @@ void Builtin::apply(Instance &instance) {
 void BlockBuiltinFmt::buildContent(Instance &instance, Output &output) {
     // gen type
     // notice: for existing symbols,
-    //         Instance::insert would call Instance::check
+    //         Instance::insert covers Instance::check here
 
     for (const auto &symbol: static_types) {
         instance.insert(

@@ -109,6 +109,20 @@ Type &Instance::at(const std::string &name) {
     }
 }
 
+void Instance::check(const std::string &name, Type &type) {
+    if (name == "self") {
+        typeCheck(*this, type);
+    } else {
+        const auto &symbol = symbol_types.find(name);
+
+        if (symbol != symbol_types.end()) {
+            typeCheck(symbol->second, type);
+        } else {
+            throw ErrorSymbolNotFound {};
+        }
+    }
+}
+
 void Instance::insert(const std::string &name, Type &type) {
     if (name == "self") {
         typeCheck(*this, type);
