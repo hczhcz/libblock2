@@ -60,6 +60,8 @@ public:
 
 class Instance: public Type {
 private:
+    static void typeCheck(Type &type1, Type &type2);
+
     size_t last_position {0}; // TODO
 
     std::map<std::string, Type &> symbol_types;
@@ -92,7 +94,6 @@ public:
 
     size_t addPosition();
 
-    void check(Type &type1, Type &type2);
     Type &at(const std::string &name);
     void insert(const std::string &name, Type &type);
     Type &lookup(const std::string &name, size_t &level);

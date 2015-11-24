@@ -3,7 +3,11 @@
 #include "type.hpp"
 #include "node.hpp"
 
-Instance::Instance() {}
+void Instance::typeCheck(Type &type1, Type &type2) {
+    if (type1 != type2) {
+        throw ErrorTypeCollision {};
+    }
+}
 
 void Instance::renderStruct(OutputContext &oc) const {
     oc.endl();
@@ -38,6 +42,8 @@ void Instance::renderFuncTail(OutputContext &oc) const {
     oc.leave();
     oc.endl();
 }
+
+Instance::Instance() {}
 
 std::string Instance::strFunc() const {
     return "func_" + std::to_string(tuid());
@@ -87,12 +93,6 @@ bool Instance::in(Instance &instance) const {
 
 size_t Instance::addPosition() {
     return ++last_position;
-}
-
-void Instance::check(Type &type1, Type &type2) {
-    if (type1 != type2) {
-        throw ErrorTypeCollision {};
-    }
 }
 
 Type &Instance::at(const std::string &name) {
