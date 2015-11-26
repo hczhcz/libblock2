@@ -211,22 +211,23 @@ public:
 
 class NodeBlock: public Node {
 private:
-    std::vector<std::unique_ptr<Block>> blocks;
+    std::list<std::unique_ptr<Block>> blocks;
 
     friend class NodeCall;
 
 public:
-    NodeBlock(std::vector<std::unique_ptr<Block>> &&_blocks);
+    NodeBlock(std::list<std::unique_ptr<Block>> &&_blocks);
 
     template <class... Blocks>
     NodeBlock(Blocks... _blocks) {
         Block *init[] {_blocks...};
 
-        blocks.reserve(sizeof...(_blocks));
         for (Block *block_p: init) {
             blocks.push_back(std::unique_ptr<Block> {block_p});
         }
     }
+
+    void insert(Block *block);
 
     virtual void buildProc(
         Instance &instance,

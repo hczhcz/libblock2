@@ -4,8 +4,12 @@
 #include "node.hpp"
 #include "block.hpp"
 
-NodeBlock::NodeBlock(std::vector<std::unique_ptr<Block>> &&_blocks):
+NodeBlock::NodeBlock(std::list<std::unique_ptr<Block>> &&_blocks):
     blocks {std::move(_blocks)} {}
+
+void NodeBlock::insert(Block *block) {
+    blocks.push_back(std::unique_ptr<Block> {block});
+}
 
 void NodeBlock::buildProc(
     Instance &,
