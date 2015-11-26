@@ -7,6 +7,10 @@
 NodeBlock::NodeBlock(std::list<std::unique_ptr<Block>> &&_blocks):
     blocks {std::move(_blocks)} {}
 
+void NodeBlock::addBlock(Block *block_p) {
+    blocks.push_back(std::unique_ptr<Block> {block_p});
+}
+
 void NodeBlock::buildProc(
     Instance &,
     Output &

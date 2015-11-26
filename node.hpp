@@ -220,17 +220,14 @@ public:
 
     template <class... Blocks>
     NodeBlock(Blocks... _blocks) {
-        insert(_blocks...);
-    }
-
-    template <class... Blocks>
-    void insert(Blocks... _blocks) {
         Block *init[] {_blocks...};
 
         for (Block *block_p: init) {
             blocks.push_back(std::unique_ptr<Block> {block_p});
         }
     }
+
+    void addBlock(Block *block_p);
 
     virtual void buildProc(
         Instance &instance,
