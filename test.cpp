@@ -1,4 +1,5 @@
 #include "output.hpp"
+#include "builtin.hpp"
 #include "builder.hpp"
 
 int main() {
@@ -69,11 +70,12 @@ int main() {
 
     Output output;
     Instance *root_p {nullptr};
+    BuiltinContainer bc;
 
     block_p->build(
         output,
         [&](Instance &root) {
-            Builtin::apply(root);
+            bc.apply(root);
         },
         [&](Instance &root) {
             root_p = &root;
