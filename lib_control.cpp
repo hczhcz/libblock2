@@ -1,5 +1,4 @@
 #include "output.hpp"
-#include "type.hpp"
 #include "builder.hpp"
 
 namespace lib {
@@ -30,7 +29,8 @@ public:
 };
 Builtin __then__ {"__then__", new Then {}};
 
-Builtin __set__ {"__set__",
+Builtin __set__ {
+    "__set__",
     new BlockBuiltinFmt {
         {BlockOption::allow_proc},
         {out("dest"), in("src")},

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "type.hpp"
 #include "node.hpp"
 #include "block.hpp"
 
@@ -105,6 +106,30 @@ inline std::pair<std::string, ParamMode> special(
     std::string &&name
 ) {
     return {std::move(name), ParamMode::special};
+}
+
+inline std::pair<std::string, Type &> typeBool(
+    std::string &&name
+) {
+    return {std::move(name), TypeNativeBool::get()};
+}
+
+inline std::pair<std::string, Type &> typeInt(
+    std::string &&name
+) {
+    return {std::move(name), TypeNativeInt::get()};
+}
+
+inline std::pair<std::string, Type &> typeReal(
+    std::string &&name
+) {
+    return {std::move(name), TypeNativeReal::get()};
+}
+
+inline std::pair<std::string, Type &> typeStr(
+    std::string &&name
+) {
+    return {std::move(name), TypeNativeStr::get()};
 }
 
 }
