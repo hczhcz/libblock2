@@ -72,28 +72,6 @@ public:
     );
 };
 
-class Builtin {
-private:
-    static std::map<std::string, std::shared_ptr<NodeBlock>> &builtins();
-
-public:
-    static void apply(Instance &instance);
-
-    template <class... Blocks>
-    Builtin(std::string &&name, Blocks... _blocks) {
-        auto node = builtins().find(name);
-
-        if (node == builtins().end()) {
-            builtins().insert({
-                std::move(name),
-                std::make_shared<NodeBlock>(_blocks...)
-            });
-        } else {
-            node->second->insert(_blocks...);
-        }
-    }
-};
-
 class BlockBuiltin: public Block {
 public:
     using Block::Block;
