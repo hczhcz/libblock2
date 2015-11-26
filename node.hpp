@@ -173,8 +173,16 @@ private:
     );
 
 public:
+    NodeCall(
+        Node *_source, FrameMode _mode,
+        std::vector<std::unique_ptr<Node>> &&_args
+    );
+
     template <class... Args>
-    NodeCall(Node *_source, FrameMode _mode, Args... _args):
+    NodeCall(
+        Node *_source, FrameMode _mode,
+        Args... _args
+    ):
         source_p {_source},
         mode {_mode} {
             Node *init[] {_args...};
@@ -208,6 +216,8 @@ private:
     friend class NodeCall;
 
 public:
+    NodeBlock(std::vector<std::unique_ptr<Block>> &&_blocks);
+
     template <class... Blocks>
     NodeBlock(Blocks... _blocks) {
         Block *init[] {_blocks...};

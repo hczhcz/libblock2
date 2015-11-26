@@ -4,6 +4,9 @@
 #include "node.hpp"
 #include "block.hpp"
 
+NodeBlock::NodeBlock(std::vector<std::unique_ptr<Block>> &&_blocks):
+    blocks {std::move(_blocks)} {}
+
 void NodeBlock::buildProc(
     Instance &,
     Output &

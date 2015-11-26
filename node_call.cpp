@@ -350,6 +350,14 @@ void NodeCall::build(
     }
 }
 
+NodeCall::NodeCall(
+    Node *_source, FrameMode _mode,
+    std::vector<std::unique_ptr<Node>> &&_args
+):
+    source_p {_source},
+    mode {_mode},
+    args {std::move(_args)} {}
+
 void NodeCall::buildProc(
     Instance &instance,
     Output &output
