@@ -81,10 +81,16 @@ public:
 
     template <class... Blocks>
     Builtin(std::string &&name, Blocks... _blocks) {
-        builtins().insert({
-            std::move(name),
-            std::make_shared<NodeBlock>(_blocks...)
-        });
+        auto node = builtins().find(name);
+
+        if (node == builtins().end()) {
+            builtins().insert({
+                std::move(name),
+                std::make_shared<NodeBlock>(_blocks...)
+            });
+        } else {
+            node->second->insert(_blocks...);
+        }
     }
 };
 
