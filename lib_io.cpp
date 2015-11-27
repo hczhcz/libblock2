@@ -11,6 +11,15 @@ Builtin print {"print", {
         return new BlockBuiltinFmt {
             {BlockOption::allow_proc},
             {in("value")},
+            {typeVoid("value")},
+            {},
+            "printf(\"void\");"
+        };
+    },
+    []() -> Block * {
+        return new BlockBuiltinFmt {
+            {BlockOption::allow_proc},
+            {in("value")},
             {typeBool("value")},
             {},
             "printf($value ? \"true\" : \"false\");"

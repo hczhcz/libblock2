@@ -67,6 +67,10 @@ void Output::getHeader(std::ostream &os, Instance &) const {
     och.endl();
 
     och.endl();
+    och.os << "struct empty {};";
+    och.endl();
+
+    och.endl();
     och.os << "struct frame {";
     och.enter();
     och.endl();

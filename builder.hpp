@@ -6,6 +6,10 @@
 
 namespace builder {
 
+inline NodeLiteralVoid *void_lit() {
+    return new NodeLiteralVoid {nullptr};
+}
+
 inline NodeLiteralBool *true_lit() {
     return new NodeLiteralBool {true};
 }
@@ -106,6 +110,12 @@ inline std::pair<std::string, ParamMode> special(
     std::string &&name
 ) {
     return {std::move(name), ParamMode::special};
+}
+
+inline std::pair<std::string, Type &> typeVoid(
+    std::string &&name
+) {
+    return {std::move(name), TypeNativeVoid::get()};
 }
 
 inline std::pair<std::string, Type &> typeBool(

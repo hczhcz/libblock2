@@ -8,6 +8,13 @@ TypeNative<T> &TypeNative<T>::get() {
 }
 
 template <>
+std::string TypeNative<std::nullptr_t>::strDecl(
+    const std::string &name
+) const {
+    return "struct empty " + name;
+}
+
+template <>
 std::string TypeNative<bool>::strDecl(
     const std::string &name
 ) const {
@@ -35,6 +42,7 @@ std::string TypeNative<std::string>::strDecl(
     return "const char *" + name;
 }
 
+template class TypeNative<std::nullptr_t>;
 template class TypeNative<bool>;
 template class TypeNative<int64_t>;
 template class TypeNative<double>;

@@ -40,6 +40,7 @@ public:
 
     virtual std::string strDecl(const std::string &name) const;
 };
+using TypeNativeVoid = TypeNative<std::nullptr_t>;
 using TypeNativeBool = TypeNative<bool>;
 using TypeNativeInt = TypeNative<int64_t>;
 using TypeNativeReal = TypeNative<double>;

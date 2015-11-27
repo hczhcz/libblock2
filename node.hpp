@@ -66,6 +66,7 @@ public:
         std::function<std::string ()> &&target
     );
 };
+using NodeLiteralVoid = NodeLiteral<std::nullptr_t>;
 using NodeLiteralBool = NodeLiteral<bool>;
 using NodeLiteralInt = NodeLiteral<int64_t>;
 using NodeLiteralReal = NodeLiteral<double>;

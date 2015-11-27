@@ -4,6 +4,13 @@
 #include "node.hpp"
 
 template <>
+void NodeLiteral<std::nullptr_t>::renderValue(
+    std::ostream &os
+) const {
+    os << "(struct empty) {}";
+}
+
+template <>
 void NodeLiteral<bool>::renderValue(
     std::ostream &os
 ) const {
@@ -87,6 +94,7 @@ void NodeLiteral<T>::buildIn(
     throw ErrorWriteNotAllowed {};
 }
 
+template class NodeLiteral<std::nullptr_t>;
 template class NodeLiteral<bool>;
 template class NodeLiteral<int64_t>;
 template class NodeLiteral<double>;
