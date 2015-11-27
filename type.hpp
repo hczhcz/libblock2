@@ -86,7 +86,7 @@ public:
 
     std::string strFunc() const;
     std::string strStruct() const;
-    std::string strCast(const std::string &name) const;
+    std::string strSelf() const;
 
     std::string strLabel(size_t position) const;
     std::string strCalleeType(size_t position) const;

@@ -53,8 +53,8 @@ std::string Instance::strStruct() const {
     return "struct struct_" + std::to_string(tuid());
 }
 
-std::string Instance::strCast(const std::string &name) const {
-    return "((" + strStruct() + " *) " + name + ")";
+std::string Instance::strSelf() const {
+    return "((" + strStruct() + " *) self)";
 }
 
 std::string Instance::strLabel(size_t position) const {

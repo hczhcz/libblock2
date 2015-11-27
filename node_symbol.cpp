@@ -51,7 +51,7 @@ Type &NodeSymbol::buildOut(
         instance,
         [&, target = std::move(target), level](OutputContext &oc) {
             oc.endl();
-            oc.os << target(type) << " = " << instance.strCast("self");
+            oc.os << target(type) << " = " << instance.strSelf();
             renderPath(oc.os, level);
             oc.os << ";";
         }
@@ -83,7 +83,7 @@ void NodeSymbol::buildIn(
         instance,
         [&, target = std::move(target), level](OutputContext &oc) {
             oc.endl();
-            oc.os << instance.strCast("self");
+            oc.os << instance.strSelf();
             renderPath(oc.os, level);
             oc.os << " = " << target(type) << ";";
         }

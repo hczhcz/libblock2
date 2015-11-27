@@ -33,7 +33,7 @@ Type &NodeBlock::buildOut(
         instance,
         [&, target = std::move(target)](OutputContext &oc) {
             oc.endl();
-            oc.os << target(type) << " = " << instance.strCast("self") << ";";
+            oc.os << target(type) << " = " << instance.strSelf() << ";";
         }
     );
 

@@ -32,7 +32,7 @@ void BlockBuiltinFmt::buildContent(Instance &instance, Output &output) {
             for (char i: str) {
                 switch (i) {
                     case '$':
-                        oc.os << instance.strCast("self") << "->";
+                        oc.os << instance.strSelf() << "->";
                         break;
 
                     case '\n':
