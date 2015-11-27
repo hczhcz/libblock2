@@ -85,6 +85,7 @@ public:
     Instance();
 
     std::string strFunc() const;
+    std::string strFuncExit() const;
     std::string strStruct() const;
     std::string strSelf() const;
 

@@ -14,14 +14,14 @@ void Instance::renderStruct(OutputContext &oc) const {
     oc.os << strStruct() << " {";
     oc.enter();
 
-    oc.endl();
-    oc.os << "struct frame frame;";
-    oc.endl();
-
-    for (const auto &symbol: symbol_types) {
         oc.endl();
-        oc.os << symbol.second.strDecl(symbol.first) << ";";
-    }
+        oc.os << "struct frame frame;";
+        oc.endl();
+
+        for (const auto &symbol: symbol_types) {
+            oc.endl();
+            oc.os << symbol.second.strDecl(symbol.first) << ";";
+        }
 
     oc.leave();
     oc.endl();
@@ -37,6 +37,10 @@ void Instance::renderFuncHead(OutputContext &oc) const {
 
 void Instance::renderFuncTail(OutputContext &oc) const {
     oc.endl();
+    oc.os << strFuncExit() << ":";
+    oc.endl();
+    oc.os << "self->func = &&global_func_error;";
+    oc.endl();
     oc.os << "goto *self->caller->func;";
 
     oc.leave();
@@ -47,6 +51,10 @@ Instance::Instance() {}
 
 std::string Instance::strFunc() const {
     return "func_" + std::to_string(tuid());
+}
+
+std::string Instance::strFuncExit() const {
+    return "func_exit_" + std::to_string(tuid());
 }
 
 std::string Instance::strStruct() const {
