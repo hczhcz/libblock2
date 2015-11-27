@@ -75,12 +75,6 @@ private:
     > closure_types;
     std::map<size_t, Instance &> callee_types;
 
-    void renderStruct(OutputContext &oc) const;
-    void renderFuncHead(OutputContext &oc) const;
-    void renderFuncTail(OutputContext &oc) const;
-
-    friend class Block;
-
 public:
     Instance();
 
@@ -95,9 +89,11 @@ public:
     std::string strInner(size_t position) const;
     std::string strCallee(size_t position) const;
 
-    bool in(Instance &instance) const;
+    void renderStruct(OutputContext &oc) const;
+    void renderFuncHead(OutputContext &oc) const;
+    void renderFuncTail(OutputContext &oc) const;
 
-    size_t addPosition();
+    bool in(Instance &instance) const;
 
     Type &at(const std::string &name);
     void check(const std::string &name, Type &type);
@@ -111,8 +107,9 @@ public:
         size_t &level
     );
 
-    Type &addClosure(Type &parent, NodeBlock &blocks);
+    size_t addPosition();
     void addCallee(size_t position, Instance &callee);
+    Type &addClosure(Type &parent, NodeBlock &blocks);
 
     virtual std::string strDecl(const std::string &name) const;
     virtual std::string strReint(const std::string &name) const;

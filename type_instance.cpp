@@ -9,44 +9,6 @@ void Instance::typeCheck(Type &type1, Type &type2) {
     }
 }
 
-void Instance::renderStruct(OutputContext &oc) const {
-    oc.endl();
-    oc.os << strStruct() << " {";
-    oc.enter();
-
-        oc.endl();
-        oc.os << "struct frame frame;";
-        oc.endl();
-
-        for (const auto &symbol: symbol_types) {
-            oc.endl();
-            oc.os << symbol.second.strDecl(symbol.first) << ";";
-        }
-
-    oc.leave();
-    oc.endl();
-    oc.os << "};";
-    oc.endl();
-}
-
-void Instance::renderFuncHead(OutputContext &oc) const {
-    oc.endl();
-    oc.os << strFunc() << ":";
-    oc.enter();
-}
-
-void Instance::renderFuncTail(OutputContext &oc) const {
-    oc.endl();
-    oc.os << strFuncExit() << ":";
-    oc.endl();
-    oc.os << "self->func = &&global_func_error;";
-    oc.endl();
-    oc.os << "goto *self->caller->func;";
-
-    oc.leave();
-    oc.endl();
-}
-
 Instance::Instance() {}
 
 std::string Instance::strFunc() const {
@@ -89,6 +51,44 @@ std::string Instance::strCallee(size_t position) const {
     return "((" + strCalleeType(position) + " *) callee)";
 }
 
+void Instance::renderStruct(OutputContext &oc) const {
+    oc.endl();
+    oc.os << strStruct() << " {";
+    oc.enter();
+
+        oc.endl();
+        oc.os << "struct frame frame;";
+        oc.endl();
+
+        for (const auto &symbol: symbol_types) {
+            oc.endl();
+            oc.os << symbol.second.strDecl(symbol.first) << ";";
+        }
+
+    oc.leave();
+    oc.endl();
+    oc.os << "};";
+    oc.endl();
+}
+
+void Instance::renderFuncHead(OutputContext &oc) const {
+    oc.endl();
+    oc.os << strFunc() << ":";
+    oc.enter();
+}
+
+void Instance::renderFuncTail(OutputContext &oc) const {
+    oc.endl();
+    oc.os << strFuncExit() << ":";
+    oc.endl();
+    oc.os << "self->func = &&global_func_error;";
+    oc.endl();
+    oc.os << "goto *self->caller->func;";
+
+    oc.leave();
+    oc.endl();
+}
+
 bool Instance::in(Instance &instance) const {
     for (const auto &symbol: symbol_types) {
         if (symbol.second != instance.at(symbol.first)) {
@@ -97,10 +97,6 @@ bool Instance::in(Instance &instance) const {
     }
 
     return true;
-}
-
-size_t Instance::addPosition() {
-    return ++last_position;
 }
 
 Type &Instance::at(const std::string &name) {
@@ -183,6 +179,14 @@ void Instance::lookupCheck(
     }
 }
 
+size_t Instance::addPosition() {
+    return ++last_position;
+}
+
+void Instance::addCallee(size_t position, Instance &callee) {
+    callee_types.insert({position, callee});
+}
+
 Type &Instance::addClosure(Type &parent, NodeBlock &blocks) {
     const auto &closure = closure_types.find(std::ref(blocks));
 
@@ -196,10 +200,6 @@ Type &Instance::addClosure(Type &parent, NodeBlock &blocks) {
             )
         }).first->second;
     }
-}
-
-void Instance::addCallee(size_t position, Instance &callee) {
-    callee_types.insert({position, callee});
 }
 
 std::string Instance::strDecl(const std::string &name) const {
