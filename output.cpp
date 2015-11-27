@@ -61,6 +61,8 @@ void Output::getHeader(std::ostream &os, Instance &) const {
 
     och.os << "#include <stdlib.h>";
     och.endl();
+    och.os << "#include <stdint.h>";
+    och.endl();
     och.os << "#include <stdio.h>";
     och.endl();
     och.os << "#include <gc/gc.h>";
@@ -108,8 +110,9 @@ void Output::getContent(std::ostream &os, Instance &root) const {
     oc.os << "struct frame *callee = 0;";
     oc.endl();
     oc.os << "struct frame *inner = 0;";
+    // notice: type of tmp may change if 128-bit values are supported
     oc.endl();
-    oc.os << "void *tmp = 0;";
+    oc.os << "uint64_t tmp = 0;";
     oc.endl();
     oc.endl();
     oc.os << "self->func = exports[func];";

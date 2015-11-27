@@ -176,7 +176,7 @@ void NodeCall::build(
             instance,
             output,
             [](Type &type) -> std::string {
-                return "tmp";
+                return type.strReint("tmp");
             }
         )
     };
@@ -226,7 +226,7 @@ void NodeCall::build(
                             [&, position](OutputContext &oc) {
                                 oc.endl();
                                 oc.os << instance.strInner(position) << "->parent = "
-                                      << parent.prepareLookup().strCast("tmp") << ";"; // TODO
+                                      << parent.strReint("tmp") << ";";
                             }
                         );
                     }

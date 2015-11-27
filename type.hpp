@@ -16,6 +16,7 @@ public:
     Instance &prepareLookup();
 
     virtual std::string strDecl(const std::string &name) const = 0;
+    virtual std::string strReint(const std::string &name) const = 0;
 };
 
 inline bool operator==(const Type &a, const Type &b) {
@@ -39,6 +40,7 @@ public:
     static TypeNative<T> &get();
 
     virtual std::string strDecl(const std::string &name) const;
+    virtual std::string strReint(const std::string &name) const;
 };
 using TypeNativeVoid = TypeNative<std::nullptr_t>;
 using TypeNativeBool = TypeNative<bool>;
@@ -57,6 +59,7 @@ public:
     TypeClosure(Type &_parent, NodeBlock &_blocks);
 
     virtual std::string strDecl(const std::string &name) const;
+    virtual std::string strReint(const std::string &name) const;
 };
 
 class Instance: public Type {
@@ -111,4 +114,5 @@ public:
     void addCallee(size_t position, Instance &callee);
 
     virtual std::string strDecl(const std::string &name) const;
+    virtual std::string strReint(const std::string &name) const;
 };

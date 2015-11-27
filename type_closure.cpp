@@ -7,6 +7,9 @@ TypeClosure::TypeClosure(Type &_parent, NodeBlock &_blocks):
     blocks {_blocks} {}
 
 std::string TypeClosure::strDecl(const std::string &name) const {
-    // type: struct <parent object> *
     return parent.strDecl(name);
+}
+
+std::string TypeClosure::strReint(const std::string &name) const {
+    return parent.strReint(name);
 }
