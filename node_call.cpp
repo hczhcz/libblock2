@@ -191,7 +191,7 @@ void NodeCall::build(
         // callee is closure
         // create a frame and call the function
 
-        Instance &parent {closure_p->parent};
+        Type &parent {closure_p->parent};
 
         auto do_build = [&](Block &block) {
             block.build(
@@ -226,7 +226,7 @@ void NodeCall::build(
                             [&, position](OutputContext &oc) {
                                 oc.endl();
                                 oc.os << instance.strInner(position) << "->parent = "
-                                      << parent.strCast("tmp") << ";";
+                                      << parent.prepareLookup().strCast("tmp") << ";"; // TODO
                             }
                         );
                     }

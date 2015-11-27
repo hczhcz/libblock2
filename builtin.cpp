@@ -15,7 +15,7 @@ void BuiltinContainer::apply(Instance &instance) {
 
             instance.insert(
                 builtin.name,
-                instance.addClosure(*node->second)
+                instance.addClosure(TypeNativeVoid::get(), *node->second)
             );
         }
 

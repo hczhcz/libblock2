@@ -18,7 +18,7 @@ NodeSymbol::NodeSymbol(LookupMode _mode, std::string &&_name):
 
 void NodeSymbol::buildProc(
     Instance &instance,
-    Output &output
+    Output &
 ) {
     // gen type
 

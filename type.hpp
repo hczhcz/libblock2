@@ -48,13 +48,13 @@ using TypeNativeStr = TypeNative<std::string>;
 
 class TypeClosure: public Type {
 private:
-    Instance &parent;
+    Type &parent;
     NodeBlock &blocks;
 
     friend class NodeCall;
 
 public:
-    TypeClosure(Instance &_parent, NodeBlock &_blocks);
+    TypeClosure(Type &_parent, NodeBlock &_blocks);
 
     virtual std::string strDecl(const std::string &name) const;
 };
@@ -107,7 +107,7 @@ public:
         size_t &level
     );
 
-    Type &addClosure(NodeBlock &blocks);
+    Type &addClosure(Type &parent, NodeBlock &blocks);
     void addCallee(size_t position, Instance &callee);
 
     virtual std::string strDecl(const std::string &name) const;

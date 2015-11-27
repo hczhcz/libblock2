@@ -2,7 +2,7 @@
 #include "node.hpp"
 #include "block.hpp"
 
-TypeClosure::TypeClosure(Instance &_parent, NodeBlock &_blocks):
+TypeClosure::TypeClosure(Type &_parent, NodeBlock &_blocks):
     parent {_parent},
     blocks {_blocks} {}
 

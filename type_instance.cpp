@@ -175,7 +175,7 @@ void Instance::lookupCheck(
     }
 }
 
-Type &Instance::addClosure(NodeBlock &blocks) {
+Type &Instance::addClosure(Type &parent, NodeBlock &blocks) {
     const auto &closure = closure_types.find(std::ref(blocks));
 
     if (closure != closure_types.end()) {
@@ -184,7 +184,7 @@ Type &Instance::addClosure(NodeBlock &blocks) {
         return *closure_types.insert({
             std::ref(blocks),
             std::make_shared<TypeClosure>(
-                *this, blocks
+                parent, blocks
             )
         }).first->second;
     }

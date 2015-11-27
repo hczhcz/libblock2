@@ -25,7 +25,7 @@ Type &NodeBlock::buildOut(
 ) {
     // get type
 
-    Type &type {instance.addClosure(*this)};
+    Type &type {instance.addClosure(instance, *this)}; // TODO
 
     // render
 
