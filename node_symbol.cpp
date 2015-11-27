@@ -29,18 +29,6 @@ void NodeSymbol::buildProc(
     } else {
         instance.lookup(name, level);
     }
-
-    // render
-
-    output.content(
-        instance,
-        [&, level](OutputContext &oc) {
-            oc.endl();
-            oc.os << instance.strCast("self");
-            renderPath(oc.os, level);
-            oc.os << ";";
-        }
-    );
 }
 
 Type &NodeSymbol::buildOut(

@@ -63,7 +63,7 @@ class Instance: public Type {
 private:
     static void typeCheck(Type &type1, Type &type2);
 
-    size_t last_position {0}; // TODO
+    size_t last_position {0};
 
     std::map<std::string, Type &> symbol_types;
     std::map<

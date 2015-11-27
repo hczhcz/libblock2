@@ -110,6 +110,8 @@ private:
 
     void renderPath(std::ostream &os, size_t level) const;
 
+    Instance &getInner(Instance &instance, Output &output);
+
 public:
     NodePath(Node *_source, LookupMode _mode, std::string &&_name);
 

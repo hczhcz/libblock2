@@ -12,6 +12,16 @@ void NodePath::renderPath(std::ostream &os, size_t level) const {
     }
 }
 
+Instance &NodePath::getInner(Instance &instance, Output &output) {
+    return source_p->buildOut(
+        instance,
+        output,
+        []() -> std::string {
+            return "tmp";
+        }
+    ).prepareLookup();
+}
+
 NodePath::NodePath(Node *_source, LookupMode _mode, std::string &&_name):
     source_p {_source},
     mode {_mode},
@@ -24,13 +34,7 @@ void NodePath::buildProc(
     // get inner
 
     Instance &inner {
-        source_p->buildOut(
-            instance,
-            output,
-            []() -> std::string {
-                return "tmp";
-            }
-        ).prepareLookup()
+        getInner(instance, output)
     };
 
     // gen type
@@ -42,18 +46,6 @@ void NodePath::buildProc(
     } else {
         inner.lookup(name, level);
     }
-
-    // render
-
-    output.content(
-        instance,
-        [&, level](OutputContext &oc) {
-            oc.endl();
-            oc.os << inner.strCast("tmp");
-            renderPath(oc.os, level);
-            oc.os << ";";
-        }
-    );
 }
 
 Type &NodePath::buildOut(
@@ -64,13 +56,7 @@ Type &NodePath::buildOut(
     // get inner
 
     Instance &inner {
-        source_p->buildOut(
-            instance,
-            output,
-            []() -> std::string {
-                return "tmp";
-            }
-        ).prepareLookup()
+        getInner(instance, output)
     };
 
     // get type
@@ -107,13 +93,7 @@ void NodePath::buildIn(
     // get inner
 
     Instance &inner {
-        source_p->buildOut(
-            instance,
-            output,
-            []() -> std::string {
-                return "tmp";
-            }
-        ).prepareLookup()
+        getInner(instance, output)
     };
 
     // set type
