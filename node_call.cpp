@@ -175,7 +175,7 @@ void NodeCall::build(
         source_p->buildOut(
             instance,
             output,
-            []() -> std::string {
+            [](Type &type) -> std::string {
                 return "tmp";
             }
         )
@@ -251,7 +251,7 @@ void NodeCall::build(
                             instance, callee,
                             i, args[i],
                             output,
-                            [&, position]() {
+                            [&, position](Type &) {
                                 return instance.strCallee(position);
                             }
                         );
@@ -287,7 +287,7 @@ void NodeCall::build(
                             instance, callee,
                             i, args[i],
                             output,
-                            [&, position]() {
+                            [&, position](Type &) {
                                 return instance.strCallee(position);
                             }
                         );
@@ -381,7 +381,7 @@ void NodeCall::buildProc(
 Type &NodeCall::buildOut(
     Instance &instance,
     Output &output,
-    std::function<std::string ()> &&target
+    std::function<std::string (Type &)> &&target
 ) {
     Type *type_p {nullptr}; // return value
 
@@ -396,7 +396,10 @@ Type &NodeCall::buildOut(
             // nothing
         },
         [&](Instance &callee, size_t position) {
-            type_p = &callee.at("result");
+            Type &type {
+                callee.at("result")
+            };
+            type_p = &type;
 
             // render
 
@@ -404,7 +407,7 @@ Type &NodeCall::buildOut(
                 instance,
                 [&, position, target = std::move(target)](OutputContext &oc) {
                     oc.endl();
-                    oc.os << target() << " = "
+                    oc.os << target(type) << " = "
                           << instance.strInner(position) << "->result;";
                 }
             );
@@ -417,7 +420,7 @@ Type &NodeCall::buildOut(
 void NodeCall::buildIn(
     Instance &instance, Type &type,
     Output &output,
-    std::function<std::string ()> &&target
+    std::function<std::string (Type &)> &&target
 ) {
     build(
         instance, output,
@@ -436,7 +439,7 @@ void NodeCall::buildIn(
                 [&, position, target = std::move(target)](OutputContext &oc) {
                     oc.endl();
                     oc.os << instance.strInner(position) << "->input = "
-                          << target() << ";";
+                          << target(type) << ";";
                 }
             );
         },

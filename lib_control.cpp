@@ -12,7 +12,7 @@ protected:
         Instance &caller, Instance &,
         size_t, std::unique_ptr<Node> &arg,
         Output &output,
-        std::function<std::string ()> &&
+        std::function<std::string (Type &)> &&
     ) {
         arg->buildProc(caller, output);
     }

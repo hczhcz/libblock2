@@ -35,14 +35,14 @@ protected:
         Instance &caller, Instance &instance,
         size_t index, std::unique_ptr<Node> &arg,
         Output &output,
-        std::function<std::string ()> &&target
+        std::function<std::string (Type &)> &&target
     );
     virtual void buildContent(Instance &instance, Output &output) = 0;
     virtual void outSpecialArg(
         Instance &caller, Instance &instance,
         size_t index, std::unique_ptr<Node> &arg,
         Output &output,
-        std::function<std::string ()> &&target
+        std::function<std::string (Type &)> &&target
     );
 
 public:
@@ -57,13 +57,13 @@ public:
         Instance &caller, Instance &instance,
         size_t index, std::unique_ptr<Node> &arg,
         Output &output,
-        std::function<std::string ()> &&target
+        std::function<std::string (Type &)> &&target
     );
     void outArg(
         Instance &caller, Instance &instance,
         size_t index, std::unique_ptr<Node> &arg,
         Output &output,
-        std::function<std::string ()> &&target
+        std::function<std::string (Type &)> &&target
     );
     void build(
         Output &output,

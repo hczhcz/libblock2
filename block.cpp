@@ -63,7 +63,7 @@ void Block::inSpecialArg(
     Instance &, Instance &,
     size_t, std::unique_ptr<Node> &,
     Output &,
-    std::function<std::string ()> &&
+    std::function<std::string (Type &)> &&
 ) {
     throw ErrorTooManyArguments {}; // TODO: va_args?
 }
@@ -72,7 +72,7 @@ void Block::outSpecialArg(
     Instance &, Instance &,
     size_t, std::unique_ptr<Node> &,
     Output &,
-    std::function<std::string ()> &&
+    std::function<std::string (Type &)> &&
 ) {
     // nothing, by default // TODO: va_args?
 }
@@ -92,7 +92,7 @@ void Block::inArg(
     Instance &caller, Instance &instance,
     size_t index, std::unique_ptr<Node> &arg,
     Output &output,
-    std::function<std::string ()> &&target
+    std::function<std::string (Type &)> &&target
 ) {
     if (
         index >= params.size()
@@ -112,8 +112,8 @@ void Block::inArg(
             arg->buildOut(
                 caller,
                 output,
-                [&, index, target = std::move(target)]() {
-                    return target() + "->" + params[index].first;
+                [&, index, target = std::move(target)](Type &type) {
+                    return target(type) + "->" + params[index].first;
                 }
             )
         );
@@ -124,7 +124,7 @@ void Block::outArg(
     Instance &caller, Instance &instance,
     size_t index, std::unique_ptr<Node> &arg,
     Output &output,
-    std::function<std::string ()> &&target
+    std::function<std::string (Type &)> &&target
 ) {
     if (
         index >= params.size()
@@ -143,8 +143,8 @@ void Block::outArg(
             caller,
             instance.at(params[index].first),
             output,
-            [&, index, target = std::move(target)]() {
-                return target() + "->" + params[index].first;
+            [&, index, target = std::move(target)](Type &type) {
+                return target(type) + "->" + params[index].first;
             }
         );
     }
