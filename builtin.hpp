@@ -8,7 +8,7 @@ class Block;
 
 class BuiltinContainer {
 private:
-    std::map<std::string, std::shared_ptr<NodeBlock>> nodes;
+    std::map<std::string, std::unique_ptr<NodeBlock>> nodes;
 
 public:
     void apply(Instance &instance);

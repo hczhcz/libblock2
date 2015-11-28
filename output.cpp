@@ -46,14 +46,14 @@ void Output::content(
 }
 
 void Output::insert(Instance &instance) {
-    headers.insert({
+    headers.emplace(
         std::ref(instance),
-        std::make_shared<OutputTask>()
-    });
-    contents.insert({
+        std::make_unique<OutputTask>()
+    );
+    contents.emplace(
         std::ref(instance),
-        std::make_shared<OutputTask>()
-    });
+        std::make_unique<OutputTask>()
+    );
 }
 
 void Output::getHeader(std::ostream &os, Instance &) const {

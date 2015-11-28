@@ -31,11 +31,11 @@ class Output {
 private:
     std::map<
         std::reference_wrapper<Instance>,
-        std::shared_ptr<OutputTask>
+        std::unique_ptr<OutputTask>
     > headers;
     std::map<
         std::reference_wrapper<Instance>,
-        std::shared_ptr<OutputTask>
+        std::unique_ptr<OutputTask>
     > contents;
 
 public:

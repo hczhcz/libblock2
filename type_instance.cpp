@@ -193,12 +193,12 @@ Type &Instance::addClosure(Type &parent, NodeBlock &blocks) {
     if (closure != closure_types.end()) {
         return *closure->second;
     } else {
-        return *closure_types.insert({
+        return *closure_types.emplace(
             std::ref(blocks),
-            std::make_shared<TypeClosure>(
+            std::make_unique<TypeClosure>(
                 parent, blocks
             )
-        }).first->second;
+        ).first->second;
     }
 }
 

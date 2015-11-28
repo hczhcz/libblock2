@@ -71,7 +71,7 @@ private:
     std::map<std::string, Type &> symbol_types;
     std::map<
         std::reference_wrapper<NodeBlock>,
-        std::shared_ptr<TypeClosure>
+        std::unique_ptr<TypeClosure>
     > closure_types;
     std::map<size_t, Instance &> callee_types;
 

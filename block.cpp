@@ -158,7 +158,7 @@ void Block::build(
     // init
 
     std::unique_ptr<Instance> instance_p {
-        new Instance {}
+        std::make_unique<Instance>()
     };
 
     // in

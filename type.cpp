@@ -2,7 +2,7 @@
 #include "type.hpp"
 
 static std::unique_ptr<std::nullptr_t> heap {
-    new std::nullptr_t
+    std::make_unique<std::nullptr_t>()
 };
 
 uintptr_t Type::tuid() const {

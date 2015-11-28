@@ -8,10 +8,10 @@ void BuiltinContainer::apply(Instance &instance) {
         auto node = nodes.find(builtin.name);
 
         if (node == nodes.end()) {
-            node = nodes.insert({
+            node = nodes.emplace(
                 builtin.name,
-                std::make_shared<NodeBlock>()
-            }).first;
+                std::make_unique<NodeBlock>()
+            ).first;
 
             instance.insert(
                 builtin.name,
