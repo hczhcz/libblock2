@@ -1,6 +1,8 @@
 #include "output.hpp"
 #include "builtin.hpp"
-#include "builder.hpp"
+#include "node.hpp"
+#include "builder_type.hpp"
+#include "builder_block.hpp"
 
 namespace lib {
 

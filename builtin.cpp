@@ -1,7 +1,7 @@
+#include "builtin.hpp"
 #include "type.hpp"
 #include "node.hpp"
 #include "block.hpp"
-#include "builtin.hpp"
 
 void BuiltinContainer::apply(Instance &instance) {
     for (Builtin &builtin: Builtin::all()) {

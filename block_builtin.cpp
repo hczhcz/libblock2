@@ -1,6 +1,5 @@
 #include "output.hpp"
 #include "type.hpp"
-#include "node.hpp"
 #include "block.hpp"
 
 void BlockBuiltinFmt::buildContent(Instance &instance, Output &output) {

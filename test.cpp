@@ -1,6 +1,8 @@
 #include "output.hpp"
 #include "builtin.hpp"
-#include "builder.hpp"
+#include "type.hpp"
+#include "builder_node.hpp"
+#include "builder_block.hpp"
 
 int main() {
     using namespace builder;

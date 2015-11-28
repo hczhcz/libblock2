@@ -1,6 +1,4 @@
 #include "type.hpp"
-#include "node.hpp"
-#include "block.hpp"
 
 TypeClosure::TypeClosure(Type &_parent, NodeBlock &_blocks):
     parent {_parent},
