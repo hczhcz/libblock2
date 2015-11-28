@@ -88,7 +88,6 @@ inline BlockUser *block(
 ) {
     return new BlockUser {
         {
-            BlockOption::parent,
             BlockOption::allow_proc,
             BlockOption::allow_out
         },

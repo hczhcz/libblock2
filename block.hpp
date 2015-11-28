@@ -12,7 +12,6 @@ enum class ParamMode {
 };
 
 enum class BlockOption {
-    parent,
     allow_proc,
     allow_out,
     allow_in

@@ -214,22 +214,20 @@ void NodeCall::build(
 
                     init(block);
 
-                    if (block.getOption(BlockOption::parent)) {
-                        // parent
+                    // parent
 
-                        callee.insert("parent", parent);
+                    callee.insert("parent", parent);
 
-                        // render (parent)
+                    // render (parent)
 
-                        output.content(
-                            instance,
-                            [&, position](OutputContext &oc) {
-                                oc.endl();
-                                oc.os << instance.strInner(position) << "->parent = "
-                                      << parent.strReint("tmp") << ";";
-                            }
-                        );
-                    }
+                    output.content(
+                        instance,
+                        [&, position](OutputContext &oc) {
+                            oc.endl();
+                            oc.os << instance.strInner(position) << "->parent = "
+                                  << parent.strReint("tmp") << ";";
+                        }
+                    );
 
                     // input
 
