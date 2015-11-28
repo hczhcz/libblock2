@@ -214,21 +214,29 @@ public:
 
 class NodeBlock: public Node {
 private:
+    std::unique_ptr<Node> source_p;
     std::list<std::unique_ptr<Block>> blocks;
 
     friend class NodeCall;
 
 public:
-    NodeBlock(std::list<std::unique_ptr<Block>> &&_blocks);
+    NodeBlock(
+        Node *_source,
+        std::list<std::unique_ptr<Block>> &&_blocks
+    );
 
     template <class... Blocks>
-    NodeBlock(Blocks... _blocks) {
-        Block *init[] {_blocks...};
+    NodeBlock(
+        Node *_source,
+        Blocks... _blocks
+    ):
+        source_p {_source} {
+            Block *init[] {_blocks...};
 
-        for (Block *block_p: init) {
-            blocks.push_back(std::unique_ptr<Block> {block_p});
+            for (Block *block_p: init) {
+                blocks.push_back(std::unique_ptr<Block> {block_p});
+            }
         }
-    }
 
     void addBlock(Block *block_p);
 

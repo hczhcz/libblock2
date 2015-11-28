@@ -10,7 +10,9 @@ void BuiltinContainer::apply(Instance &instance) {
         if (node == nodes.end()) {
             node = nodes.emplace(
                 builtin.name,
-                std::make_unique<NodeBlock>()
+                std::make_unique<NodeBlock>(
+                    new NodeLiteral<std::nullptr_t> {nullptr}
+                )
             ).first;
 
             instance.insert(

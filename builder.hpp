@@ -31,34 +31,55 @@ inline NodeLiteralStr *operator ""_lit(const char *value, size_t size) {
 }
 
 inline NodeSymbol *$(std::string &&name) {
-    return new NodeSymbol {LookupMode::mixed, std::move(name)};
+    return new NodeSymbol {
+        LookupMode::mixed, std::move(name)
+    };
 }
 
 inline NodeSymbol *$(LookupMode mode, std::string &&name) {
-    return new NodeSymbol {mode, std::move(name)};
+    return new NodeSymbol {
+        mode, std::move(name)
+    };
 }
 
 inline NodePath *$(Node *source, std::string &&name) {
-    return new NodePath {source, LookupMode::local, std::move(name)};
+    return new NodePath {
+        source, LookupMode::local, std::move(name)
+    };
 }
 
 inline NodePath *$(Node *source, LookupMode mode, std::string &&name) {
-    return new NodePath {source, mode, std::move(name)};
+    return new NodePath {
+        source, mode, std::move(name)
+    };
 }
 
 template <class... Args>
 inline NodeCall *call(Node *source, Args... args) {
-    return new NodeCall {source, FrameMode::dynamic_gc, args...};
+    return new NodeCall {
+        source, FrameMode::dynamic_gc, args...
+    };
 }
 
 template <class... Args>
 inline NodeCall *call(Node *source, FrameMode mode, Args... args) {
-    return new NodeCall {source, mode, args...};
+    return new NodeCall {
+        source, mode, args...
+    };
 }
 
 template <class... Blocks>
 inline NodeBlock *blocks(Blocks... blocks) {
-    return new NodeBlock {blocks...};
+    return new NodeBlock {
+        new NodeSymbol {LookupMode::local, "self"}, blocks...
+    };
+}
+
+template <class... Blocks>
+inline NodeBlock *blocks(Node *source, Blocks... blocks) {
+    return new NodeBlock {
+        source, blocks...
+    };
 }
 
 inline BlockUser *block(

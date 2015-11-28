@@ -4,7 +4,11 @@
 #include "node.hpp"
 #include "block.hpp"
 
-NodeBlock::NodeBlock(std::list<std::unique_ptr<Block>> &&_blocks):
+NodeBlock::NodeBlock(
+    Node *_source,
+    std::list<std::unique_ptr<Block>> &&_blocks
+):
+    source_p {_source},
     blocks {std::move(_blocks)} {}
 
 void NodeBlock::addBlock(Block *block_p) {
@@ -25,17 +29,15 @@ Type &NodeBlock::buildOut(
 ) {
     // get type
 
-    Type &type {instance.addClosure(instance, *this)}; // TODO
+    Type &parent {
+        source_p->buildOut(
+            instance,
+            output,
+            std::move(target)
+        )
+    };
 
-    // render
-
-    output.content(
-        instance,
-        [&, target = std::move(target)](OutputContext &oc) {
-            oc.endl();
-            oc.os << target(type) << " = " << instance.strSelf() << ";";
-        }
-    );
+    Type &type {instance.addClosure(parent, *this)};
 
     // return
 
