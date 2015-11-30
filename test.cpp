@@ -13,35 +13,35 @@ int main() {
             {},
             call(
                 $("__then__"),
-                call($("__set__"), $("c"), "what"_lit),
+                call($("__assign__"), $("c"), "what"_lit),
                 call(
-                    $("__set__"), $("a"), blocks( // function a
+                    $("__assign__"), $("a"), blocks( // function a
                         block(
                             {},
                             call(
                                 $("__then__"),
-                                call($("__set__"), $("c"), "hell"_lit),
-                                call($("__set__"), $($("parent"), "c"), "o"_lit),
-                                call($("__set__"), $("result"), $("self"))
+                                call($("__assign__"), $("c"), "hell"_lit),
+                                call($("__assign__"), $($("parent"), "c"), "o"_lit),
+                                call($("__assign__"), $("result"), $("self"))
                             )
                         )
                     )
                 ),
                 call(
-                    $("__set__"), $("b"), blocks( // function b
+                    $("__assign__"), $("b"), blocks( // function b
                         block(
                             {in("a"), in("b")},
                             call(
                                 $("__then__"),
-                                call($("__set__"), $("t"), $("b")),
-                                call($("__set__"), $("result"), $("t"))
+                                call($("__assign__"), $("t"), $("b")),
+                                call($("__assign__"), $("result"), $("t"))
                             )
                         )
                     )
                 ),
 
                 call(
-                    $("__set__"), $("d"), call($("a"))
+                    $("__assign__"), $("d"), call($("a"))
                 ),
                 call(
                     $("print"),
@@ -57,11 +57,11 @@ int main() {
                 call($("print"), FrameMode::dynamic_free, "d!"_lit),
 
                 call(
-                    $("__set__"),
+                    $("__assign__"),
                     $("n1"), call($("__add__"), 200_lit, 33_lit)
                 ),
                 call(
-                    $("__set__"),
+                    $("__assign__"),
                     call($("__add__"), $("n2"), $("n1")), 566_lit
                 ),
                 call($("print"), $("n1")),

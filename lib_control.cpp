@@ -36,7 +36,7 @@ Builtin __then__ {"__then__", {
     },
 }};
 
-Builtin __set__ {"__set__", {
+Builtin __assign__ {"__assign__", {
     []() -> Block * {
         return new BlockBuiltinFmt {
             {BlockOption::allow_proc},
