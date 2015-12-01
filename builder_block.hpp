@@ -2,6 +2,8 @@
 
 #include "block.hpp"
 
+namespace libblock {
+
 namespace builder {
 
 inline std::pair<std::string, ParamMode> in(
@@ -52,6 +54,8 @@ inline BlockUser *block(
         std::move(params),
         ast
     };
+}
+
 }
 
 }

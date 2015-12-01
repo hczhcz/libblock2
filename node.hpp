@@ -2,6 +2,8 @@
 
 #include "include.hpp"
 
+namespace libblock {
+
 class Output;
 class OutputContext;
 class Type;
@@ -255,3 +257,5 @@ public:
         std::function<std::string (Type &)> &&target
     );
 };
+
+}

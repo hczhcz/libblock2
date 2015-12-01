@@ -4,6 +4,8 @@
 #include "node.hpp"
 #include "block.hpp"
 
+namespace libblock {
+
 Instance &Block::matchInstance(
     std::unique_ptr<Instance> &&instance_p,
     Output &output
@@ -174,4 +176,6 @@ void Block::build(
     // out
 
     after(instance);
+}
+
 }

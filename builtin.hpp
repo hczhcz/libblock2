@@ -2,6 +2,8 @@
 
 #include "include.hpp"
 
+namespace libblock {
+
 class Instance;
 class NodeBlock;
 class Block;
@@ -29,3 +31,5 @@ public:
         std::vector<std::function<Block *()>> &&_funcs
     );
 };
+
+}

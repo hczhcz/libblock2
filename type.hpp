@@ -2,6 +2,8 @@
 
 #include "include.hpp"
 
+namespace libblock {
+
 class Output;
 class OutputContext;
 class Instance;
@@ -114,3 +116,5 @@ public:
     virtual std::string strDecl(const std::string &name) const;
     virtual std::string strReint(const std::string &name) const;
 };
+
+}

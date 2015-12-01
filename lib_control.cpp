@@ -4,6 +4,8 @@
 #include "node.hpp"
 #include "builder_block.hpp"
 
+namespace libblock {
+
 namespace lib {
 
 using namespace builder;
@@ -49,5 +51,7 @@ Builtin __assign__ {"__assign__", {
         };
     },
 }};
+
+}
 
 }

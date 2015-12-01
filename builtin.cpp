@@ -3,6 +3,8 @@
 #include "node.hpp"
 #include "block.hpp"
 
+namespace libblock {
+
 void BuiltinContainer::apply(Instance &instance) {
     for (Builtin &builtin: Builtin::all()) {
         auto node = nodes.find(builtin.name);
@@ -41,3 +43,5 @@ Builtin::Builtin(
     funcs {std::move(_funcs)} {
         all().push_back(std::ref(*this));
     }
+
+}

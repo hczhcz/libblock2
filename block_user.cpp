@@ -2,6 +2,8 @@
 #include "node.hpp"
 #include "block.hpp"
 
+namespace libblock {
+
 void BlockUser::buildContent(Instance &instance, Output &output) {
     // gen type
 
@@ -15,3 +17,5 @@ BlockUser::BlockUser(
 ):
     Block {std::move(_options), std::move(_params)},
     ast_p {_ast} {}
+
+}

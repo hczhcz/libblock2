@@ -1,5 +1,7 @@
 #include "type.hpp"
 
+namespace libblock {
+
 template <class T>
 TypeNative<T> &TypeNative<T>::get() {
     static TypeNative<T> type;
@@ -82,3 +84,5 @@ template class TypeNative<bool>;
 template class TypeNative<int64_t>;
 template class TypeNative<double>;
 template class TypeNative<std::string>;
+
+}

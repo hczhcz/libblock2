@@ -2,6 +2,8 @@
 
 #include "type.hpp"
 
+namespace libblock {
+
 namespace builder {
 
 inline std::pair<std::string, Type &> typeVoid(
@@ -32,6 +34,8 @@ inline std::pair<std::string, Type &> typeStr(
     std::string &&name
 ) {
     return {std::move(name), TypeNativeStr::get()};
+}
+
 }
 
 }

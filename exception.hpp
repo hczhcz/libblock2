@@ -1,5 +1,7 @@
 #pragma once
 
+namespace libblock {
+
 class Error {};
 
 // access directions
@@ -19,3 +21,5 @@ class ErrorTypeCollision: public Error {};
 class ErrorOverloadNotFound: public Error {};
 class ErrorOverloadAmbiguous: public Error {};
 class ErrorTooManyArguments: public Error {};
+
+}

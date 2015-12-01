@@ -1,6 +1,8 @@
 #include "exception.hpp"
 #include "type.hpp"
 
+namespace libblock {
+
 static std::unique_ptr<std::nullptr_t> heap {
     std::make_unique<std::nullptr_t>()
 };
@@ -19,4 +21,6 @@ Instance &Type::prepareLookup() {
     } else {
         throw ErrorLookupNotAllowed {};
     }
+}
+
 }

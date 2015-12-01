@@ -1,6 +1,8 @@
 #include "output.hpp"
 #include "type.hpp"
 
+namespace libblock {
+
 OutputContext::OutputContext(std::ostream &_os):
     os {_os} {}
 
@@ -170,4 +172,6 @@ void Output::getContent(std::ostream &os, Instance &root) const {
     oc.endl();
     oc.os << "}";
     oc.endl();
+}
+
 }

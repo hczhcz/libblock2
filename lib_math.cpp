@@ -4,6 +4,8 @@
 #include "builder_type.hpp"
 #include "builder_block.hpp"
 
+namespace libblock {
+
 namespace lib {
 
 using namespace builder;
@@ -37,5 +39,7 @@ Builtin __add__ {"__add__", {
         };
     },
 }};
+
+}
 
 }

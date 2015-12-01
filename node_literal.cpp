@@ -3,6 +3,8 @@
 #include "type.hpp"
 #include "node.hpp"
 
+namespace libblock {
+
 template <>
 void NodeLiteral<std::nullptr_t>::renderValue(
     std::ostream &os
@@ -99,3 +101,5 @@ template class NodeLiteral<bool>;
 template class NodeLiteral<int64_t>;
 template class NodeLiteral<double>;
 template class NodeLiteral<std::string>;
+
+}

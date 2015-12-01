@@ -2,6 +2,8 @@
 
 #include "node.hpp"
 
+namespace libblock {
+
 namespace builder {
 
 inline NodeLiteralVoid *void_lit() {
@@ -78,6 +80,8 @@ inline NodeBlock *blocks(Node *source, Blocks... blocks) {
     return new NodeBlock {
         source, blocks...
     };
+}
+
 }
 
 }

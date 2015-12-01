@@ -2,6 +2,8 @@
 #include "type.hpp"
 #include "block.hpp"
 
+namespace libblock {
+
 void BlockBuiltinFmt::buildContent(Instance &instance, Output &output) {
     // gen type
     // notice: for existing symbols,
@@ -58,3 +60,5 @@ BlockBuiltinFmt::BlockBuiltinFmt(
     static_types {_static_types},
     dynamic_types {_dynamic_types},
     str {std::move(_str)} {}
+
+}

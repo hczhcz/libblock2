@@ -2,6 +2,8 @@
 
 #include "include.hpp"
 
+namespace libblock {
+
 class Instance;
 
 class OutputContext {
@@ -53,3 +55,5 @@ public:
     void getHeader(std::ostream &os, Instance &root) const;
     void getContent(std::ostream &os, Instance &root) const;
 };
+
+}

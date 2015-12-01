@@ -3,6 +3,8 @@
 #include "type.hpp"
 #include "node.hpp"
 
+namespace libblock {
+
 void Instance::typeCheck(Type &type1, Type &type2) {
     if (type1 != type2) {
         throw ErrorTypeCollision {};
@@ -208,4 +210,6 @@ std::string Instance::strDecl(const std::string &name) const {
 
 std::string Instance::strReint(const std::string &name) const {
     return "(*(" + strStruct() + " **) &" + name + ")";
+}
+
 }

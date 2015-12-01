@@ -2,6 +2,8 @@
 #include "type.hpp"
 #include "node.hpp"
 
+namespace libblock {
+
 void NodePath::renderPath(std::ostream &os, size_t level) const {
     for (size_t i = 0; i < level; ++i) {
         os << "->parent";
@@ -119,4 +121,6 @@ void NodePath::buildIn(
             oc.os << " = " << target(type) << ";";
         }
     );
+}
+
 }

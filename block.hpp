@@ -2,6 +2,8 @@
 
 #include "include.hpp"
 
+namespace libblock {
+
 class Output;
 class Instance;
 class Node;
@@ -111,3 +113,5 @@ public:
         Node *_ast
     );
 };
+
+}

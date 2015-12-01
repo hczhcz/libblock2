@@ -4,6 +4,8 @@
 #include "node.hpp"
 #include "block.hpp"
 
+namespace libblock {
+
 NodeBlock::NodeBlock(
     Node *_source,
     std::list<std::unique_ptr<Block>> &&_blocks
@@ -50,4 +52,6 @@ void NodeBlock::buildIn(
     std::function<std::string (Type &)> &&
 ) {
     throw ErrorWriteNotAllowed {};
+}
+
 }

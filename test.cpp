@@ -5,7 +5,8 @@
 #include "builder_block.hpp"
 
 int main() {
-    using namespace builder;
+    using namespace libblock;
+    using namespace libblock::builder;
 
     BlockUser *block_p {
         block(
