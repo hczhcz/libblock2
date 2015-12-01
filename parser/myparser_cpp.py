@@ -55,7 +55,6 @@ def cplusplus_gen(content, mppath):
 namespace myparser {
 
 ''' + content + '''
-
 }
 '''
     )

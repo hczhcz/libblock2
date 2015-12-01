@@ -7,6 +7,9 @@ flags_pch=''
 flags_obj='-c'
 flags_out=''
 
+pg='python ./parser/myparser.py'
+pg_flags='c++ -p ./parser/'
+
 lint='cppcheck'
 lint_flags='-q --std=c++11 --enable=all --inconclusive' # c++14?
 
@@ -38,6 +41,17 @@ else
     fi
     echo
 fi
+
+echo '======== generate the parser ========'
+echo
+
+echo $pg $pg_flags ./syntax.md -o ./parser_syntax.hpp
+$pg $pg_flags ./syntax.md -o ./parser_syntax.hpp
+if [ $? -ne 0 ]
+then
+    exit
+fi
+echo
 
 echo '======== build updated files ========'
 echo
