@@ -25,9 +25,11 @@ new=$(cat ./include.hpp)
 echo $new | diff -q - ./build/include.hpp 1> /dev/null 2> /dev/null
 if [ $? -eq 0 ]
 then
+    inc_changed=0
     echo 'not changed'
     echo
 else
+    inc_changed=1
     echo 'changed'
 
     echo $cc $flags_pch $flags ./include.hpp -o ./build/include.pch
@@ -63,7 +65,7 @@ do
     new=$($cc $flags_pp $flags $file)
 
     echo $new | diff -q - ./build/$file 1> /dev/null 2> /dev/null
-    if [ $? -eq 0 ]
+    if [ $? -eq 0 -a $inc_changed -eq 0 ]
     then
         echo 'not changed: '$file
         echo
