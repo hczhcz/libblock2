@@ -2,16 +2,16 @@ mkdir -p ./build
 
 cc='clang++'
 flags='-std=c++14 -O0 -g -Wall -Wextra -ferror-limit=3'
-flags_pp='-E -DSKIP_STD_LIB'
+flags_pp='-E -DSKIP_LIB'
 flags_pch=''
 flags_obj='-c'
 flags_out=''
 
-pg='python ./parser/myparser.py'
-pg_flags='c++ -p ./parser/'
+pg='python ./lib/myparser/myparser.py'
+pg_flags='c++ -p ./lib/myparser/'
 
 lint='cppcheck'
-lint_flags='-q --std=c++11 --enable=all --inconclusive' # c++14?
+lint_flags='-q --std=c++11 --enable=all' # --std=c++14 --inconclusive
 
 test_cc='clang'
 test_flags='-O0 -g -Wall -Wextra -ferror-limit=3'

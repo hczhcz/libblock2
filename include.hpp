@@ -1,5 +1,6 @@
-#ifndef SKIP_STD_LIB
-    #define SKIP_STD_LIB
+#ifndef SKIP_LIB
+    #define SKIP_LIB
+
     #include <memory>
     #include <functional>
     #include <string>
@@ -9,4 +10,11 @@
     #include <map>
     #include <fstream>
     #include <iostream>
+
+    #include "./lib/fork_try.hpp"
+    #include "./lib/delayed_call.hpp"
+
+    #define MYPARSER_CUSTOMIZED
+    #define MYPARSER_STD_REGEX
+    #include "./lib/myparser/myparser.hpp"
 #endif
