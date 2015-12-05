@@ -14,6 +14,11 @@
     #include <fstream>
     #include <iostream>
 
+    // TODO: use GC
+    #include <gc/gc.h>
+    #include <gc/gc_cpp.h>
+    #include <gc/gc_allocator.h>
+
     #include "./lib/fork_try.hpp"
     #include "./lib/myparser/myparser.hpp"
 #endif

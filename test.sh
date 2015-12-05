@@ -5,7 +5,7 @@ flags='-std=c++14 -O0 -g -Wall -Wextra -ferror-limit=3'
 flags_pp='-E -DSKIP_LIB'
 flags_pch=''
 flags_obj='-c'
-flags_out=''
+flags_out='-lgc'
 
 pg='python ./lib/myparser/myparser.py'
 pg_flags='c++ -p ./lib/myparser/'

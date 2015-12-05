@@ -81,7 +81,7 @@ private:
 protected:
     inline NodeList(
         const Input &input
-    ): Node<>(input), children() {}
+    ): Node<>(input), children(), basepos(0) {}
 
 public:
     virtual ~NodeList() {
