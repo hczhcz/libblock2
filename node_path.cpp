@@ -27,6 +27,11 @@ Instance &NodePath::getInner(Instance &instance, Output &output) {
 NodePath::NodePath(Node *_source, LookupMode _mode, std::string &&_name):
     source_p {_source},
     mode {_mode},
+    name {std::move(_name)} {}
+
+NodePath::NodePath(Node *_source, LookupMode _mode, const std::string &_name):
+    source_p {_source},
+    mode {_mode},
     name {_name} {}
 
 void NodePath::buildProc(

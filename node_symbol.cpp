@@ -18,6 +18,10 @@ NodeSymbol::NodeSymbol(LookupMode _mode, std::string &&_name):
     mode {_mode},
     name {std::move(_name)} {}
 
+NodeSymbol::NodeSymbol(LookupMode _mode, const std::string &_name):
+    mode {_mode},
+    name {_name} {}
+
 void NodeSymbol::buildProc(
     Instance &instance,
     Output &

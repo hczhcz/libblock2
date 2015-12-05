@@ -52,6 +52,7 @@ private:
 
 public:
     NodeLiteral(T &&_value);
+    NodeLiteral(const T &_value);
 
     virtual void buildProc(
         Instance &instance,
@@ -87,6 +88,7 @@ private:
 
 public:
     NodeSymbol(LookupMode _mode, std::string &&_name);
+    NodeSymbol(LookupMode _mode, const std::string &_name);
 
     virtual void buildProc(
         Instance &instance,
@@ -116,6 +118,7 @@ private:
 
 public:
     NodePath(Node *_source, LookupMode _mode, std::string &&_name);
+    NodePath(Node *_source, LookupMode _mode, const std::string &_name);
 
     virtual void buildProc(
         Instance &instance,

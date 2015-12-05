@@ -57,8 +57,8 @@ BlockBuiltinFmt::BlockBuiltinFmt(
     std::string &&_str
 ):
     BlockBuiltin {std::move(_options), std::move(_params)},
-    static_types {_static_types},
-    dynamic_types {_dynamic_types},
+    static_types {std::move(_static_types)},
+    dynamic_types {std::move(_dynamic_types)},
     str {std::move(_str)} {}
 
 }

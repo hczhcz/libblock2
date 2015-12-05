@@ -51,6 +51,10 @@ NodeLiteral<T>::NodeLiteral(T &&_value):
     value {std::move(_value)} {}
 
 template <class T>
+NodeLiteral<T>::NodeLiteral(const T &_value):
+    value {_value} {}
+
+template <class T>
 void NodeLiteral<T>::buildProc(
     Instance &,
     Output &
