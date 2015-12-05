@@ -16,14 +16,6 @@ private:
     std::list<libblock::Node *> lb_nodes;
     std::vector<std::pair<std::string, libblock::ParamMode>> *lb_params_p;
 
-    libblock::Node *getOne() {
-        if (lb_nodes.size() != 1) {
-            throw "internal error"; // TODO
-        }
-
-        return lb_nodes.front();
-    }
-
     void putArg(const Node<> *node) {
         Pass<PASS_AST> child_pass;
 
@@ -59,6 +51,14 @@ public:
     inline Pass() {}
 
     // virtual ~Pass() {}
+
+    libblock::Node *getOne() {
+        if (lb_nodes.size() != 1) {
+            throw "internal error"; // TODO
+        }
+
+        return lb_nodes.front();
+    }
 
     #define RUN_LIST(name, I) \
         void run(const NodeTypedList<MP_STR(name), I> *node)
@@ -807,14 +807,14 @@ public:
         });
     }
 
-    RUN_TEXT("space") {
+    RUN_LIST("space", 0) {
         // never reach
         (void) node;
 
         throw "internal error"; // TODO
     }
 
-    RUN_TEXT("keyword") {
+    RUN_LIST("keyword", 0) {
         // never reach
         (void) node;
 
@@ -844,6 +844,16 @@ public:
 
     #undef RUN_LIST
     #undef RUN_TEXT
+
+    // ignored nodes
+
+    template <class N, class E>
+    void run(const NodeTyped<N, NodeError<E>> *node) {
+        // never reach if no parsing error
+        (void) node;
+
+        throw "syntax error"; // TODO
+    }
 };
 
 }
