@@ -1,3 +1,6 @@
+#define MYPARSER_CUSTOMIZED
+#define MYPARSER_STD_REGEX
+
 #ifndef SKIP_LIB
     #define SKIP_LIB
 
@@ -12,8 +15,5 @@
     #include <iostream>
 
     #include "./lib/fork_try.hpp"
-
-    #define MYPARSER_CUSTOMIZED
-    #define MYPARSER_STD_REGEX
     #include "./lib/myparser/myparser.hpp"
 #endif
