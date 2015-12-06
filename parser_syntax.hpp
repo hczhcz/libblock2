@@ -674,19 +674,19 @@ public RuleList<MP_STR("literal"),
 template<>
 class RuleDef<MP_STR("int")>:
 public RuleRegex<MP_STR("int"),
-    MP_STR("[0-9]+")
+    MP_STR("[0-9]+(?!\\.)")
 > {};
 
 template<>
 class RuleDef<MP_STR("real")>:
 public RuleRegex<MP_STR("real"),
-    MP_STR("[0-9]+\\.[0-9]*([Ee][\\+-]?[0-9]+)?")
+    MP_STR("[0-9]+\\.[0-9]*([Ee][+\\-]?[0-9]+)?")
 > {};
 
 template<>
 class RuleDef<MP_STR("str")>:
 public RuleRegex<MP_STR("str"),
-    MP_STR("\"[^\"]*\"|\'[^\']*\'")
+    MP_STR("\"([^\"]|\\\\\")*\"|\'([^\']|\\\\\')*\'")
 > {};
 
 template<>
@@ -853,7 +853,7 @@ public RuleRegex<MP_STR("id"),
 template<>
 class RuleDef<MP_STR("sign")>:
 public RuleRegex<MP_STR("sign"),
-    MP_STR("[+-*/%|^&~=!<>]=?|[A-Za-z_][A-Za-z0-9_]*=?|\\|?\\\\|[(){},.;]")
+    MP_STR("[+\\-*/%|^&~=!<>]=?|[A-Za-z_][A-Za-z0-9_]*=?|\\|?\\\\|[(){},.;]")
 > {};
 
 template<>
