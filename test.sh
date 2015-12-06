@@ -1,7 +1,7 @@
 mkdir -p ./build
 
 cc='clang++'
-flags='-std=c++14 -O0 -g -Wall -Wextra -ferror-limit=3'
+flags='-std=c++14 -stdlib=libc++ -O0 -g -Wall -Wextra -ferror-limit=3'
 flags_pp='-E -DSKIP_LIB'
 flags_pch=''
 flags_obj='-c'

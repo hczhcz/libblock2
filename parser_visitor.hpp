@@ -263,49 +263,41 @@ public:
     RUN_LIST("action comp", 0) {
         putArg(node->getChildren()[2]);
         makeCall("__eq__");
-        node->getChildren()[4]->runPass(this);
     }
 
     RUN_LIST("action comp", 1) {
         putArg(node->getChildren()[2]);
         makeCall("__ne__");
-        node->getChildren()[4]->runPass(this);
     }
 
     RUN_LIST("action comp", 2) {
         putArg(node->getChildren()[2]);
         makeCall("__lt__");
-        node->getChildren()[4]->runPass(this);
     }
 
     RUN_LIST("action comp", 3) {
         putArg(node->getChildren()[2]);
         makeCall("__lte__");
-        node->getChildren()[4]->runPass(this);
     }
 
     RUN_LIST("action comp", 4) {
         putArg(node->getChildren()[2]);
         makeCall("__gt__");
-        node->getChildren()[4]->runPass(this);
     }
 
     RUN_LIST("action comp", 5) {
         putArg(node->getChildren()[2]);
         makeCall("__gte__");
-        node->getChildren()[4]->runPass(this);
     }
 
     RUN_LIST("action comp", 6) {
         putArg(node->getChildren()[2]);
         makeCall("__is__");
-        node->getChildren()[4]->runPass(this);
     }
 
     RUN_LIST("action comp", 7) {
         putArg(node->getChildren()[2]);
         makeCall("__in__");
-        node->getChildren()[4]->runPass(this);
     }
 
     RUN_LIST("action comp", 8) {
