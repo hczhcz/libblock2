@@ -1,13 +1,11 @@
 #include "output.hpp"
 #include "builtin.hpp"
-#include "type.hpp"
 #include "node.hpp"
-#include "builder_block.hpp"
 #include "builder_lib.hpp"
 
 namespace libblock {
 
-namespace lib {
+namespace {
 
 using namespace builder;
 

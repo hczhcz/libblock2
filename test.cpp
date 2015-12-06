@@ -32,7 +32,7 @@ int main() {
                     print(b("bye", a().c)); // print "hell" here
                     b(1, print)(b("wtf", c)); // print "o" here
 
-                    b(n1) = 200 + 33; // n1 is 233
+                    b(n1) = 200 + 66 shl 4 shr 1 ushr 2 ror 5 rol 3; // n1 is 233
                     n2 + n1 = 266; // n2 is 33
                     \ var x {
                         x = x + 300;
