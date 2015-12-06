@@ -628,7 +628,7 @@ public RuleList<MP_STR("expr unary"),
         RuleItemRef<MP_STR("action unary")>
     >,
     RuleLine<
-        RuleItemRef<MP_STR("block 1")>,
+        RuleItemRef<MP_STR("blocks 1")>,
         RuleItemSpace<>,
         RuleItemRef<MP_STR("action unary")>
     >
@@ -648,7 +648,7 @@ public RuleList<MP_STR("action unary"),
         RuleItemRef<MP_STR("action unary")>
     >,
     RuleLine<
-        RuleItemRef<MP_STR("block 2")>,
+        RuleItemRef<MP_STR("blocks 2")>,
         RuleItemSpace<>,
         RuleItemRef<MP_STR("action unary")>
     >,
@@ -746,22 +746,41 @@ public RuleList<MP_STR("args more"),
 > {};
 
 template<>
-class RuleDef<MP_STR("block 1")>:
-public RuleList<MP_STR("block 1"),
+class RuleDef<MP_STR("blocks 1")>:
+public RuleList<MP_STR("blocks 1"),
     RuleLine<
         RuleItemKeyword<MP_STR("\\")>,
         RuleItemSpace<>,
-        RuleItemRef<MP_STR("block")>
+        RuleItemRef<MP_STR("block")>,
+        RuleItemSpace<>,
+        RuleItemRef<MP_STR("blocks more")>
     >
 > {};
 
 template<>
-class RuleDef<MP_STR("block 2")>:
-public RuleList<MP_STR("block 2"),
+class RuleDef<MP_STR("blocks 2")>:
+public RuleList<MP_STR("blocks 2"),
     RuleLine<
-        RuleItemKeyword<MP_STR("|\\")>,
+        RuleItemKeyword<MP_STR("\\\\")>,
         RuleItemSpace<>,
-        RuleItemRef<MP_STR("block")>
+        RuleItemRef<MP_STR("block")>,
+        RuleItemSpace<>,
+        RuleItemRef<MP_STR("blocks more")>
+    >
+> {};
+
+template<>
+class RuleDef<MP_STR("blocks more")>:
+public RuleList<MP_STR("blocks more"),
+    RuleLine<
+        RuleItemKeyword<MP_STR("\\")>,
+        RuleItemSpace<>,
+        RuleItemRef<MP_STR("block")>,
+        RuleItemSpace<>,
+        RuleItemRef<MP_STR("blocks more")>
+    >,
+    RuleLine<
+        
     >
 > {};
 
@@ -853,7 +872,7 @@ public RuleRegex<MP_STR("id"),
 template<>
 class RuleDef<MP_STR("sign")>:
 public RuleRegex<MP_STR("sign"),
-    MP_STR("[+\\-*/%|^&~=!<>]=?|[A-Za-z_][A-Za-z0-9_]*=?|\\|?\\\\|[(){},.;]")
+    MP_STR("[+\\-*/%|^&~=!<>]=?|[A-Za-z_][A-Za-z0-9_]*=?|\\\\\\\\?|[(){},.;]")
 > {};
 
 template<>

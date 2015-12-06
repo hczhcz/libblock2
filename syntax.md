@@ -176,13 +176,13 @@ expr unary:
     ( <expr> ) <action unary>
     <literal> <action unary>
     <symbol> <action unary>
-    <block 1> <action unary>
+    <blocks 1> <action unary>
 
 action unary:
 
     <path> <action unary>
     <call> <action unary>
-    <block 2> <action unary>
+    <blocks 2> <action unary>
     <>
 
 Literals
@@ -234,13 +234,18 @@ args more:
 Blocks
 ---
 
-block 1:
+blocks 1:
 
-    \\ <block>
+    \\ <block> <blocks more>
 
-block 2:
+blocks 2:
 
-    \|\\ <block>
+    \\\\ <block> <blocks more>
+
+blocks more:
+
+    \\ <block> <blocks more>
+    <>
 
 block:
 
@@ -280,7 +285,7 @@ Special
 
 *sign*:
 
-    [+\-*/%|^&~=!<>]=?|[A-Za-z_][A-Za-z0-9_]*=?|\|?\\|[(){},.;]
+    [+\-*/%|^&~=!<>]=?|[A-Za-z_][A-Za-z0-9_]*=?|\\\\?|[(){},.;]
 
 *ignored*:
 

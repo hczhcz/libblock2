@@ -14,6 +14,7 @@ template <>
 class Pass<PASS_AST>: public PassProto<PASS_AST> {
 private:
     std::list<libblock::Node *> lb_nodes;
+    std::list<std::unique_ptr<libblock::Block>> *lb_blocks_p;
     std::vector<std::pair<std::string, libblock::ParamMode>> *lb_params_p;
 
     void putArg(const Node<> *node) {
@@ -33,8 +34,8 @@ private:
                 std::unique_ptr<libblock::Node>(lb_node)
             );
         }
-
         lb_nodes.clear();
+
         lb_nodes.push_back(
             new libblock::NodeCall {
                 new libblock::NodeSymbol {
@@ -631,8 +632,8 @@ public:
         libblock::Node *lb_source {
             getOne()
         };
-
         lb_nodes.clear();
+
         lb_nodes.push_back(
             new libblock::NodePath {
                 lb_source,
@@ -648,10 +649,10 @@ public:
         libblock::Node *lb_source {
             getOne()
         };
+        lb_nodes.clear();
 
         // args
 
-        lb_nodes.clear();
         node->getChildren()[2]->runPass(this);
 
         std::vector<std::unique_ptr<libblock::Node>> args;
@@ -660,10 +661,10 @@ public:
                 std::unique_ptr<libblock::Node>(lb_node)
             );
         }
-
-        // call
-
         lb_nodes.clear();
+
+        // the ast node
+
         lb_nodes.push_back(
             new libblock::NodeCall {
                 lb_source,
@@ -692,32 +693,74 @@ public:
         (void) node;
     }
 
-    RUN_LIST("block 1", 0) {
+    RUN_LIST("blocks 1", 0) {
         // self as closure
 
-        lb_nodes.push_back(
+        if (!lb_nodes.empty()) {
+            throw "internal error"; // TODO
+        }
+        libblock::Node *lb_source {
             new libblock::NodeSymbol {
                 libblock::LookupMode::mixed,
                 "self"
             }
+        };
+
+        // blocks
+
+        std::list<std::unique_ptr<libblock::Block>> blocks;
+        lb_blocks_p = &blocks;
+
+        node->getChildren()[2]->runPass(this);
+        node->getChildren()[4]->runPass(this);
+
+        // the ast node
+
+        lb_nodes.push_back(
+            new libblock::NodeBlock {
+                lb_source,
+                std::move(blocks)
+            }
         );
-
-        node->getChildren()[2]->runPass(this);
     }
 
-    RUN_LIST("block 2", 0) {
+    RUN_LIST("blocks 2", 0) {
         // a specified closure
-
-        node->getChildren()[2]->runPass(this);
-    }
-
-    RUN_LIST("block", 0) {
-        // closure
 
         libblock::Node *lb_source {
             getOne()
         };
+        lb_nodes.clear();
 
+        // blocks
+
+        std::list<std::unique_ptr<libblock::Block>> blocks;
+        lb_blocks_p = &blocks;
+
+        node->getChildren()[2]->runPass(this);
+        node->getChildren()[4]->runPass(this);
+
+        // the ast node
+
+        lb_nodes.push_back(
+            new libblock::NodeBlock {
+                lb_source,
+                std::move(blocks)
+            }
+        );
+    }
+
+    RUN_LIST("blocks more", 0) {
+        node->getChildren()[2]->runPass(this);
+        node->getChildren()[4]->runPass(this);
+    }
+
+    RUN_LIST("blocks more", 1) {
+        // nothing
+        (void) node;
+    }
+
+    RUN_LIST("block", 0) {
         // params
 
         std::vector<std::pair<std::string, libblock::ParamMode>> params;
@@ -727,20 +770,18 @@ public:
 
         // body
 
-        lb_nodes.clear();
         node->getChildren()[4]->runPass(this);
         makeCall("__then__");
 
         libblock::Node *lb_ast {
             getOne()
         };
+        lb_nodes.clear();
 
         // block
 
-        lb_nodes.clear();
-        lb_nodes.push_back(
-            new libblock::NodeBlock {
-                lb_source,
+        lb_blocks_p->push_back(
+            std::unique_ptr<libblock::Block> {
                 new libblock::BlockUser {
                     {
                         libblock::BlockOption::allow_proc,
