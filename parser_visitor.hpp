@@ -27,6 +27,18 @@ private:
         );
     }
 
+    void putBlocks(
+        const Node<> *node_first,
+        const Node<> *node_more,
+        std::list<std::unique_ptr<libblock::Block>> &blocks
+    ) {
+        Pass<PASS_AST> child_pass;
+        child_pass.lb_blocks_p = &blocks;
+
+        node_first->runPass(&child_pass);
+        node_more->runPass(&child_pass);
+    }
+
     void makeCall(std::string &&name) {
         std::vector<std::unique_ptr<libblock::Node>> args;
         for (libblock::Node *lb_node: lb_nodes) {
@@ -709,10 +721,12 @@ public:
         // blocks
 
         std::list<std::unique_ptr<libblock::Block>> blocks;
-        lb_blocks_p = &blocks;
 
-        node->getChildren()[2]->runPass(this);
-        node->getChildren()[4]->runPass(this);
+        putBlocks(
+            node->getChildren()[2],
+            node->getChildren()[4],
+            blocks
+        );
 
         // the ast node
 
@@ -735,10 +749,12 @@ public:
         // blocks
 
         std::list<std::unique_ptr<libblock::Block>> blocks;
-        lb_blocks_p = &blocks;
 
-        node->getChildren()[2]->runPass(this);
-        node->getChildren()[4]->runPass(this);
+        putBlocks(
+            node->getChildren()[2],
+            node->getChildren()[4],
+            blocks
+        );
 
         // the ast node
 
