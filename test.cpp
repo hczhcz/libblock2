@@ -15,7 +15,7 @@ int main() {
             {},
             parse(
                 R"CODE(
-                    c = "what";
+                    c = "what"; // type hint
 
                     a = \ {
                         c = "hell";
@@ -25,14 +25,18 @@ int main() {
                     b = \ a, b {
                         t = b;
                         result = t;
-                    };
+                    } \ out a {
+                        a = input;
+                    }; // overloading
 
                     print(b("bye", a().c)); // print "hell" here
                     b(1, print)(b("wtf", c)); // print "o" here
 
-                    n1 = 200 + 33; // n1 is 233
+                    b(n1) = 200 + 33; // n1 is 233
                     n2 + n1 = 266; // n2 is 33
-                    \ var x {x = x + 300;} (n2); // n2 is 333
+                    \ var x {
+                        x = x + 300;
+                    } (n2); // n2 is 333
 
                     __then__(print(n1), print(n2));
                 )CODE"

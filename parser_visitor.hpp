@@ -801,7 +801,8 @@ public:
                 new libblock::BlockUser {
                     {
                         libblock::BlockOption::allow_proc,
-                        libblock::BlockOption::allow_out
+                        libblock::BlockOption::allow_out,
+                        libblock::BlockOption::allow_in
                     },
                     std::move(params),
                     lb_ast
