@@ -3,6 +3,7 @@
 #include "type.hpp"
 #include "node.hpp"
 #include "builder_block.hpp"
+#include "builder_lib.hpp"
 
 namespace libblock {
 
@@ -32,11 +33,7 @@ public:
             {}
         } {}
 };
-Builtin __then__ {"__then__", {
-    []() -> Block * {
-        return new Then {};
-    },
-}};
+Builtin __then__ {"__then__", {libFuncT<Then>()}};
 
 Builtin __assign__ {"__assign__", {
     []() -> Block * {
