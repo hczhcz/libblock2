@@ -85,8 +85,8 @@ int main() {
         }
     );
 
-    std::fstream fs {
-        "./build/test.gen.c", std::fstream::out
+    std::ofstream fs {
+        "./build/test.gen.c"
     };
     output.getHeader(fs, *root_p);
     fs << std::endl;

@@ -701,12 +701,12 @@ public:
     }
 
     RUN_LIST("block 1", 0) {
-        // __self__ as closure
+        // self as closure
 
         lb_nodes.push_back(
             new libblock::NodeSymbol {
                 libblock::LookupMode::mixed,
-                "__self__"
+                "self"
             }
         );
 
@@ -737,6 +737,7 @@ public:
 
         lb_nodes.clear();
         node->getChildren()[4]->runPass(this);
+        makeCall("__then__");
 
         libblock::Node *lb_ast {
             getOne()
