@@ -1,6 +1,7 @@
 #include "output.hpp"
 #include "builtin.hpp"
 #include "type.hpp"
+#include "parser.hpp"
 #include "builder_node.hpp"
 #include "builder_block.hpp"
 
@@ -12,62 +13,30 @@ int main() {
         block(
             {BlockOption::allow_proc},
             {},
-            call(
-                $("__then__"),
-                call($("__assign__"), $("c"), "what"_lit),
-                call(
-                    $("__assign__"), $("a"), blocks( // function a
-                        block(
-                            {},
-                            call(
-                                $("__then__"),
-                                call($("__assign__"), $("c"), "hell"_lit),
-                                call($("__assign__"), $($("parent"), "c"), "o"_lit),
-                                call($("__assign__"), $("result"), $("self"))
-                            )
-                        )
-                    )
-                ),
-                call(
-                    $("__assign__"), $("b"), blocks( // function b
-                        block(
-                            {in("a"), in("b")},
-                            call(
-                                $("__then__"),
-                                call($("__assign__"), $("t"), $("b")),
-                                call($("__assign__"), $("result"), $("t"))
-                            )
-                        )
-                    )
-                ),
+            parse(
+                R"CODE(
+                    c = "what";
 
-                call(
-                    $("__assign__"), $("d"), call($("a"))
-                ),
-                call(
-                    $("print"),
-                    call($("b"), "bye"_lit, $($("d"), "c"))
-                ),
-                call(
-                    call($("b"), 1_lit, $("print")),
-                    call($("b"), "bye"_lit, $("c"))
-                ),
-                call($("print"), FrameMode::static_global, ", "_lit),
-                call($("print"), FrameMode::static_local, "wo"_lit),
-                call($("print"), FrameMode::dynamic_stack, "rl"_lit),
-                call($("print"), FrameMode::dynamic_free, "d!"_lit),
+                    a = \ {
+                        c = "hell";
+                        parent.c = "o";
+                        result = self;
+                    };
+                    b = \ a, b {
+                        t = b;
+                        result = t;
+                    };
 
-                call(
-                    $("__assign__"),
-                    $("n1"), call($("__add__"), 200_lit, 33_lit)
-                ),
-                call(
-                    $("__assign__"),
-                    call($("__add__"), $("n2"), $("n1")), 566_lit
-                ),
-                call($("print"), $("n1")),
-                call($("print"), $("n2"))
-            )
+                    print(b("bye", a().c)); // print "hell" here
+                    b(1, print)(b("wtf", c)); // print "o" here
+
+                    n1 = 200 + 33; // n1 is 233
+                    n2 + n1 = 266; // n2 is 33
+                    \ var x {x = x + 300;} (n2); // n2 is 333
+
+                    __then__(print(n1), print(n2));
+                )CODE"
+            ) // TODO: add (lookup / frame / block) modes and options in the grammar
         )
     };
 
