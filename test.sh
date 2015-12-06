@@ -59,6 +59,7 @@ echo '======== build updated files ========'
 echo
 
 objs=''
+upds=''
 
 for file in $(ls ./*.cpp)
 do
@@ -82,6 +83,8 @@ do
             exit
         fi
         echo
+
+        upds=$(echo $upds $file)
     fi
 
     objs=$(echo $objs ./build/$file.o)
@@ -90,7 +93,8 @@ done
 echo '======== lint ========'
 echo
 
-$lint $lint_flags ./*.cpp
+echo $lint $lint_flags $upds
+$lint $lint_flags $upds
 echo
 
 echo '======== build the test ========'
