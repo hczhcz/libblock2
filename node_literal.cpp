@@ -6,31 +6,31 @@
 namespace libblock {
 
 template <>
-void NodeLiteral<std::nullptr_t>::renderValue(
+void NodeLiteral<lb_void_t>::renderValue(
     std::ostream &os
 ) const {
-    os << "(struct empty) {}";
+    os << "(lb_void_t) {}";
 }
 
 template <>
-void NodeLiteral<bool>::renderValue(
+void NodeLiteral<lb_bool_t>::renderValue(
     std::ostream &os
 ) const {
     os << (value ? "true" : "false");
 }
 
 template <>
-void NodeLiteral<int64_t>::renderValue(
+void NodeLiteral<lb_int_t>::renderValue(
     std::ostream &os
 ) const {
     os << value;
 }
 
 template <>
-void NodeLiteral<double>::renderValue(
+void NodeLiteral<lb_real_t>::renderValue(
     std::ostream &os
 ) const {
-    os << "*(double *) (uint64_t []) {" << *(uint64_t *) &value << "}";
+    os << "*(lb_real_t *) (lb_reg_t []) {" << *(lb_reg_t *) &value << "}";
 }
 
 template <>
@@ -100,10 +100,10 @@ void NodeLiteral<T>::buildIn(
     throw ErrorWriteNotAllowed {};
 }
 
-template class NodeLiteral<std::nullptr_t>;
-template class NodeLiteral<bool>;
-template class NodeLiteral<int64_t>;
-template class NodeLiteral<double>;
+template class NodeLiteral<lb_void_t>;
+template class NodeLiteral<lb_bool_t>;
+template class NodeLiteral<lb_int_t>;
+template class NodeLiteral<lb_real_t>;
 template class NodeLiteral<std::string>;
 
 }

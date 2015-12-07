@@ -69,10 +69,10 @@ public:
         std::function<std::string (Type &)> &&target
     );
 };
-using NodeLiteralVoid = NodeLiteral<std::nullptr_t>;
-using NodeLiteralBool = NodeLiteral<bool>;
-using NodeLiteralInt = NodeLiteral<int64_t>;
-using NodeLiteralReal = NodeLiteral<double>;
+using NodeLiteralVoid = NodeLiteral<lb_void_t>;
+using NodeLiteralBool = NodeLiteral<lb_bool_t>;
+using NodeLiteralInt = NodeLiteral<lb_int_t>;
+using NodeLiteralReal = NodeLiteral<lb_real_t>;
 using NodeLiteralStr = NodeLiteral<std::string>;
 
 enum class LookupMode {

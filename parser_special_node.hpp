@@ -44,14 +44,14 @@ template <>
 class NodeBaseText<MP_STR("int")> {
 public:
     template <class TX = void> // actually not a template
-    using Type = NodeData<int64_t, ErrorLiteral>;
+    using Type = NodeData<lb_int_t, ErrorLiteral>;
 };
 
 template <>
 class NodeBaseText<MP_STR("real")> {
 public:
     template <class TX = void> // actually not a template
-    using Type = NodeData<double, ErrorLiteral>;
+    using Type = NodeData<lb_real_t, ErrorLiteral>;
 };
 
 template <>

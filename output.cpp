@@ -61,25 +61,7 @@ void Output::insert(Instance &instance) {
 void Output::getHeader(std::ostream &os, Instance &) const {
     OutputContext och {os};
 
-    och.endl();
-    och.os << "struct empty {};";
-    och.endl();
-
-    och.endl();
-    och.os << "struct frame {";
-    och.enter();
-
-        och.endl();
-        och.os << "void *func;";
-        och.endl();
-        och.os << "struct frame *caller;";
-        och.endl();
-        och.os << "struct frame *outer;";
-
-    och.leave();
-    och.endl();
-    och.os << "};";
-    och.endl();
+    och.os << "/* #include \"lbstd.h\" */";
 
     for (const auto &task: headers) {
         task.second->generate(och);
@@ -95,7 +77,7 @@ void Output::getContent(std::ostream &os, Instance &root) const {
     oc.enter();
 
         oc.endl();
-        oc.os << "void *exports[] = {&&global_exit, &&" << root.strFunc() << "};";
+        oc.os << "lb_func_t exports[] = {&&global_exit, &&" << root.strFunc() << "};";
         oc.endl();
         oc.endl();
         oc.os << "struct frame *self = frame;";
@@ -105,7 +87,7 @@ void Output::getContent(std::ostream &os, Instance &root) const {
         oc.os << "struct frame *inner = 0;";
         // notice: type of tmp may change if 128-bit values are supported
         oc.endl();
-        oc.os << "uint64_t tmp = 0;";
+        oc.os << "lb_reg_t tmp = 0;";
         oc.endl();
         oc.endl();
         oc.os << "self->func = exports[func];";

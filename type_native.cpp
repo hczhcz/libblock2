@@ -10,31 +10,31 @@ TypeNative<T> &TypeNative<T>::get() {
 }
 
 template <>
-std::string TypeNative<std::nullptr_t>::strDecl(
+std::string TypeNative<lb_void_t>::strDecl(
     const std::string &name
 ) const {
-    return "struct empty " + name;
+    return "lb_void_t " + name;
 }
 
 template <>
-std::string TypeNative<bool>::strDecl(
+std::string TypeNative<lb_bool_t>::strDecl(
     const std::string &name
 ) const {
-    return "bool " + name;
+    return "lb_bool_t " + name;
 }
 
 template <>
-std::string TypeNative<int64_t>::strDecl(
+std::string TypeNative<lb_int_t>::strDecl(
     const std::string &name
 ) const {
-    return "int64_t " + name;
+    return "lb_int_t " + name;
 }
 
 template <>
-std::string TypeNative<double>::strDecl(
+std::string TypeNative<lb_real_t>::strDecl(
     const std::string &name
 ) const {
-    return "double " + name;
+    return "lb_real_t " + name;
 }
 
 template <>
@@ -45,31 +45,31 @@ std::string TypeNative<std::string>::strDecl(
 }
 
 template <>
-std::string TypeNative<std::nullptr_t>::strReint(
+std::string TypeNative<lb_void_t>::strReint(
     const std::string &name
 ) const {
-    return "(*(struct empty *) &" + name + ")";
+    return "(*(lb_void_t *) &" + name + ")";
 }
 
 template <>
-std::string TypeNative<bool>::strReint(
+std::string TypeNative<lb_bool_t>::strReint(
     const std::string &name
 ) const {
-    return "(*(bool *) &" + name + ")";
+    return "(*(lb_bool_t *) &" + name + ")";
 }
 
 template <>
-std::string TypeNative<int64_t>::strReint(
+std::string TypeNative<lb_int_t>::strReint(
     const std::string &name
 ) const {
-    return "(*(int64_t *) &" + name + ")";
+    return "(*(lb_int_t *) &" + name + ")";
 }
 
 template <>
-std::string TypeNative<double>::strReint(
+std::string TypeNative<lb_real_t>::strReint(
     const std::string &name
 ) const {
-    return "(*(double *) &" + name + ")";
+    return "(*(lb_real_t *) &" + name + ")";
 }
 
 template <>
@@ -79,10 +79,10 @@ std::string TypeNative<std::string>::strReint(
     return "(*(const char **) &" + name + ")";
 }
 
-template class TypeNative<std::nullptr_t>;
-template class TypeNative<bool>;
-template class TypeNative<int64_t>;
-template class TypeNative<double>;
+template class TypeNative<lb_void_t>;
+template class TypeNative<lb_bool_t>;
+template class TypeNative<lb_int_t>;
+template class TypeNative<lb_real_t>;
 template class TypeNative<std::string>;
 
 }

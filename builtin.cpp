@@ -13,7 +13,7 @@ void BuiltinContainer::apply(Instance &instance) {
             node = nodes.emplace(
                 builtin.name,
                 std::make_unique<NodeBlock>(
-                    new NodeLiteral<std::nullptr_t> {nullptr}
+                    new NodeLiteral<lb_void_t> {{}}
                 )
             ).first;
 

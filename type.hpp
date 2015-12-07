@@ -44,10 +44,10 @@ public:
     virtual std::string strDecl(const std::string &name) const;
     virtual std::string strReint(const std::string &name) const;
 };
-using TypeNativeVoid = TypeNative<std::nullptr_t>;
-using TypeNativeBool = TypeNative<bool>;
-using TypeNativeInt = TypeNative<int64_t>;
-using TypeNativeReal = TypeNative<double>;
+using TypeNativeVoid = TypeNative<lb_void_t>;
+using TypeNativeBool = TypeNative<lb_bool_t>;
+using TypeNativeInt = TypeNative<lb_int_t>;
+using TypeNativeReal = TypeNative<lb_real_t>;
 using TypeNativeStr = TypeNative<std::string>;
 
 class TypeClosure: public Type {
