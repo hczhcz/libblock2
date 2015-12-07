@@ -15,8 +15,6 @@ int main() {
             {},
             parse(
                 R"CODE(
-                    c = "what"; // type hint
-
                     a = \ {
                         c = "hell";
                         parent.c = "o";

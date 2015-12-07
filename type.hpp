@@ -68,6 +68,14 @@ class Instance: public Type {
 private:
     static void typeCheck(Type &type1, Type &type2);
 
+    // update in buildContent():
+    //     last_position, closure_types
+    // update before locked:
+    //     symbol_types
+    // update when called:
+    //     callee_types
+
+    bool locked {false};
     size_t last_position {0};
 
     std::map<std::string, Type &> symbol_types;
@@ -98,7 +106,6 @@ public:
     bool in(Instance &instance) const;
 
     Type &at(const std::string &name);
-    void check(const std::string &name, Type &type);
     void insert(const std::string &name, Type &type);
     Type &lookup(
         const std::string &name,
@@ -112,6 +119,8 @@ public:
     size_t addPosition();
     void addCallee(size_t position, Instance &callee);
     Type &addClosure(Type &parent, NodeBlock &blocks);
+
+    void lock();
 
     virtual std::string strDecl(const std::string &name) const;
     virtual std::string strReint(const std::string &name) const;

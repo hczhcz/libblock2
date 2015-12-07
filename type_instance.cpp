@@ -115,20 +115,6 @@ Type &Instance::at(const std::string &name) {
     }
 }
 
-void Instance::check(const std::string &name, Type &type) {
-    if (name == "self") {
-        typeCheck(*this, type);
-    } else {
-        const auto &symbol = symbol_types.find(name);
-
-        if (symbol != symbol_types.end()) {
-            typeCheck(symbol->second, type);
-        } else {
-            throw ErrorSymbolNotFound {};
-        }
-    }
-}
-
 void Instance::insert(const std::string &name, Type &type) {
     if (name == "self") {
         typeCheck(*this, type);
@@ -138,7 +124,11 @@ void Instance::insert(const std::string &name, Type &type) {
         if (symbol != symbol_types.end()) {
             typeCheck(symbol->second, type);
         } else {
-            symbol_types.insert({name, type});
+            if (locked) {
+                throw ErrorSymbolNotFound {};
+            } else {
+                symbol_types.insert({name, type});
+            }
         }
     }
 }
@@ -202,6 +192,10 @@ Type &Instance::addClosure(Type &parent, NodeBlock &blocks) {
             )
         ).first->second;
     }
+}
+
+void Instance::lock() {
+    locked = true;
 }
 
 std::string Instance::strDecl(const std::string &name) const {

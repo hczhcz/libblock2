@@ -46,6 +46,7 @@ Instance &Block::matchInstance(
     // build
 
     buildContent(instance, output);
+    instance.lock(); // TODO: really?
 
     // render (after body)
 
