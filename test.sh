@@ -2,6 +2,7 @@ mkdir -p ./build
 
 cc='clang++'
 flags='-std=c++14 -stdlib=libc++ -O0 -g -Wall -Wextra -ferror-limit=3'
+flags_pp_header='-E'
 flags_pp='-E -DSKIP_LIB'
 flags_pch=''
 flags_obj='-c'
@@ -20,7 +21,7 @@ test_flags_out='-lgc'
 echo '======== build precompiled files ========'
 echo
 
-new=$(cat ./include.hpp)
+new=$($cc $flags_pp_header $flags include.hpp)
 
 echo $new | diff -q - ./build/include.hpp 1> /dev/null 2> /dev/null
 if [ $? -eq 0 ]

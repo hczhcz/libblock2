@@ -18,7 +18,7 @@ public:
     ): NodeTextOrError<E>(input, end) {
         static const std::set<std::string> keywords = {
             "div", "mod", "shl", "shr", "ushr", "rol", "ror",
-            "or", "xor", "and", "not", "is", "in ", "out", "var"
+            "or", "xor", "and", "not", "is", "in", "out", "var"
         };
 
         succeed = keywords.find(std::string(input, end)) == keywords.cend();

@@ -62,6 +62,7 @@ void Output::getHeader(std::ostream &os, Instance &) const {
     OutputContext och {os};
 
     och.os << "/* #include \"lbstd.h\" */";
+    och.endl();
 
     for (const auto &task: headers) {
         task.second->generate(och);
