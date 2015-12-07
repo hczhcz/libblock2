@@ -61,15 +61,6 @@ void Output::insert(Instance &instance) {
 void Output::getHeader(std::ostream &os, Instance &) const {
     OutputContext och {os};
 
-    och.os << "#include <stdlib.h>";
-    och.endl();
-    och.os << "#include <stdint.h>";
-    och.endl();
-    och.os << "#include <stdio.h>";
-    och.endl();
-    och.os << "#include <gc/gc.h>";
-    och.endl();
-
     och.endl();
     och.os << "struct empty {};";
     och.endl();

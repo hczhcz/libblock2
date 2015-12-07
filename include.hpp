@@ -21,4 +21,8 @@
 
     #include "./lib/fork_try.hpp"
     #include "./lib/myparser/myparser.hpp"
+
+    extern "C" {
+        #include "lbstd.h"
+    }
 #endif
