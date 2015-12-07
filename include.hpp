@@ -1,5 +1,7 @@
-#define MYPARSER_CUSTOMIZED
-#define MYPARSER_STD_REGEX
+#ifndef MYPARSER_CUSTOMIZED
+    #define MYPARSER_CUSTOMIZED
+    #define MYPARSER_STD_REGEX
+#endif
 
 #ifndef SKIP_LIB
     #define SKIP_LIB

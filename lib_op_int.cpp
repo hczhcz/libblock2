@@ -73,20 +73,22 @@ Builtin __shl__ {"__shl__", {
 
 Builtin __shr__ {"__shr__", {
     libFuncI3R("$result = $a >> $b;"),
-    // libFuncI3A("$a = $input << $b;"),
+    libFuncI3A("$a = $input << $b;"),
 }};
 
 Builtin __ushr__ {"__ushr__", {
-    libFuncI3R("$result = ((uint64_t) $a) >> $b;"),
-    // libFuncI3A("$a = ((uint64_t) $input) << $b;"),
+    libFuncI3R("$result = ((lb_uint_t) $a) >> $b;"),
+    libFuncI3A("$a = $input << $b;"),
 }};
 
 Builtin __rol__ {"__rol__", {
-    libFuncI3R("$result = ($a << $b) | (((uint64_t) $a) >> (63 & -$b));"),
+    libFuncI3R("$result = ($a << $b) | (((lb_uint_t) $a) >> (63 & -$b));"),
+    libFuncI3A("$a = (((lb_uint_t) $input) >> $b) | ($input << (63 & -$b));"),
 }};
 
 Builtin __ror__ {"__ror__", {
-    libFuncI3R("$result = (((uint64_t) $a) >> $b) | ($a << (63 & -$b));"),
+    libFuncI3R("$result = (((lb_uint_t) $a) >> $b) | ($a << (63 & -$b));"),
+    libFuncI3A("$a = ($input << $b) | (((lb_uint_t) $input) >> (63 & -$b));"),
 }};
 
 }
