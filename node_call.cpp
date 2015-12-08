@@ -6,6 +6,14 @@
 
 namespace libblock {
 
+void NodeCall::renderLabelDef(
+    OutputContext &och,
+    const std::string &label
+) const {
+    och.endl();
+    och.os << "LB_FUNC(" << label << ");";
+}
+
 void NodeCall::renderFrameAlloc(
     Instance &instance, size_t position,
     OutputContext &oc

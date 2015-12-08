@@ -100,6 +100,7 @@ public:
     std::string strCallee(size_t position) const;
 
     void renderStruct(OutputContext &oc) const;
+    void renderFuncDef(OutputContext &och) const;
     void renderFuncHead(OutputContext &oc) const;
     void renderFuncTail(OutputContext &oc) const;
 

@@ -150,6 +150,10 @@ private:
     FrameMode mode;
     std::vector<std::unique_ptr<Node>> args;
 
+    void renderLabelDef(
+        OutputContext &och,
+        const std::string &label
+    ) const;
     void renderFrameAlloc(
         Instance &instance, size_t position,
         OutputContext &oc
