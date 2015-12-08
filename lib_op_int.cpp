@@ -82,13 +82,29 @@ Builtin __ushr__ {"core", "__ushr__", {
 }};
 
 Builtin __rol__ {"core", "__rol__", {
-    libFuncI3R("$result = ($a << $b) | (((lb_uint_t) $a) >> (63 & -$b));"),
-    libFuncI3A("$a = (((lb_uint_t) $input) >> $b) | ($input << (63 & -$b));"),
+    libFuncI3R(
+        "$result = "
+            "($a << $b) | "
+            "(((lb_uint_t) $a) >> ((LB_BIT_WIDTH - 1) & -$b));"
+    ),
+    libFuncI3A(
+        "$a = "
+            "(((lb_uint_t) $input) >> $b) | "
+            "($input << ((LB_BIT_WIDTH - 1) & -$b));"
+    ),
 }};
 
 Builtin __ror__ {"core", "__ror__", {
-    libFuncI3R("$result = (((lb_uint_t) $a) >> $b) | ($a << (63 & -$b));"),
-    libFuncI3A("$a = ($input << $b) | (((lb_uint_t) $input) >> (63 & -$b));"),
+    libFuncI3R(
+        "$result = "
+            "(((lb_uint_t) $a) >> $b) | "
+            "($a << ((LB_BIT_WIDTH - 1) & -$b));"
+    ),
+    libFuncI3A(
+        "$a = "
+            "($input << $b) | "
+            "(((lb_uint_t) $input) >> ((LB_BIT_WIDTH - 1) & -$b));"
+    ),
 }};
 
 }

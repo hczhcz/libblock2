@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <gc/gc.h>
 
+#define LB_BIT_WIDTH 64
+
 #define LB_FUNC(func) \
     void (func)( \
         struct frame *self, \
