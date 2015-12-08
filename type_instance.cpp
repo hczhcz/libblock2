@@ -80,19 +80,19 @@ void Instance::renderFuncDef(OutputContext &och) const {
 
 void Instance::renderFuncHead(OutputContext &oc) const {
     oc.endl();
-    oc.os << strFunc() << ":";
+    oc.os << "LB_ENTER(" << strFunc() << ")";
     oc.enter();
 }
 
 void Instance::renderFuncTail(OutputContext &oc) const {
-    oc.endl();
-    oc.os << strFuncExit() << ":";
-    oc.endl();
-    oc.os << "self->func = &&global_func_error;";
-    oc.endl();
-    oc.os << "goto *self->caller->func;";
+        oc.endl();
+        oc.os << "self->func = &func_illegal;";
+        oc.endl();
+        oc.os << "self = self->caller;";
 
     oc.leave();
+    oc.endl();
+    oc.os << "LB_EXIT()";
     oc.endl();
 }
 

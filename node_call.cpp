@@ -68,42 +68,25 @@ void NodeCall::renderLoadCallee(OutputContext &oc) const {
     oc.os << "callee = inner;";
 }
 
-void NodeCall::renderBeforeCall(
+void NodeCall::renderCall(
     OutputContext &oc,
-    const std::string &label
+    const std::string &label,
+    const std::string &func
 ) const {
     oc.endl();
-    oc.os << "self->func = &&" << label << ";";
+    oc.os << "self->func = &" << label << ";";
+
+    // notice: reset callee->func
+    oc.endl();
+    oc.os << "callee->func = &" << func << ";";
 
     oc.endl();
     oc.os << "callee->caller = self;";
     oc.endl();
     oc.os << "self = callee;";
-}
-
-void NodeCall::renderCall(
-    OutputContext &oc,
-    const std::string &func
-) const {
-    // notice: reset self->func
-    oc.endl();
-    oc.os << "self->func = &&"
-          << func << ";";
-    oc.endl();
-    oc.os << "goto *self->func;";
-}
-
-void NodeCall::renderAfterCall(
-    OutputContext &oc,
-    const std::string &label
-) const {
-    oc.endl();
-    oc.os << label << ":";
 
     oc.endl();
-    oc.os << "callee = self;";
-    oc.endl();
-    oc.os << "self = callee->caller;";
+    oc.os << "LB_YIELD(" << label << ")";
 }
 
 void NodeCall::renderUnloadCallee(OutputContext &oc) const {
@@ -163,6 +146,18 @@ void NodeCall::build(
         }
     ) {
         size_t position {instance.addPosition()};
+
+        // render function definition
+
+        output.header(
+            instance,
+            [&, position](OutputContext &och) {
+                renderLabelDef(
+                    och,
+                    instance.strLabel(position)
+                );
+            }
+        );
 
         // callee is closure
         // create a frame and call the function
@@ -230,27 +225,20 @@ void NodeCall::build(
                             }
                         );
                     }
-
-                    // render (before call)
-
-                    output.content(
-                        instance,
-                        [&, position](OutputContext &oc) {
-                            renderBeforeCall(oc, instance.strLabel(position));
-                        }
-                    );
                 },
                 [&](Instance &callee) {
                     instance.addCallee(position, callee);
 
-                    // render (after call)
+                    // render (call)
 
                     output.content(
                         instance,
                         [&, position](OutputContext &oc) {
-                            renderCall(oc, callee.strFunc());
-
-                            renderAfterCall(oc, instance.strLabel(position));
+                            renderCall(
+                                oc,
+                                instance.strLabel(position),
+                                callee.strFunc()
+                            );
                         }
                     );
 

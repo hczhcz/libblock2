@@ -72,61 +72,40 @@ void Output::getHeader(std::ostream &os, Instance &) const {
 void Output::getContent(std::ostream &os, Instance &root) const {
     OutputContext oc {os};
 
-    // exec
+    // func_illegal
 
-    oc.os << "void exec(struct frame *frame, size_t func) {";
+    oc.os << "void func_illegal() {";
     oc.enter();
 
         oc.endl();
-        oc.os << "lb_func_t exports[] = {&&global_exit, &&" << root.strFunc() << "};";
+        oc.os << "fprintf(stderr, \"bad func pointer\");";
         oc.endl();
-        oc.endl();
-        oc.os << "struct frame *self = frame;";
-        oc.endl();
-        oc.os << "struct frame *callee = 0;";
-        oc.endl();
-        oc.os << "struct frame *inner = 0;";
-        // notice: type of tmp may change if 128-bit values are supported
-        oc.endl();
-        oc.os << "lb_reg_t tmp = 0;";
-        oc.endl();
-        oc.endl();
-        oc.os << "self->func = exports[func];";
-        oc.endl();
-        oc.os << "self->caller = (struct frame *) &exports[0];";
-        oc.endl();
-        oc.os << "goto *self->func;";
-        oc.endl();
-
-        for (const auto &task: contents) {
-            task.second->generate(oc);
-        }
-
-        oc.endl();
-        oc.os << "global_func_error:";
-        oc.enter();
-
-            oc.endl();
-            oc.os << "printf(\"bad func pointer\");";
-            oc.endl();
-            oc.os << "return;";
-
-        oc.leave();
-        oc.endl();
-
-        oc.endl();
-        oc.os << "global_exit:";
-        oc.enter();
-
-            oc.endl();
-            oc.os << "return;";
-
-        oc.leave();
+        oc.os << "exit(1);"; // TODO
 
     oc.leave();
     oc.endl();
     oc.os << "}";
     oc.endl();
+
+    // func exit
+
+    oc.endl();
+    oc.os << "void func_exit() {";
+    oc.enter();
+
+        oc.endl();
+        oc.os << "return;"; // TODO
+
+    oc.leave();
+    oc.endl();
+    oc.os << "}";
+    oc.endl();
+
+    // exec
+
+    for (const auto &task: contents) {
+        task.second->generate(oc);
+    }
 
     // main
 
@@ -135,9 +114,17 @@ void Output::getContent(std::ostream &os, Instance &root) const {
     oc.enter();
 
         oc.endl();
+        oc.os << "lb_func_t exit_p = &func_exit;";
+        oc.endl();
+        oc.endl();
         oc.os << root.strStruct() << " root;";
         oc.endl();
-        oc.os << "exec(&root.frame, 1);";
+        oc.os << "root.frame.func = " << root.strFunc() << ";";
+        oc.endl();
+        oc.os << "root.frame.caller = (struct frame *) &exit_p;";
+        oc.endl();
+        oc.endl();
+        oc.os << root.strFunc() << "(&root.frame, 0, 0, 0);";
         oc.endl();
         oc.endl();
         oc.os << "return 0;";
