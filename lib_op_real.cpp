@@ -9,36 +9,36 @@ namespace {
 
 using namespace builder;
 
-Builtin __add__ {"__add__", {
+Builtin __add__ {"core", "__add__", {
     libFuncR3R("$result = $a + $b;"),
     libFuncR3A("$a = $input - $b;"),
     libFuncR3B("$b = $input - $a;"),
 }};
 
-Builtin __sub__ {"__sub__", {
+Builtin __sub__ {"core", "__sub__", {
     libFuncR3R("$result = $a - $b;"),
     libFuncR3A("$a = $input + $b;"),
     libFuncR3B("$b = $a - $input;"),
 }};
 
-Builtin __mul__ {"__mul__", {
+Builtin __mul__ {"core", "__mul__", {
     libFuncR3R("$result = $a * $b;"),
     libFuncR3A("$a = $input / $b;"),
     libFuncR3B("$b = $input / $a;"),
 }};
 
-Builtin __div__ {"__div__", {
+Builtin __div__ {"core", "__div__", {
     libFuncR3R("$result = $a / $b;"),
     libFuncR3A("$a = $input * $b;"),
     libFuncR3B("$b = $a / $input;"),
 }};
 
-Builtin __pos__ {"__pos__", {
+Builtin __pos__ {"core", "__pos__", {
     libFuncR3R("$result = $a;"),
     libFuncR3A("$a = $input;"),
 }};
 
-Builtin __neg__ {"__neg__", {
+Builtin __neg__ {"core", "__neg__", {
     libFuncR3R("$result = -$a;"),
     libFuncR3A("$a = -$input;"),
 }};

@@ -49,7 +49,8 @@ int main() {
     block_p->build(
         output,
         [&](Instance &root) {
-            bc.apply(root);
+            bc.apply("core", root);
+            bc.apply("io", root);
         },
         [&](Instance &root) {
             root_p = &root;

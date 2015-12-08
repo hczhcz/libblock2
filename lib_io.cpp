@@ -9,7 +9,7 @@ namespace {
 
 using namespace builder;
 
-Builtin print {"print", {
+Builtin print {"io", "print", {
     []() -> Block * {
         return new BlockBuiltinFmt {
             {BlockOption::allow_proc},

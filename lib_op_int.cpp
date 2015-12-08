@@ -9,84 +9,84 @@ namespace {
 
 using namespace builder;
 
-Builtin __add__ {"__add__", {
+Builtin __add__ {"core", "__add__", {
     libFuncI3R("$result = $a + $b;"),
     libFuncI3A("$a = $input - $b;"),
     libFuncI3B("$b = $input - $a;"),
 }};
 
-Builtin __sub__ {"__sub__", {
+Builtin __sub__ {"core", "__sub__", {
     libFuncI3R("$result = $a - $b;"),
     libFuncI3A("$a = $input + $b;"),
     libFuncI3B("$b = $a - $input;"),
 }};
 
-Builtin __mul__ {"__mul__", {
+Builtin __mul__ {"core", "__mul__", {
     libFuncI3R("$result = $a * $b;"),
     // libFuncI3A("$a = $input / $b;"),
     // libFuncI3B("$b = $input / $a;"),
 }};
 
-Builtin __int_div__ {"__int_div__", {
+Builtin __int_div__ {"core", "__int_div__", {
     libFuncI3R("$result = $a / $b;"),
     // libFuncI3A("$a = $input * $b;"),
     // libFuncI3B("$b = $a / $input;"),
 }};
 
-Builtin __int_mod__ {"__int_mod__", {
+Builtin __int_mod__ {"core", "__int_mod__", {
     libFuncI3R("$result = $a % $b;"),
 }};
 
-Builtin __pos__ {"__pos__", {
+Builtin __pos__ {"core", "__pos__", {
     libFuncI2R("$result = $a;"),
     libFuncI2A("$a = $input;"),
 }};
 
-Builtin __neg__ {"__neg__", {
+Builtin __neg__ {"core", "__neg__", {
     libFuncI2R("$result = -$a;"),
     libFuncI2A("$a = -$input;"),
 }};
 
-Builtin __bit_or__ {"__bit_or__", {
+Builtin __bit_or__ {"core", "__bit_or__", {
     libFuncI3R("$result = $a | $b;"),
 }};
 
-Builtin __bit_xor__ {"__bit_xor__", {
+Builtin __bit_xor__ {"core", "__bit_xor__", {
     libFuncI3R("$result = $a ^ $b;"),
     libFuncI3A("$a = $input ^ $b;"),
     libFuncI3B("$b = $input ^ $a;"),
 }};
 
-Builtin __bit_and__ {"__bit_and__", {
+Builtin __bit_and__ {"core", "__bit_and__", {
     libFuncI3R("$result = $a & $b;"),
 }};
 
-Builtin __bit_not__ {"__bit_not__", {
+Builtin __bit_not__ {"core", "__bit_not__", {
     libFuncI2R("$result = ~$a;"),
     libFuncI2A("$a = ~$input;"),
 }};
 
-Builtin __shl__ {"__shl__", {
+Builtin __shl__ {"core", "__shl__", {
     libFuncI3R("$result = $a << $b;"),
     // libFuncI3A("$a = $input >> $b;"),
 }};
 
-Builtin __shr__ {"__shr__", {
+Builtin __shr__ {"core", "__shr__", {
     libFuncI3R("$result = $a >> $b;"),
     libFuncI3A("$a = $input << $b;"),
 }};
 
-Builtin __ushr__ {"__ushr__", {
+Builtin __ushr__ {"core", "__ushr__", {
     libFuncI3R("$result = ((lb_uint_t) $a) >> $b;"),
     libFuncI3A("$a = $input << $b;"),
 }};
 
-Builtin __rol__ {"__rol__", {
+Builtin __rol__ {"core", "__rol__", {
     libFuncI3R("$result = ($a << $b) | (((lb_uint_t) $a) >> (63 & -$b));"),
     libFuncI3A("$a = (((lb_uint_t) $input) >> $b) | ($input << (63 & -$b));"),
 }};
 
-Builtin __ror__ {"__ror__", {
+Builtin __ror__ {"core", "__ror__", {
     libFuncI3R("$result = (((lb_uint_t) $a) >> $b) | ($a << (63 & -$b));"),
     libFuncI3A("$a = ($input << $b) | (((lb_uint_t) $input) >> (63 & -$b));"),
 }};

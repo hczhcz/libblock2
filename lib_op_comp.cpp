@@ -9,37 +9,37 @@ namespace {
 
 using namespace builder;
 
-Builtin __eq__ {"__eq__", {
+Builtin __eq__ {"core", "__eq__", {
     libFuncB3R("$result = $a == $b;"),
     libFuncI3R("$result = $a == $b;"),
     libFuncR3R("$result = $a == $b;"),
 }};
 
-Builtin __ne__ {"__ne__", {
+Builtin __ne__ {"core", "__ne__", {
     libFuncB3R("$result = $a != $b;"),
     libFuncI3R("$result = $a != $b;"),
     libFuncR3R("$result = $a != $b;"),
 }};
 
-Builtin __lt__ {"__lt__", {
+Builtin __lt__ {"core", "__lt__", {
     libFuncB3R("$result = $a < $b;"),
     libFuncI3R("$result = $a < $b;"),
     libFuncR3R("$result = $a < $b;"),
 }};
 
-Builtin __lte__ {"__lte__", {
+Builtin __lte__ {"core", "__lte__", {
     libFuncB3R("$result = $a <= $b;"),
     libFuncI3R("$result = $a <= $b;"),
     libFuncR3R("$result = $a <= $b;"),
 }};
 
-Builtin __gt__ {"__gt__", {
+Builtin __gt__ {"core", "__gt__", {
     libFuncB3R("$result = $a > $b;"),
     libFuncI3R("$result = $a > $b;"),
     libFuncR3R("$result = $a > $b;"),
 }};
 
-Builtin __gte__ {"__gte__", {
+Builtin __gte__ {"core", "__gte__", {
     libFuncB3R("$result = $a >= $b;"),
     libFuncI3R("$result = $a >= $b;"),
     libFuncR3R("$result = $a >= $b;"),

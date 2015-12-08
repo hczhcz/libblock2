@@ -31,9 +31,11 @@ public:
             {}
         } {}
 };
-Builtin __then__ {"__then__", {libFuncT<Then>()}};
+Builtin __then__ {"core", "__then__", {
+    libFuncT<Then>()
+}};
 
-Builtin __assign__ {"__assign__", {
+Builtin __assign__ {"core", "__assign__", {
     []() -> Block * {
         return new BlockBuiltinFmt {
             {BlockOption::allow_proc},

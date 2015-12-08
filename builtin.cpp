@@ -5,8 +5,11 @@
 
 namespace libblock {
 
-void BuiltinContainer::apply(Instance &instance) {
-    for (Builtin &builtin: Builtin::all()) {
+void BuiltinContainer::apply(
+    std::string &&package,
+    Instance &instance
+) {
+    for (Builtin &builtin: Builtin::all().at(std::move(package))) {
         auto node = nodes.find(builtin.name);
 
         if (node == nodes.end()) {
@@ -29,19 +32,35 @@ void BuiltinContainer::apply(Instance &instance) {
     }
 }
 
-std::list<std::reference_wrapper<Builtin>> &Builtin::all() {
-    static std::list<std::reference_wrapper<Builtin>> builtins;
+std::map<
+    std::string,
+    std::list<std::reference_wrapper<Builtin>
+>> &Builtin::all() {
+    static std::map<
+        std::string,
+        std::list<std::reference_wrapper<Builtin>
+    >> builtins;
 
     return builtins;
 }
 
 Builtin::Builtin(
+    std::string &&package,
     std::string &&_name,
     std::vector<std::function<Block *()>> &&_funcs
 ):
     name {std::move(_name)},
     funcs {std::move(_funcs)} {
-        all().push_back(std::ref(*this));
+        auto list = all().find(package);
+
+        if (list == all().end()) {
+            list = all().insert({
+                std::move(package),
+                {}
+            }).first;
+        }
+
+        list->second.push_back(std::ref(*this));
     }
 
 }

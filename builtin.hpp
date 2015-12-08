@@ -13,12 +13,18 @@ private:
     std::map<std::string, std::unique_ptr<NodeBlock>> nodes;
 
 public:
-    void apply(Instance &instance);
+    void apply(
+        std::string &&package,
+        Instance &instance
+    );
 };
 
 class Builtin {
 private:
-    static std::list<std::reference_wrapper<Builtin>> &all();
+    static std::map<
+        std::string,
+        std::list<std::reference_wrapper<Builtin>>
+    > &all();
 
     std::string name;
     std::vector<std::function<Block *()>> funcs;
@@ -27,6 +33,7 @@ private:
 
 public:
     Builtin(
+        std::string &&package,
         std::string &&_name,
         std::vector<std::function<Block *()>> &&_funcs
     );
