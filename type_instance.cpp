@@ -53,24 +53,24 @@ std::string Instance::strCallee(size_t position) const {
     return "((" + strCalleeType(position) + " *) callee)";
 }
 
-void Instance::renderStruct(OutputContext &oc) const {
-    oc.endl();
-    oc.os << strStruct() << " {";
-    oc.enter();
+void Instance::renderStruct(OutputContext &och) const {
+    och.endl();
+    och.os << strStruct() << " {";
+    och.enter();
 
-        oc.endl();
-        oc.os << "struct frame frame;";
-        oc.endl();
+        och.endl();
+        och.os << "struct frame frame;";
+        och.endl();
 
         for (const auto &symbol: symbol_types) {
-            oc.endl();
-            oc.os << symbol.second.strDecl(symbol.first) << ";";
+            och.endl();
+            och.os << symbol.second.strDecl(symbol.first) << ";";
         }
 
-    oc.leave();
-    oc.endl();
-    oc.os << "};";
-    oc.endl();
+    och.leave();
+    och.endl();
+    och.os << "};";
+    och.endl();
 }
 
 void Instance::renderFuncDef(OutputContext &och) const {

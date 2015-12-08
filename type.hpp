@@ -99,7 +99,7 @@ public:
     std::string strInner(size_t position) const;
     std::string strCallee(size_t position) const;
 
-    void renderStruct(OutputContext &oc) const;
+    void renderStruct(OutputContext &och) const;
     void renderFuncDef(OutputContext &och) const;
     void renderFuncHead(OutputContext &oc) const;
     void renderFuncTail(OutputContext &oc) const;

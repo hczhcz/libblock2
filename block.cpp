@@ -25,15 +25,6 @@ Instance &Block::matchInstance(
 
     output.insert(instance);
 
-    // render header
-
-    output.header(
-        instance,
-        [&](OutputContext &och) {
-            instance.renderStruct(och);
-        }
-    );
-
     // render (before body)
 
     output.content(
@@ -54,6 +45,16 @@ Instance &Block::matchInstance(
         instance,
         [&](OutputContext &oc) {
             instance.renderFuncTail(oc);
+        }
+    );
+
+    // render header
+
+    output.header(
+        instance,
+        [&](OutputContext &och) {
+            instance.renderFuncDef(och);
+            instance.renderStruct(och);
         }
     );
 
