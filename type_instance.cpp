@@ -17,10 +17,6 @@ std::string Instance::strFunc() const {
     return "func_" + std::to_string(tuid());
 }
 
-std::string Instance::strFuncExit() const {
-    return "func_exit_" + std::to_string(tuid());
-}
-
 std::string Instance::strStruct() const {
     return "struct struct_" + std::to_string(tuid());
 }
