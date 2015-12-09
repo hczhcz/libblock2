@@ -15,6 +15,7 @@ public:
 
     OutputContext(std::ostream &_os);
 
+    void tab(); // print indention
     void enter();
     void leave();
     void endl();

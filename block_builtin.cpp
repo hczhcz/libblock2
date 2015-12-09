@@ -36,6 +36,10 @@ void BlockBuiltinFmt::buildContent(Instance &instance, Output &output) {
                         oc.os << instance.strSelf() << "->";
                         break;
 
+                    case '\t':
+                        oc.tab();
+                        break;
+
                     case '\n':
                         oc.endl();
                         break;
