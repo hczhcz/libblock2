@@ -84,7 +84,7 @@ void Output::getContent(std::ostream &os, Instance &root) const {
         oc.endl();
         oc.os << "fprintf(stderr, \"bad func pointer\");";
         oc.endl();
-        oc.os << "exit(1);"; // TODO
+        oc.os << "exit(1);";
 
     oc.leave();
     oc.endl();
@@ -98,7 +98,7 @@ void Output::getContent(std::ostream &os, Instance &root) const {
     oc.enter();
 
         oc.endl();
-        oc.os << "return;"; // TODO
+        oc.os << "exit(0);";
 
     oc.leave();
     oc.endl();
@@ -111,15 +111,20 @@ void Output::getContent(std::ostream &os, Instance &root) const {
         task.second->generate(oc);
     }
 
-    // main
+    // start
 
     oc.endl();
-    oc.os << "int main() {";
+    oc.os << "void _start() {";
     oc.enter();
+
+        oc.endl();
+        oc.os << "GC_init();";
+        oc.endl();
 
         oc.endl();
         oc.os << "lb_func_t exit_p = &func_exit;";
         oc.endl();
+
         oc.endl();
         oc.os << root.strStruct() << " root;";
         oc.endl();
@@ -127,11 +132,9 @@ void Output::getContent(std::ostream &os, Instance &root) const {
         oc.endl();
         oc.os << "root.frame.caller = (struct frame *) &exit_p;";
         oc.endl();
+
         oc.endl();
         oc.os << root.strFunc() << "(&root.frame, 0, 0, 0);";
-        oc.endl();
-        oc.endl();
-        oc.os << "return 0;";
 
     oc.leave();
     oc.endl();
