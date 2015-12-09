@@ -9,7 +9,7 @@ int main() {
     using namespace libblock;
     using namespace libblock::builder;
 
-    BlockUser *block_p {
+    BlockUser &root_block {
         block(
             {BlockOption::allow_proc},
             {},
@@ -46,7 +46,7 @@ int main() {
     Instance *root_p {nullptr};
     BuiltinContainer bc;
 
-    block_p->build(
+    root_block.build(
         output,
         [&](Instance &root) {
             bc.apply("core", root);

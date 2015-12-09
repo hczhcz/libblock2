@@ -55,9 +55,12 @@ void BlockBuiltinFmt::buildContent(Instance &instance, Output &output) {
 
 BlockBuiltinFmt::BlockBuiltinFmt(
     std::set<BlockOption> &&_options,
-    std::vector<std::pair<std::string, ParamMode>> &&_params,
-    std::map<std::string, Type &> &&_static_types,
-    std::vector<std::pair<std::string, std::string>> &&_dynamic_types,
+    std::gc_vector<std::pair<std::string, ParamMode>> &&_params,
+    std::gc_map<
+        std::string,
+        std::reference_wrapper<Type>
+    > &&_static_types,
+    std::gc_vector<std::pair<std::string, std::string>> &&_dynamic_types,
     std::string &&_str
 ):
     BlockBuiltin {std::move(_options), std::move(_params)},

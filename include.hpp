@@ -6,7 +6,6 @@
 #ifndef SKIP_LIB
     #define SKIP_LIB
 
-    #include <memory>
     #include <functional>
     #include <string>
     #include <list>
@@ -16,7 +15,6 @@
     #include <fstream>
     #include <iostream>
 
-    // TODO: use GC
     #include <gc/gc.h>
     #include <gc/gc_cpp.h>
     #include <gc/gc_allocator.h>
@@ -28,3 +26,13 @@
         #include "lbstd.h"
     }
 #endif
+
+// TODO
+namespace std {
+    template <class T>
+    using gc_list = list<T, gc_allocator<T>>;
+    template <class T>
+    using gc_vector = vector<T, gc_allocator<T>>;
+    template <class Key, class T>
+    using gc_map = map<Key, T, gc_allocator<T>>;
+}

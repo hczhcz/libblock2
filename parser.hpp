@@ -6,7 +6,7 @@ namespace libblock {
 
 class Node;
 
-Node *parse(std::string &&code);
-Node *parseFile(std::string &&file);
+Node &parse(std::string &&code);
+Node &parseFile(std::string &&file);
 
 }

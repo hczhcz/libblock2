@@ -23,7 +23,7 @@ public:
 
 class OutputTask {
 private:
-    std::list<std::function<void (OutputContext &)>> render_funcs;
+    std::gc_list<std::function<void (OutputContext &)>> render_funcs;
 
 public:
     void insert(std::function<void (OutputContext &)> &&render);
@@ -32,13 +32,13 @@ public:
 
 class Output {
 private:
-    std::map<
+    std::gc_map<
         std::reference_wrapper<Instance>,
-        std::unique_ptr<OutputTask>
+        std::reference_wrapper<OutputTask>
     > headers;
-    std::map<
+    std::gc_map<
         std::reference_wrapper<Instance>,
-        std::unique_ptr<OutputTask>
+        std::reference_wrapper<OutputTask>
     > contents;
 
 public:

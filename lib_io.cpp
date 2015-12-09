@@ -10,8 +10,8 @@ namespace {
 using namespace builder;
 
 Builtin print {"io", "print", {
-    []() -> Block * {
-        return new BlockBuiltinFmt {
+    []() -> Block & {
+        return *new (GC) BlockBuiltinFmt {
             {BlockOption::allow_proc},
             {in("value")},
             {typeVoid("value")},
@@ -19,8 +19,8 @@ Builtin print {"io", "print", {
             "printf(\"void\");"
         };
     },
-    []() -> Block * {
-        return new BlockBuiltinFmt {
+    []() -> Block & {
+        return *new (GC) BlockBuiltinFmt {
             {BlockOption::allow_proc},
             {in("value")},
             {typeBool("value")},
@@ -28,8 +28,8 @@ Builtin print {"io", "print", {
             "printf($value ? \"true\" : \"false\");"
         };
     },
-    []() -> Block * {
-        return new BlockBuiltinFmt {
+    []() -> Block & {
+        return *new (GC) BlockBuiltinFmt {
             {BlockOption::allow_proc},
             {in("value")},
             {typeInt("value")},
@@ -37,8 +37,8 @@ Builtin print {"io", "print", {
             "printf(\"%ld\", $value);"
         };
     },
-    []() -> Block * {
-        return new BlockBuiltinFmt {
+    []() -> Block & {
+        return *new (GC) BlockBuiltinFmt {
             {BlockOption::allow_proc},
             {in("value")},
             {typeReal("value")},
@@ -46,8 +46,8 @@ Builtin print {"io", "print", {
             "printf(\"%lf\", $value);"
         };
     },
-    []() -> Block * {
-        return new BlockBuiltinFmt {
+    []() -> Block & {
+        return *new (GC) BlockBuiltinFmt {
             {BlockOption::allow_proc},
             {in("value")},
             {typeStr("value")},

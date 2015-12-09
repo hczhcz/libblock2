@@ -13,11 +13,11 @@ class Then: public BlockBuiltin {
 protected:
     virtual void inSpecialArg(
         Instance &caller, Instance &,
-        size_t, std::unique_ptr<Node> &arg,
+        size_t, Node &arg,
         Output &output,
         std::function<std::string (Type &)> &&
     ) {
-        arg->buildProc(caller, output);
+        arg.buildProc(caller, output);
     }
 
     virtual void buildContent(Instance &, Output &) {
@@ -36,8 +36,8 @@ Builtin __then__ {"core", "__then__", {
 }};
 
 Builtin __assign__ {"core", "__assign__", {
-    []() -> Block * {
-        return new BlockBuiltinFmt {
+    []() -> Block & {
+        return *new (GC) BlockBuiltinFmt {
             {BlockOption::allow_proc},
             {out("dest"), in("src")},
             {},

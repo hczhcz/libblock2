@@ -41,25 +41,25 @@ void Output::header(
     Instance &instance,
     std::function<void (OutputContext &)> &&render
 ) {
-    headers.at(std::ref(instance))->insert(std::move(render));
+    headers.at(instance).get().insert(std::move(render));
 }
 
 void Output::content(
     Instance &instance,
     std::function<void (OutputContext &)> &&render
 ) {
-    contents.at(std::ref(instance))->insert(std::move(render));
+    contents.at(instance).get().insert(std::move(render));
 }
 
 void Output::insert(Instance &instance) {
-    headers.emplace(
-        std::ref(instance),
-        std::make_unique<OutputTask>()
-    );
-    contents.emplace(
-        std::ref(instance),
-        std::make_unique<OutputTask>()
-    );
+    headers.insert({
+        instance,
+        *new (GC) OutputTask {}
+    });
+    contents.insert({
+        instance,
+        *new (GC) OutputTask {}
+    });
 }
 
 void Output::getHeader(std::ostream &os, Instance &) const {
@@ -69,7 +69,7 @@ void Output::getHeader(std::ostream &os, Instance &) const {
     och.endl();
 
     for (const auto &task: headers) {
-        task.second->generate(och);
+        task.second.get().generate(och);
     }
 }
 
@@ -108,7 +108,7 @@ void Output::getContent(std::ostream &os, Instance &root) const {
     // exec
 
     for (const auto &task: contents) {
-        task.second->generate(oc);
+        task.second.get().generate(oc);
     }
 
     // start

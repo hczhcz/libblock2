@@ -78,12 +78,18 @@ private:
     bool locked {false};
     size_t last_position {0};
 
-    std::map<std::string, Type &> symbol_types;
-    std::map<
+    std::gc_map<
+        std::string,
+        std::reference_wrapper<Type>
+    > symbol_types;
+    std::gc_map<
         std::reference_wrapper<NodeBlock>,
-        std::unique_ptr<TypeClosure>
+        std::reference_wrapper<TypeClosure>
     > closure_types;
-    std::map<size_t, Instance &> callee_types;
+    std::gc_map<
+        size_t,
+        std::reference_wrapper<Instance>
+    > callee_types;
 
 public:
     Instance();

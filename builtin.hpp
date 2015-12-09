@@ -10,7 +10,10 @@ class Block;
 
 class BuiltinContainer {
 private:
-    std::map<std::string, std::unique_ptr<NodeBlock>> nodes;
+    std::gc_map<
+        std::string,
+        std::reference_wrapper<NodeBlock>
+    > nodes;
 
 public:
     void apply(
@@ -21,13 +24,13 @@ public:
 
 class Builtin {
 private:
-    static std::map<
+    static std::gc_map<
         std::string,
-        std::list<std::reference_wrapper<Builtin>>
+        std::gc_list<std::reference_wrapper<Builtin>>
     > &all();
 
     std::string name;
-    std::vector<std::function<Block *()>> funcs;
+    std::gc_vector<std::function<Block &()>> funcs;
 
     friend class BuiltinContainer;
 
@@ -35,7 +38,7 @@ public:
     Builtin(
         std::string &&package,
         std::string &&_name,
-        std::vector<std::function<Block *()>> &&_funcs
+        std::gc_vector<std::function<Block &()>> &&_funcs
     );
 };
 

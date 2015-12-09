@@ -108,7 +108,7 @@ public:
 
 class NodePath: public Node {
 private:
-    std::unique_ptr<Node> source_p;
+    Node &source;
     LookupMode mode;
     std::string name;
 
@@ -117,8 +117,8 @@ private:
     Instance &getInner(Instance &instance, Output &output);
 
 public:
-    NodePath(Node *_source, LookupMode _mode, std::string &&_name);
-    NodePath(Node *_source, LookupMode _mode, const std::string &_name);
+    NodePath(Node &_source, LookupMode _mode, std::string &&_name);
+    NodePath(Node &_source, LookupMode _mode, const std::string &_name);
 
     virtual void buildProc(
         Instance &instance,
@@ -146,9 +146,9 @@ enum class FrameMode {
 
 class NodeCall: public Node {
 private:
-    std::unique_ptr<Node> source_p;
+    Node &source;
     FrameMode mode;
-    std::vector<std::unique_ptr<Node>> args;
+    std::gc_vector<std::reference_wrapper<Node>> args;
 
     void renderLabelDef(
         OutputContext &och,
@@ -179,24 +179,9 @@ private:
 
 public:
     NodeCall(
-        Node *_source, FrameMode _mode,
-        std::vector<std::unique_ptr<Node>> &&_args
+        Node &_source, FrameMode _mode,
+        std::gc_vector<std::reference_wrapper<Node>> &&_args
     );
-
-    template <class... Args>
-    NodeCall(
-        Node *_source, FrameMode _mode,
-        Args... _args
-    ):
-        source_p {_source},
-        mode {_mode} {
-            Node *init[] {_args...};
-
-            args.reserve(sizeof...(_args));
-            for (Node *arg_p: init) {
-                args.push_back(std::unique_ptr<Node> {arg_p});
-            }
-        }
 
     virtual void buildProc(
         Instance &instance,
@@ -216,31 +201,18 @@ public:
 
 class NodeBlock: public Node {
 private:
-    std::unique_ptr<Node> source_p;
-    std::list<std::unique_ptr<Block>> blocks;
+    Node &source;
+    std::gc_vector<std::reference_wrapper<Block>> blocks;
 
     friend class NodeCall;
 
 public:
     NodeBlock(
-        Node *_source,
-        std::list<std::unique_ptr<Block>> &&_blocks
+        Node &_source,
+        std::gc_vector<std::reference_wrapper<Block>> &&_blocks
     );
 
-    template <class... Blocks>
-    NodeBlock(
-        Node *_source,
-        Blocks... _blocks
-    ):
-        source_p {_source} {
-            Block *init[] {_blocks...};
-
-            for (Block *block_p: init) {
-                blocks.push_back(std::unique_ptr<Block> {block_p});
-            }
-        }
-
-    void addBlock(Block *block_p);
+    void addBlock(Block &block_p);
 
     virtual void buildProc(
         Instance &instance,

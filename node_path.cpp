@@ -15,7 +15,7 @@ void NodePath::renderPath(std::ostream &os, size_t level) const {
 }
 
 Instance &NodePath::getInner(Instance &instance, Output &output) {
-    return source_p->buildOut(
+    return source.buildOut(
         instance,
         output,
         [](Type &type) -> std::string {
@@ -24,13 +24,13 @@ Instance &NodePath::getInner(Instance &instance, Output &output) {
     ).prepareLookup();
 }
 
-NodePath::NodePath(Node *_source, LookupMode _mode, std::string &&_name):
-    source_p {_source},
+NodePath::NodePath(Node &_source, LookupMode _mode, std::string &&_name):
+    source {_source},
     mode {_mode},
     name {std::move(_name)} {}
 
-NodePath::NodePath(Node *_source, LookupMode _mode, const std::string &_name):
-    source_p {_source},
+NodePath::NodePath(Node &_source, LookupMode _mode, const std::string &_name):
+    source {_source},
     mode {_mode},
     name {_name} {}
 

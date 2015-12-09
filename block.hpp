@@ -22,26 +22,26 @@ enum class BlockOption {
 class Block {
 private:
     std::set<BlockOption> options;
-    std::vector<std::pair<std::string, ParamMode>> params;
+    std::gc_vector<std::pair<std::string, ParamMode>> params;
 
-    std::list<std::unique_ptr<Instance>> instances;
+    std::gc_list<std::reference_wrapper<Instance>> instances;
 
 protected:
     Instance &matchInstance(
-        std::unique_ptr<Instance> &&instance,
+        Instance &instance,
         Output &output
     );
 
     virtual void inSpecialArg(
         Instance &caller, Instance &instance,
-        size_t index, std::unique_ptr<Node> &arg,
+        size_t index, Node &arg,
         Output &output,
         std::function<std::string (Type &)> &&target
     );
     virtual void buildContent(Instance &instance, Output &output) = 0;
     virtual void outSpecialArg(
         Instance &caller, Instance &instance,
-        size_t index, std::unique_ptr<Node> &arg,
+        size_t index, Node &arg,
         Output &output,
         std::function<std::string (Type &)> &&target
     );
@@ -49,20 +49,20 @@ protected:
 public:
     Block(
         std::set<BlockOption> &&_options,
-        std::vector<std::pair<std::string, ParamMode>> &&_params
+        std::gc_vector<std::pair<std::string, ParamMode>> &&_params
     );
 
     bool getOption(BlockOption option);
 
     void inArg(
         Instance &caller, Instance &instance,
-        size_t index, std::unique_ptr<Node> &arg,
+        size_t index, Node &arg,
         Output &output,
         std::function<std::string (Type &)> &&target
     );
     void outArg(
         Instance &caller, Instance &instance,
-        size_t index, std::unique_ptr<Node> &arg,
+        size_t index, Node &arg,
         Output &output,
         std::function<std::string (Type &)> &&target
     );
@@ -80,8 +80,11 @@ public:
 
 class BlockBuiltinFmt: public BlockBuiltin {
 private:
-    std::map<std::string, Type &> static_types;
-    std::vector<std::pair<std::string, std::string>> dynamic_types;
+    std::gc_map<
+        std::string,
+        std::reference_wrapper<Type>
+    > static_types;
+    std::gc_vector<std::pair<std::string, std::string>> dynamic_types;
     std::string str;
 
 protected:
@@ -91,16 +94,19 @@ protected:
 public:
     BlockBuiltinFmt(
         std::set<BlockOption> &&_options,
-        std::vector<std::pair<std::string, ParamMode>> &&_params,
-        std::map<std::string, Type &> &&_static_types,
-        std::vector<std::pair<std::string, std::string>> &&_dynamic_types,
+        std::gc_vector<std::pair<std::string, ParamMode>> &&_params,
+        std::gc_map<
+            std::string,
+            std::reference_wrapper<Type>
+        > &&_static_types,
+        std::gc_vector<std::pair<std::string, std::string>> &&_dynamic_types,
         std::string &&_str
     );
 };
 
 class BlockUser: public Block {
 private:
-    std::unique_ptr<Node> ast_p;
+    Node &ast;
 
 protected:
     // as block
@@ -109,8 +115,8 @@ protected:
 public:
     BlockUser(
         std::set<BlockOption> &&_options,
-        std::vector<std::pair<std::string, ParamMode>> &&_params,
-        Node *_ast
+        std::gc_vector<std::pair<std::string, ParamMode>> &&_params,
+        Node &_ast
     );
 };
 

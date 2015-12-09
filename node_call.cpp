@@ -132,7 +132,7 @@ void NodeCall::build(
     // get callee
 
     Type &callee_type {
-        source_p->buildOut(
+        source.buildOut(
             instance,
             output,
             [](Type &type) -> std::string {
@@ -285,16 +285,16 @@ void NodeCall::build(
 
         Block *selected_p {nullptr};
 
-        for (auto &block_p: closure_p->blocks.blocks) {
+        for (Block &block: closure_p->blocks.blocks) {
             if (
                 forkTry([&]() {
-                    do_build(*block_p);
+                    do_build(block);
                 })
             ) {
                 if (selected_p) {
                     throw ErrorOverloadAmbiguous {};
                 } else {
-                    selected_p = block_p.get();
+                    selected_p = &block;
                 }
             }
         }
@@ -302,7 +302,7 @@ void NodeCall::build(
         if (selected_p) {
             do_build(*selected_p);
         } else if (closure_p->blocks.blocks.size() == 1) {
-            do_build(*closure_p->blocks.blocks.front());
+            do_build(closure_p->blocks.blocks.front());
         } else {
             throw ErrorOverloadNotFound {};
         }
@@ -316,10 +316,10 @@ void NodeCall::build(
 }
 
 NodeCall::NodeCall(
-    Node *_source, FrameMode _mode,
-    std::vector<std::unique_ptr<Node>> &&_args
+    Node &_source, FrameMode _mode,
+    std::gc_vector<std::reference_wrapper<Node>> &&_args
 ):
-    source_p {_source},
+    source {_source},
     mode {_mode},
     args {std::move(_args)} {}
 

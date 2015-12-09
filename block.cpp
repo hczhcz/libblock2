@@ -7,22 +7,20 @@
 namespace libblock {
 
 Instance &Block::matchInstance(
-    std::unique_ptr<Instance> &&instance_p,
+    Instance &instance,
     Output &output
 ) {
     // find exist instance
 
-    for (std::unique_ptr<Instance> &exist_p: instances) {
-        if (instance_p->in(*exist_p)) {
-            return *exist_p;
+    for (Instance &exist: instances) {
+        if (instance.in(exist)) {
+            return exist;
         }
     }
 
     // not found
 
-    instances.push_back(std::move(instance_p));
-    Instance &instance {*instances.back()};
-
+    instances.push_back(instance);
     output.insert(instance);
 
     // render (before body)
@@ -65,7 +63,7 @@ Instance &Block::matchInstance(
 
 void Block::inSpecialArg(
     Instance &, Instance &,
-    size_t, std::unique_ptr<Node> &,
+    size_t, Node &,
     Output &,
     std::function<std::string (Type &)> &&
 ) {
@@ -74,7 +72,7 @@ void Block::inSpecialArg(
 
 void Block::outSpecialArg(
     Instance &, Instance &,
-    size_t, std::unique_ptr<Node> &,
+    size_t, Node &,
     Output &,
     std::function<std::string (Type &)> &&
 ) {
@@ -83,7 +81,7 @@ void Block::outSpecialArg(
 
 Block::Block(
     std::set<BlockOption> &&_options,
-    std::vector<std::pair<std::string, ParamMode>> &&_params
+    std::gc_vector<std::pair<std::string, ParamMode>> &&_params
 ):
     options {std::move(_options)},
     params {std::move(_params)} {}
@@ -94,7 +92,7 @@ bool Block::getOption(BlockOption option) {
 
 void Block::inArg(
     Instance &caller, Instance &instance,
-    size_t index, std::unique_ptr<Node> &arg,
+    size_t index, Node &arg,
     Output &output,
     std::function<std::string (Type &)> &&target
 ) {
@@ -113,7 +111,7 @@ void Block::inArg(
     ) {
         instance.insert(
             params[index].first,
-            arg->buildOut(
+            arg.buildOut(
                 caller,
                 output,
                 [&, index, target = std::move(target)](Type &type) {
@@ -126,7 +124,7 @@ void Block::inArg(
 
 void Block::outArg(
     Instance &caller, Instance &instance,
-    size_t index, std::unique_ptr<Node> &arg,
+    size_t index, Node &arg,
     Output &output,
     std::function<std::string (Type &)> &&target
 ) {
@@ -143,7 +141,7 @@ void Block::outArg(
         params[index].second == ParamMode::out
         || params[index].second == ParamMode::var
     ) {
-        arg->buildIn(
+        arg.buildIn(
             caller,
             instance.at(params[index].first),
             output,
@@ -161,18 +159,18 @@ void Block::build(
 ) {
     // init
 
-    std::unique_ptr<Instance> instance_p {
-        std::make_unique<Instance>()
+    Instance instance_early {
+        *new (GC) Instance
     };
 
     // in
 
-    before(*instance_p);
+    before(instance_early);
 
     // find or create instance
 
     Instance &instance {
-        matchInstance(std::move(instance_p), output)
+        matchInstance(instance_early, output)
     };
 
     // out

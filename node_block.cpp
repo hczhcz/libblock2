@@ -7,14 +7,14 @@
 namespace libblock {
 
 NodeBlock::NodeBlock(
-    Node *_source,
-    std::list<std::unique_ptr<Block>> &&_blocks
+    Node &_source,
+    std::gc_vector<std::reference_wrapper<Block>> &&_blocks
 ):
-    source_p {_source},
+    source {_source},
     blocks {std::move(_blocks)} {}
 
-void NodeBlock::addBlock(Block *block_p) {
-    blocks.push_back(std::unique_ptr<Block> {block_p});
+void NodeBlock::addBlock(Block &block) {
+    blocks.push_back(block);
 }
 
 void NodeBlock::buildProc(
@@ -32,7 +32,7 @@ Type &NodeBlock::buildOut(
     // get type
 
     Type &parent {
-        source_p->buildOut(
+        source.buildOut(
             instance,
             output,
             std::move(target)

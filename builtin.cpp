@@ -13,33 +13,34 @@ void BuiltinContainer::apply(
         auto node = nodes.find(builtin.name);
 
         if (node == nodes.end()) {
-            node = nodes.emplace(
+            node = nodes.insert({
                 builtin.name,
-                std::make_unique<NodeBlock>(
-                    new NodeLiteral<lb_void_t> {{}}
-                )
-            ).first;
+                *new (GC) NodeBlock {
+                    *new (GC) NodeLiteral<lb_void_t> {nullptr},
+                    {}
+                }
+            }).first;
 
             instance.insert(
                 builtin.name,
-                instance.addClosure(TypeNativeVoid::get(), *node->second)
+                instance.addClosure(TypeNativeVoid::get(), node->second)
             );
         }
 
-        for (std::function<Block *()> &func: builtin.funcs) {
-            node->second->addBlock(func());
+        for (std::function<Block &()> &func: builtin.funcs) {
+            node->second.get().addBlock(func());
         }
     }
 }
 
-std::map<
+std::gc_map<
     std::string,
-    std::list<std::reference_wrapper<Builtin>
->> &Builtin::all() {
-    static std::map<
+    std::gc_list<std::reference_wrapper<Builtin>>
+> &Builtin::all() {
+    static std::gc_map<
         std::string,
-        std::list<std::reference_wrapper<Builtin>
-    >> builtins;
+        std::gc_list<std::reference_wrapper<Builtin>>
+    > builtins;
 
     return builtins;
 }
@@ -47,7 +48,7 @@ std::map<
 Builtin::Builtin(
     std::string &&package,
     std::string &&_name,
-    std::vector<std::function<Block *()>> &&_funcs
+    std::gc_vector<std::function<Block &()>> &&_funcs
 ):
     name {std::move(_name)},
     funcs {std::move(_funcs)} {
@@ -60,7 +61,7 @@ Builtin::Builtin(
             }).first;
         }
 
-        list->second.push_back(std::ref(*this));
+        list->second.push_back(*this);
     }
 
 }

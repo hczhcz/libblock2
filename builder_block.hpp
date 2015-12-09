@@ -30,11 +30,11 @@ inline std::pair<std::string, ParamMode> special(
     return {std::move(name), ParamMode::special};
 }
 
-inline BlockUser *block(
-    std::vector<std::pair<std::string, ParamMode>> &&params,
-    Node *ast
+inline BlockUser &block(
+    std::gc_vector<std::pair<std::string, ParamMode>> &&params,
+    Node &ast
 ) { // default
-    return new BlockUser {
+    return *new (GC) BlockUser {
         {
             BlockOption::allow_proc,
             BlockOption::allow_out
@@ -44,12 +44,12 @@ inline BlockUser *block(
     };
 }
 
-inline BlockUser *block(
+inline BlockUser &block(
     std::set<BlockOption> &&options,
-    std::vector<std::pair<std::string, ParamMode>> &&params,
-    Node *ast
+    std::gc_vector<std::pair<std::string, ParamMode>> &&params,
+    Node &ast
 ) {
-    return new BlockUser {
+    return *new (GC) BlockUser {
         std::move(options),
         std::move(params),
         ast

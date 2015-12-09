@@ -6,7 +6,7 @@
 
 namespace libblock {
 
-Node *parse(std::string &&code) {
+Node &parse(std::string &&code) {
     myparser::Parser<> parser;
     myparser::Pass<myparser::PASS_AST> visitor;
 
@@ -18,7 +18,7 @@ Node *parse(std::string &&code) {
     return visitor.getOne();
 }
 
-Node *parseFile(std::string &&file) {
+Node &parseFile(std::string &&file) {
     myparser::Parser<> parser;
     myparser::Pass<myparser::PASS_AST> visitor;
 

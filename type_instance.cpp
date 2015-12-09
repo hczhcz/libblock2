@@ -32,7 +32,7 @@ std::string Instance::strLabel(size_t position) const {
 }
 
 std::string Instance::strCalleeType(size_t position) const {
-    return callee_types.at(position).strStruct();
+    return callee_types.at(position).get().strStruct();
 }
 
 std::string Instance::strCalleeName(size_t position) const {
@@ -60,7 +60,7 @@ void Instance::renderStruct(OutputContext &och) const {
 
         for (const auto &symbol: symbol_types) {
             och.endl();
-            och.os << symbol.second.strDecl(symbol.first) << ";";
+            och.os << symbol.second.get().strDecl(symbol.first) << ";";
         }
 
     och.leave();
@@ -181,17 +181,17 @@ void Instance::addCallee(size_t position, Instance &callee) {
 }
 
 Type &Instance::addClosure(Type &parent, NodeBlock &blocks) {
-    const auto &closure = closure_types.find(std::ref(blocks));
+    const auto &closure = closure_types.find(blocks);
 
     if (closure != closure_types.end()) {
-        return *closure->second;
+        return closure->second;
     } else {
-        return *closure_types.emplace(
-            std::ref(blocks),
-            std::make_unique<TypeClosure>(
+        return closure_types.insert({
+            blocks,
+            *new (GC) TypeClosure {
                 parent, blocks
-            )
-        ).first->second;
+            }
+        }).first->second;
     }
 }
 

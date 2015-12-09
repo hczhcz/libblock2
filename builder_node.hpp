@@ -6,78 +6,78 @@ namespace libblock {
 
 namespace builder {
 
-inline NodeLiteralVoid *void_lit() {
-    return new NodeLiteralVoid {nullptr};
+inline NodeLiteralVoid &void_lit() {
+    return *new (GC) NodeLiteralVoid {nullptr};
 }
 
-inline NodeLiteralBool *true_lit() {
-    return new NodeLiteralBool {true};
+inline NodeLiteralBool &true_lit() {
+    return *new (GC) NodeLiteralBool {true};
 }
 
-inline NodeLiteralBool *false_lit() {
-    return new NodeLiteralBool {false};
+inline NodeLiteralBool &false_lit() {
+    return *new (GC) NodeLiteralBool {false};
 }
 
-inline NodeLiteralInt *operator ""_lit(unsigned long long value) {
-    return new NodeLiteralInt {value};
+inline NodeLiteralInt &operator ""_lit(unsigned long long value) {
+    return *new (GC) NodeLiteralInt {value};
 }
 
-inline NodeLiteralReal *operator ""_lit(long double value) {
-    return new NodeLiteralReal {value};
+inline NodeLiteralReal &operator ""_lit(long double value) {
+    return *new (GC) NodeLiteralReal {value};
 }
 
-inline NodeLiteralStr *operator ""_lit(const char *value, size_t size) {
-    return new NodeLiteralStr {{value, size}};
+inline NodeLiteralStr &operator ""_lit(const char *value, size_t size) {
+    return *new (GC) NodeLiteralStr {{value, size}};
 }
 
-inline NodeSymbol *$(std::string &&name) { // default
-    return new NodeSymbol {
+inline NodeSymbol &$(std::string &&name) { // default
+    return *new (GC) NodeSymbol {
         LookupMode::mixed, std::move(name)
     };
 }
 
-inline NodeSymbol *$(LookupMode mode, std::string &&name) {
-    return new NodeSymbol {
+inline NodeSymbol &$(LookupMode mode, std::string &&name) {
+    return *new (GC) NodeSymbol {
         mode, std::move(name)
     };
 }
 
-inline NodePath *$(Node *source, std::string &&name) { // default
-    return new NodePath {
+inline NodePath &$(Node &source, std::string &&name) { // default
+    return *new (GC) NodePath {
         source, LookupMode::local, std::move(name)
     };
 }
 
-inline NodePath *$(Node *source, LookupMode mode, std::string &&name) {
-    return new NodePath {
+inline NodePath &$(Node &source, LookupMode mode, std::string &&name) {
+    return *new (GC) NodePath {
         source, mode, std::move(name)
     };
 }
 
 template <class... Args>
-inline NodeCall *call(Node *source, Args... args) { // default
-    return new NodeCall {
+inline NodeCall &call(Node &source, Args... args) { // default
+    return *new (GC) NodeCall {
         source, FrameMode::dynamic_gc, args...
     };
 }
 
 template <class... Args>
-inline NodeCall *call(Node *source, FrameMode mode, Args... args) {
-    return new NodeCall {
+inline NodeCall &call(Node &source, FrameMode mode, Args... args) {
+    return *new (GC) NodeCall {
         source, mode, args...
     };
 }
 
 template <class... Blocks>
-inline NodeBlock *blocks(Blocks... blocks) { // default
-    return new NodeBlock {
-        new NodeSymbol {LookupMode::local, "self"}, blocks...
+inline NodeBlock &blocks(Blocks... blocks) { // default
+    return *new (GC) NodeBlock {
+        *new (GC) NodeSymbol {LookupMode::local, "self"}, blocks...
     };
 }
 
 template <class... Blocks>
-inline NodeBlock *blocks(Node *source, Blocks... blocks) {
-    return new NodeBlock {
+inline NodeBlock &blocks(Node &source, Blocks... blocks) {
+    return *new (GC) NodeBlock {
         source, blocks...
     };
 }
