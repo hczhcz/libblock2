@@ -34,5 +34,9 @@ namespace std {
     template <class T>
     using gc_vector = vector<T, gc_allocator<T>>;
     template <class Key, class T>
-    using gc_map = map<Key, T, gc_allocator<T>>;
+    using gc_map = map<
+        Key, T,
+        less<Key>,
+        gc_allocator<std::pair<const Key, T>>
+    >;
 }
