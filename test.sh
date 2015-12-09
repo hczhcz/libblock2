@@ -15,7 +15,7 @@ lint='cppcheck'
 lint_flags='-q --std=c++11 --enable=all' # --std=c++14 --inconclusive
 
 test_cc='clang'
-test_flags='-O0 -g -Wall -Wextra -ferror-limit=3'
+test_flags='-O -foptimize-sibling-calls -g -Wall -Wextra -ferror-limit=3'
 test_flags_out='-lgc -nostartfiles'
 
 echo '======== build precompiled files ========'

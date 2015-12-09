@@ -301,6 +301,8 @@ void NodeCall::build(
 
         if (selected_p) {
             do_build(*selected_p);
+        } else if (closure_p->blocks.blocks.size() == 1) {
+            do_build(*closure_p->blocks.blocks.front());
         } else {
             throw ErrorOverloadNotFound {};
         }
