@@ -83,27 +83,27 @@ Builtin __ushr__ {"core", "__ushr__", {
 
 Builtin __rol__ {"core", "__rol__", {
     libFuncI3R(
-        "$result = "
-            "($a << $b) | "
-            "(((lb_uint_t) $a) >> ((LB_BIT_WIDTH - 1) & -$b));"
+        "$result =\n"
+            "\t($a << $b) |\n"
+            "\t(((lb_uint_t) $a) >> ((LB_BIT_WIDTH - 1) & -$b));"
     ),
     libFuncI3A(
-        "$a = "
-            "(((lb_uint_t) $input) >> $b) | "
-            "($input << ((LB_BIT_WIDTH - 1) & -$b));"
+        "$a =\n"
+            "\t(((lb_uint_t) $input) >> $b) |\n"
+            "\t($input << ((LB_BIT_WIDTH - 1) & -$b));"
     ),
 }};
 
 Builtin __ror__ {"core", "__ror__", {
     libFuncI3R(
-        "$result = "
-            "(((lb_uint_t) $a) >> $b) | "
-            "($a << ((LB_BIT_WIDTH - 1) & -$b));"
+        "$result =\n"
+            "\t(((lb_uint_t) $a) >> $b) |\n"
+            "\t($a << ((LB_BIT_WIDTH - 1) & -$b));"
     ),
     libFuncI3A(
-        "$a = "
-            "($input << $b) | "
-            "(((lb_uint_t) $input) >> ((LB_BIT_WIDTH - 1) & -$b));"
+        "$a =\n"
+            "\t($input << $b) |\n"
+            "\t(((lb_uint_t) $input) >> ((LB_BIT_WIDTH - 1) & -$b));"
     ),
 }};
 

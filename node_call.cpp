@@ -31,7 +31,8 @@ void NodeCall::renderFrameAlloc(
 
         case FrameMode::static_local:
             oc.endl();
-            oc.os << instance.strCalleeType(position) << " "
+            oc.os << "static _Threal_local "
+                  << instance.strCalleeType(position) << " "
                   << instance.strCalleeName(position) << ";";
             oc.endl();
             oc.os << "inner = (struct frame *) &"
