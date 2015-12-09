@@ -37,13 +37,15 @@ template <>
 void NodeLiteral<std::string>::renderValue(
     std::ostream &os
 ) const {
-    os << "(const char []) {";
+    os << "\"";
 
     for (char i: value) {
-        os << (int) i << ",";
+        os << "\\x"
+           << "0123456789ABCDEF"[i >> 4 & 15]
+           << "0123456789ABCDEF"[i & 15];
     }
 
-    os << "0}";
+    os << "\\x00\"";
 }
 
 template <class T>
