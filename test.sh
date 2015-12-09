@@ -119,8 +119,8 @@ echo
 echo '======== build the generated file ========'
 echo
 
-echo $test_cc $test_flags_out $test_flags -include lbstd.h ./build/test.gen.c -o ./build/test.gen.out
-$test_cc $test_flags_out $test_flags -include lbstd.h ./build/test.gen.c -o ./build/test.gen.out
+echo $test_cc $test_flags_out $test_flags -include lbexec.h ./build/test.gen.c -o ./build/test.gen.out
+$test_cc $test_flags_out $test_flags -include lbexec.h ./build/test.gen.c -o ./build/test.gen.out
 if [ $? -ne 0 ]
 then
     exit
