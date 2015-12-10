@@ -12,6 +12,11 @@ class Instance;
 class Block;
 
 class Node {
+protected:
+    Node() = default;
+    Node(Node &&) = delete;
+    Node(const Node &) = delete;
+
 public:
     uintptr_t nuid() const;
 

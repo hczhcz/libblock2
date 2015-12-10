@@ -26,10 +26,15 @@ private:
 
     std::gc_list<std::reference_wrapper<Instance>> instances;
 
-protected:
     Instance &matchInstance(
         Instance &instance,
         Output &output
+    );
+
+protected:
+    Block(
+        std::set<BlockOption> &&_options,
+        std::gc_vector<std::pair<std::string, ParamMode>> &&_params
     );
 
     virtual void inSpecialArg(
@@ -47,11 +52,6 @@ protected:
     );
 
 public:
-    Block(
-        std::set<BlockOption> &&_options,
-        std::gc_vector<std::pair<std::string, ParamMode>> &&_params
-    );
-
     bool getOption(BlockOption option);
 
     void inArg(

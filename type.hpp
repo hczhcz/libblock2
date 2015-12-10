@@ -12,6 +12,11 @@ class NodeCall;
 class Block;
 
 class Type {
+protected:
+    Type() = default;
+    Type(Type &&) = delete;
+    Type(const Type &) = delete;
+
 public:
     uintptr_t tuid() const;
 

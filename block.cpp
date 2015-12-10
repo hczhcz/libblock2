@@ -159,7 +159,7 @@ void Block::build(
 ) {
     // init
 
-    Instance instance_early {
+    Instance &instance_early {
         *new (GC) Instance
     };
 

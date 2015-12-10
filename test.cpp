@@ -6,6 +6,8 @@
 #include "builder_block.hpp"
 
 int main() {
+    GC_init();
+
     using namespace libblock;
     using namespace libblock::builder;
 
