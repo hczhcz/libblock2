@@ -173,7 +173,7 @@ void Instance::lookupCheck(
 }
 
 size_t Instance::addPosition() {
-    return ++last_position;
+    return last_position++;
 }
 
 void Instance::addCallee(size_t position, Instance &callee) {
