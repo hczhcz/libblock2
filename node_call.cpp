@@ -127,7 +127,6 @@ void NodeCall::build(
 ) {
     // special symbols:
     //     lookup: self, input, result, parent
-    //     control flow: frame (func, outer, caller)
 
     // get callee
 
@@ -196,7 +195,7 @@ void NodeCall::build(
                         instance,
                         [&, position](OutputContext &oc) {
                             oc.endl();
-                            oc.os << instance.strInner(position) << "->parent = "
+                            oc.os << instance.strInner(position) << "->data.parent = "
                                   << parent.strReint("tmp") << ";";
                         }
                     );
@@ -377,7 +376,7 @@ Type &NodeCall::buildOut(
                 [&, position, target = std::move(target)](OutputContext &oc) {
                     oc.endl();
                     oc.os << target(type) << " = "
-                          << instance.strInner(position) << "->result;";
+                          << instance.strInner(position) << "->data.result;";
                 }
             );
         }
@@ -407,7 +406,7 @@ void NodeCall::buildIn(
                 instance,
                 [&, position, target = std::move(target)](OutputContext &oc) {
                     oc.endl();
-                    oc.os << instance.strInner(position) << "->input = "
+                    oc.os << instance.strInner(position) << "->data.input = "
                           << target(type) << ";";
                 }
             );

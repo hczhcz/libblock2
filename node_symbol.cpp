@@ -6,11 +6,11 @@ namespace libblock {
 
 void NodeSymbol::renderPath(std::ostream &os, size_t level) const {
     for (size_t i = 0; i < level; ++i) {
-        os << "->parent";
+        os << "->data.parent";
     }
 
     if (name != "self") {
-        os << "->" << name;
+        os << "->data." << name;
     }
 }
 

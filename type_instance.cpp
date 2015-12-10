@@ -58,10 +58,18 @@ void Instance::renderStruct(OutputContext &och) const {
         och.os << "struct frame frame;";
         och.endl();
 
-        for (const auto &symbol: symbol_types) {
-            och.endl();
-            och.os << symbol.second.get().strDecl(symbol.first) << ";";
-        }
+        och.endl();
+        och.os << "struct {";
+        och.enter();
+
+            for (const auto &symbol: symbol_types) {
+                och.endl();
+                och.os << symbol.second.get().strDecl(symbol.first) << ";";
+            }
+
+        och.leave();
+        och.endl();
+        och.os << "} data;";
 
     och.leave();
     och.endl();

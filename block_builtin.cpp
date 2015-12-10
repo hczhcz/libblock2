@@ -33,7 +33,7 @@ void BlockBuiltinFmt::buildContent(Instance &instance, Output &output) {
             for (char i: str) {
                 switch (i) {
                     case '$':
-                        oc.os << instance.strSelf() << "->";
+                        oc.os << instance.strSelf() << "->data.";
                         break;
 
                     case '\t':

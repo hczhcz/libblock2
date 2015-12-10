@@ -118,7 +118,7 @@ void Block::inArg(
                 caller,
                 output,
                 [&, index, target = std::move(target)](Type &type) {
-                    return target(type) + "->" + params[index].first;
+                    return target(type) + "->data." + params[index].first;
                 }
             )
         );
@@ -149,7 +149,7 @@ void Block::outArg(
             instance.at(params[index].first),
             output,
             [&, index, target = std::move(target)](Type &type) {
-                return target(type) + "->" + params[index].first;
+                return target(type) + "->data." + params[index].first;
             }
         );
     }
