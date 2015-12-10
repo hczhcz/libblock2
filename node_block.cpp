@@ -39,7 +39,11 @@ Type &NodeBlock::buildOut(
         )
     };
 
-    Type &type {instance.addClosure(parent, *this)};
+    Type &type {
+        *new (GC) TypeClosure {
+            parent, *this
+        }
+    };
 
     // return
 

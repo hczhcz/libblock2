@@ -23,7 +23,10 @@ void BuiltinContainer::apply(
 
             instance.insert(
                 builtin.name,
-                instance.addClosure(TypeNativeVoid::get(), node->second)
+                *new (GC) TypeClosure {
+                    TypeNativeVoid::get(),
+                    node->second
+                }
             );
         }
 

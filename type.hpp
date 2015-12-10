@@ -74,7 +74,7 @@ private:
     static void typeCheck(Type &type1, Type &type2);
 
     // update in buildContent():
-    //     last_position, closure_types
+    //     last_position
     // update before locked:
     //     symbol_types
     // update when called:
@@ -87,10 +87,6 @@ private:
         std::string,
         std::reference_wrapper<Type>
     > symbol_types;
-    std::gc_map<
-        std::reference_wrapper<NodeBlock>,
-        std::reference_wrapper<TypeClosure>
-    > closure_types;
     std::gc_map<
         size_t,
         std::reference_wrapper<Instance>
@@ -129,7 +125,6 @@ public:
 
     size_t addPosition();
     void addCallee(size_t position, Instance &callee);
-    Type &addClosure(Type &parent, NodeBlock &blocks);
 
     void lock();
 

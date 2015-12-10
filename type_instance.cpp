@@ -180,21 +180,6 @@ void Instance::addCallee(size_t position, Instance &callee) {
     callee_types.insert({position, callee});
 }
 
-Type &Instance::addClosure(Type &parent, NodeBlock &blocks) {
-    const auto &closure = closure_types.find(blocks);
-
-    if (closure != closure_types.end()) {
-        return closure->second;
-    } else {
-        return closure_types.insert({
-            blocks,
-            *new (GC) TypeClosure {
-                parent, blocks
-            }
-        }).first->second;
-    }
-}
-
 void Instance::lock() {
     locked = true;
 }
