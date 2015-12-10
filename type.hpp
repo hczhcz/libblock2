@@ -77,13 +77,14 @@ private:
     // update in buildContent():
     //     last_position
     // update before locked:
-    //     symbol_types
+    //     symbols, symbol_types
     // update when called:
     //     callee_types
 
     bool locked {false};
     size_t last_position {0};
 
+    std::gc_list<std::string> symbols;
     std::gc_map<
         std::string,
         std::reference_wrapper<Type>

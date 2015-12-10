@@ -62,9 +62,9 @@ void Instance::renderStruct(OutputContext &och) const {
         och.os << "struct {";
         och.enter();
 
-            for (const auto &symbol: symbol_types) {
+            for (const std::string &symbol: symbols) {
                 och.endl();
-                och.os << symbol.second.get().strDecl(symbol.first) << ";";
+                och.os << symbol_types.at(symbol).get().strDecl(symbol) << ";";
             }
 
         och.leave();
@@ -136,6 +136,7 @@ void Instance::insert(const std::string &name, Type &type) {
             if (locked) {
                 throw ErrorSymbolNotFound {};
             } else {
+                symbols.push_back(name);
                 symbol_types.insert({name, type});
             }
         }
