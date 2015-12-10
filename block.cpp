@@ -35,7 +35,10 @@ Instance &Block::matchInstance(
     // build
 
     buildContent(instance, output);
-    instance.lock(); // TODO: really?
+
+    if (!getOption(BlockOption::manual_lock)) {
+        instance.lock();
+    }
 
     // render (after body)
 

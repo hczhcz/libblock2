@@ -16,7 +16,8 @@ enum class ParamMode {
 enum class BlockOption {
     allow_proc,
     allow_out,
-    allow_in
+    allow_in,
+    manual_lock
 };
 
 class Block {
