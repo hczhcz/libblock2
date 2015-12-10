@@ -13,7 +13,8 @@ class Block;
 
 class Node {
 protected:
-    Node() = default;
+    Node();
+
     Node(Node &&) = delete;
     Node(const Node &) = delete;
 

@@ -14,11 +14,11 @@ void Instance::typeCheck(Type &type1, Type &type2) {
 Instance::Instance() {}
 
 std::string Instance::strFunc() const {
-    return "func_" + std::to_string(tuid());
+    return "func_" + std::to_string(tuid);
 }
 
 std::string Instance::strStruct() const {
-    return "struct struct_" + std::to_string(tuid());
+    return "struct struct_" + std::to_string(tuid);
 }
 
 std::string Instance::strSelf() const {
@@ -27,7 +27,7 @@ std::string Instance::strSelf() const {
 
 std::string Instance::strLabel(size_t position) const {
     return "label_"
-        + std::to_string(tuid()) + "_"
+        + std::to_string(tuid) + "_"
         + std::to_string(position);
 }
 
@@ -37,7 +37,7 @@ std::string Instance::strCalleeType(size_t position) const {
 
 std::string Instance::strCalleeName(size_t position) const {
     return "object_"
-        + std::to_string(tuid()) + "_"
+        + std::to_string(tuid) + "_"
         + std::to_string(position);
 }
 

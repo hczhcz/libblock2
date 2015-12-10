@@ -2,4 +2,6 @@
 
 namespace libblock {
 
+Node::Node() {}
+
 }

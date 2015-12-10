@@ -13,12 +13,13 @@ class Block;
 
 class Type {
 protected:
-    Type() = default;
+    Type();
+
     Type(Type &&) = delete;
     Type(const Type &) = delete;
 
 public:
-    uintptr_t tuid() const;
+    size_t tuid;
 
     Instance &prepareLookup();
 
@@ -27,7 +28,7 @@ public:
 };
 
 inline bool operator==(const Type &a, const Type &b) {
-    return a.tuid() == b.tuid();
+    return a.tuid == b.tuid;
 }
 
 inline bool operator!=(const Type &a, const Type &b) {
@@ -35,7 +36,7 @@ inline bool operator!=(const Type &a, const Type &b) {
 }
 
 inline bool operator<(const Type &a, const Type &b) {
-    return a.tuid() < b.tuid();
+    return a.tuid < b.tuid;
 }
 
 template <class T>

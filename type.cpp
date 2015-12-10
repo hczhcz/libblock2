@@ -3,13 +3,10 @@
 
 namespace libblock {
 
-static std::nullptr_t &heap {
-    *new (GC) std::nullptr_t
-};
+static size_t tuid_init {0};
 
-uintptr_t Type::tuid() const {
-    return ((uintptr_t) this) - ((uintptr_t) &heap);
-}
+Type::Type():
+    tuid {tuid_init++} {}
 
 Instance &Type::prepareLookup() {
     Instance *instance_p {
