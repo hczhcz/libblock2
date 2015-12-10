@@ -18,6 +18,7 @@ class ErrorSymbolNotFound: public Error {};
 class ErrorTypeCollision: public Error {};
 
 // blocks
+class ErrorBlockNotFound: public Error {};
 class ErrorOverloadNotFound: public Error {};
 class ErrorOverloadAmbiguous: public Error {};
 class ErrorTooManyArguments: public Error {};

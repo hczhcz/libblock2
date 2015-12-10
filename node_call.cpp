@@ -283,28 +283,32 @@ void NodeCall::build(
             );
         };
 
-        Block *selected_p {nullptr};
+        if (closure_p->blocks.blocks.size() > 1) {
+            Block *selected_p {nullptr};
 
-        for (Block &block: closure_p->blocks.blocks) {
-            if (
-                forkTry([&]() {
-                    do_build(block);
-                })
-            ) {
-                if (selected_p) {
-                    throw ErrorOverloadAmbiguous {};
-                } else {
-                    selected_p = &block;
+            for (Block &block: closure_p->blocks.blocks) {
+                if (
+                    forkTry([&]() {
+                        do_build(block);
+                    })
+                ) {
+                    if (selected_p) {
+                        throw ErrorOverloadAmbiguous {};
+                    } else {
+                        selected_p = &block;
+                    }
                 }
             }
-        }
 
-        if (selected_p) {
-            do_build(*selected_p);
+            if (selected_p) {
+                do_build(*selected_p);
+            } else {
+                throw ErrorOverloadNotFound {};
+            }
         } else if (closure_p->blocks.blocks.size() == 1) {
             do_build(closure_p->blocks.blocks.front());
         } else {
-            throw ErrorOverloadNotFound {};
+            throw ErrorBlockNotFound {};
         }
     } else {
         // TODO: object as callee
