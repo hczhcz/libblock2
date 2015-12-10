@@ -58,7 +58,7 @@ void NodePath::buildProc(
 Type &NodePath::buildOut(
     Instance &instance,
     Output &output,
-    std::function<std::string (Type &)> &&target
+    std::gc_function<std::string (Type &)> &&target
 ) {
     // get inner
 
@@ -95,7 +95,7 @@ Type &NodePath::buildOut(
 void NodePath::buildIn(
     Instance &instance, Type &type,
     Output &output,
-    std::function<std::string (Type &)> &&target
+    std::gc_function<std::string (Type &)> &&target
 ) {
     // get inner
 

@@ -15,7 +15,7 @@ protected:
         Instance &caller, Instance &,
         size_t, Node &arg,
         Output &output,
-        std::function<std::string (Type &)> &&
+        std::gc_function<std::string (Type &)> &&
     ) {
         arg.buildProc(caller, output);
     }

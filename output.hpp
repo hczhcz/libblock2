@@ -23,10 +23,10 @@ public:
 
 class OutputTask {
 private:
-    std::gc_list<std::function<void (OutputContext &)>> render_funcs;
+    std::gc_list<std::gc_function<void (OutputContext &)>> render_funcs;
 
 public:
-    void insert(std::function<void (OutputContext &)> &&render);
+    void insert(std::gc_function<void (OutputContext &)> &&render);
     void generate(OutputContext &oc);
 };
 
@@ -44,11 +44,11 @@ private:
 public:
     void header(
         Instance &instance,
-        std::function<void (OutputContext &)> &&render
+        std::gc_function<void (OutputContext &)> &&render
     );
     void content(
         Instance &instance,
-        std::function<void (OutputContext &)> &&render
+        std::gc_function<void (OutputContext &)> &&render
     );
 
     void insert(Instance &instance);

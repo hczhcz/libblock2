@@ -121,9 +121,9 @@ void NodeCall::renderFrameFree(
 
 void NodeCall::build(
     Instance &instance, Output &output,
-    std::function<void (Block &)> &&init,
-    std::function<void (Instance &, size_t)> &&before,
-    std::function<void (Instance &, size_t)> &&after
+    std::gc_function<void (Block &)> &&init,
+    std::gc_function<void (Instance &, size_t)> &&before,
+    std::gc_function<void (Instance &, size_t)> &&after
 ) {
     // special symbols:
     //     lookup: self, input, result, parent
@@ -346,7 +346,7 @@ void NodeCall::buildProc(
 Type &NodeCall::buildOut(
     Instance &instance,
     Output &output,
-    std::function<std::string (Type &)> &&target
+    std::gc_function<std::string (Type &)> &&target
 ) {
     Type *type_p {nullptr}; // return value
 
@@ -385,7 +385,7 @@ Type &NodeCall::buildOut(
 void NodeCall::buildIn(
     Instance &instance, Type &type,
     Output &output,
-    std::function<std::string (Type &)> &&target
+    std::gc_function<std::string (Type &)> &&target
 ) {
     build(
         instance, output,

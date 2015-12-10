@@ -61,11 +61,18 @@ Instance &Block::matchInstance(
     return instance;
 }
 
+Block::Block(
+    std::set<BlockOption> &&_options,
+    std::gc_vector<std::pair<std::string, ParamMode>> &&_params
+):
+    options {std::move(_options)},
+    params {std::move(_params)} {}
+
 void Block::inSpecialArg(
     Instance &, Instance &,
     size_t, Node &,
     Output &,
-    std::function<std::string (Type &)> &&
+    std::gc_function<std::string (Type &)> &&
 ) {
     throw ErrorTooManyArguments {}; // TODO: va_args?
 }
@@ -74,17 +81,10 @@ void Block::outSpecialArg(
     Instance &, Instance &,
     size_t, Node &,
     Output &,
-    std::function<std::string (Type &)> &&
+    std::gc_function<std::string (Type &)> &&
 ) {
     // nothing, by default // TODO: va_args?
 }
-
-Block::Block(
-    std::set<BlockOption> &&_options,
-    std::gc_vector<std::pair<std::string, ParamMode>> &&_params
-):
-    options {std::move(_options)},
-    params {std::move(_params)} {}
 
 bool Block::getOption(BlockOption option) {
     return options.find(option) != options.end();
@@ -94,7 +94,7 @@ void Block::inArg(
     Instance &caller, Instance &instance,
     size_t index, Node &arg,
     Output &output,
-    std::function<std::string (Type &)> &&target
+    std::gc_function<std::string (Type &)> &&target
 ) {
     if (
         index >= params.size()
@@ -126,7 +126,7 @@ void Block::outArg(
     Instance &caller, Instance &instance,
     size_t index, Node &arg,
     Output &output,
-    std::function<std::string (Type &)> &&target
+    std::gc_function<std::string (Type &)> &&target
 ) {
     if (
         index >= params.size()
@@ -154,8 +154,8 @@ void Block::outArg(
 
 void Block::build(
     Output &output,
-    std::function<void (Instance &)> &&before,
-    std::function<void (Instance &)> &&after
+    std::gc_function<void (Instance &)> &&before,
+    std::gc_function<void (Instance &)> &&after
 ) {
     // init
 

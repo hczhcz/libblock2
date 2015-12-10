@@ -26,12 +26,12 @@ void OutputContext::endl() {
     }
 }
 
-void OutputTask::insert(std::function<void (OutputContext &)> &&render) {
-    render_funcs.push_back(std::move(render));
+void OutputTask::insert(std::gc_function<void (OutputContext &)> &&render) {
+    render_funcs.emplace_back(std::move(render));
 }
 
 void OutputTask::generate(OutputContext &oc) {
-    for (std::function<void (OutputContext &)> &render: render_funcs) {
+    for (std::gc_function<void (OutputContext &)> &render: render_funcs) {
         render(oc);
     }
 }
@@ -39,14 +39,14 @@ void OutputTask::generate(OutputContext &oc) {
 
 void Output::header(
     Instance &instance,
-    std::function<void (OutputContext &)> &&render
+    std::gc_function<void (OutputContext &)> &&render
 ) {
     headers.at(instance).get().insert(std::move(render));
 }
 
 void Output::content(
     Instance &instance,
-    std::function<void (OutputContext &)> &&render
+    std::gc_function<void (OutputContext &)> &&render
 ) {
     contents.at(instance).get().insert(std::move(render));
 }

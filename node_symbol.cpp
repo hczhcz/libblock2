@@ -40,7 +40,7 @@ void NodeSymbol::buildProc(
 Type &NodeSymbol::buildOut(
     Instance &instance,
     Output &output,
-    std::function<std::string (Type &)> &&target
+    std::gc_function<std::string (Type &)> &&target
 ) {
     // get type
 
@@ -71,7 +71,7 @@ Type &NodeSymbol::buildOut(
 void NodeSymbol::buildIn(
     Instance &instance, Type &type,
     Output &output,
-    std::function<std::string (Type &)> &&target
+    std::gc_function<std::string (Type &)> &&target
 ) {
     // set type
 

@@ -27,7 +27,7 @@ void NodeBlock::buildProc(
 Type &NodeBlock::buildOut(
     Instance &instance,
     Output &output,
-    std::function<std::string (Type &)> &&target
+    std::gc_function<std::string (Type &)> &&target
 ) {
     // get type
 
@@ -49,7 +49,7 @@ Type &NodeBlock::buildOut(
 void NodeBlock::buildIn(
     Instance &, Type &,
     Output &,
-    std::function<std::string (Type &)> &&
+    std::gc_function<std::string (Type &)> &&
 ) {
     throw ErrorWriteNotAllowed {};
 }

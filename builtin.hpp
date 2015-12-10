@@ -30,7 +30,7 @@ private:
     > &all();
 
     std::string name;
-    std::gc_vector<std::function<Block &()>> funcs;
+    std::gc_vector<std::gc_function<Block &()>> funcs;
 
     friend class BuiltinContainer;
 
@@ -38,7 +38,7 @@ public:
     Builtin(
         std::string &&package,
         std::string &&_name,
-        std::gc_vector<std::function<Block &()>> &&_funcs
+        std::gc_vector<std::gc_function<Block &()>> &&_funcs
     );
 };
 

@@ -27,12 +27,12 @@ public:
     virtual Type &buildOut(
         Instance &instance,
         Output &output,
-        std::function<std::string (Type &)> &&target
+        std::gc_function<std::string (Type &)> &&target
     ) = 0;
     virtual void buildIn(
         Instance &instance, Type &type,
         Output &output,
-        std::function<std::string (Type &)> &&target
+        std::gc_function<std::string (Type &)> &&target
     ) = 0;
 };
 
@@ -66,12 +66,12 @@ public:
     virtual Type &buildOut(
         Instance &instance,
         Output &output,
-        std::function<std::string (Type &)> &&target
+        std::gc_function<std::string (Type &)> &&target
     );
     virtual void buildIn(
         Instance &instance, Type &type,
         Output &output,
-        std::function<std::string (Type &)> &&target
+        std::gc_function<std::string (Type &)> &&target
     );
 };
 using NodeLiteralVoid = NodeLiteral<lb_void_t>;
@@ -102,12 +102,12 @@ public:
     virtual Type &buildOut(
         Instance &instance,
         Output &output,
-        std::function<std::string (Type &)> &&target
+        std::gc_function<std::string (Type &)> &&target
     );
     virtual void buildIn(
         Instance &instance, Type &type,
         Output &output,
-        std::function<std::string (Type &)> &&target
+        std::gc_function<std::string (Type &)> &&target
     );
 };
 
@@ -132,12 +132,12 @@ public:
     virtual Type &buildOut(
         Instance &instance,
         Output &output,
-        std::function<std::string (Type &)> &&target
+        std::gc_function<std::string (Type &)> &&target
     );
     virtual void buildIn(
         Instance &instance, Type &type,
         Output &output,
-        std::function<std::string (Type &)> &&target
+        std::gc_function<std::string (Type &)> &&target
     );
 };
 
@@ -177,9 +177,9 @@ private:
 
     void build(
         Instance &instance, Output &output,
-        std::function<void (Block &)> &&init,
-        std::function<void (Instance &, size_t)> &&before,
-        std::function<void (Instance &, size_t)> &&after
+        std::gc_function<void (Block &)> &&init,
+        std::gc_function<void (Instance &, size_t)> &&before,
+        std::gc_function<void (Instance &, size_t)> &&after
     );
 
 public:
@@ -195,12 +195,12 @@ public:
     virtual Type &buildOut(
         Instance &instance,
         Output &output,
-        std::function<std::string (Type &)> &&target
+        std::gc_function<std::string (Type &)> &&target
     );
     virtual void buildIn(
         Instance &instance, Type &type,
         Output &output,
-        std::function<std::string (Type &)> &&target
+        std::gc_function<std::string (Type &)> &&target
     );
 };
 
@@ -226,12 +226,12 @@ public:
     virtual Type &buildOut(
         Instance &instance,
         Output &output,
-        std::function<std::string (Type &)> &&target
+        std::gc_function<std::string (Type &)> &&target
     );
     virtual void buildIn(
         Instance &instance, Type &type,
         Output &output,
-        std::function<std::string (Type &)> &&target
+        std::gc_function<std::string (Type &)> &&target
     );
 };
 
