@@ -5,6 +5,7 @@
 namespace libblock {
 
 class Output;
+class OutputContext;
 class Instance;
 class Node;
 class NodeBlock;
@@ -78,6 +79,11 @@ class BlockBuiltin: public Block {
 public:
     using Block::Block;
 };
+
+void cCodeFmt(
+    const std::string &str,
+    Instance &instance, OutputContext &oc
+); // TODO: function? lib?
 
 class BlockBuiltinFmt: public BlockBuiltin {
 private:

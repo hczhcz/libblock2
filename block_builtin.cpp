@@ -4,6 +4,33 @@
 
 namespace libblock {
 
+void cCodeFmt(
+    const std::string &str,
+    Instance &instance, OutputContext &oc
+) {
+    oc.endl();
+
+    for (char i: str) {
+        switch (i) {
+            case '$':
+                oc.os << instance.strSelf() << "->data.";
+                break;
+
+            case '\t':
+                oc.tab();
+                break;
+
+            case '\n':
+                oc.endl();
+                break;
+
+            default:
+                oc.os << i;
+                break;
+        }
+    }
+}
+
 void BlockBuiltinFmt::buildContent(Instance &instance, Output &output) {
     // gen type
     // notice: for existing symbols,
@@ -28,27 +55,7 @@ void BlockBuiltinFmt::buildContent(Instance &instance, Output &output) {
     output.content(
         instance,
         [&](OutputContext &oc) {
-            oc.endl();
-
-            for (char i: str) {
-                switch (i) {
-                    case '$':
-                        oc.os << instance.strSelf() << "->data.";
-                        break;
-
-                    case '\t':
-                        oc.tab();
-                        break;
-
-                    case '\n':
-                        oc.endl();
-                        break;
-
-                    default:
-                        oc.os << i;
-                        break;
-                }
-            }
+            cCodeFmt(str, instance, oc);
         }
     );
 }
