@@ -3,11 +3,10 @@
 #include "node.hpp"
 #include "builder_lib.hpp"
 
-namespace libblock {
-
 namespace {
 
-using namespace builder;
+using namespace libblock;
+using namespace libblock::builder;
 
 Builtin __or__ {"core", "__or__", {
     libFuncB3R("$result = $a || $b;"),
@@ -27,7 +26,5 @@ Builtin __not__ {"core", "__not__", {
     libFuncB2R("$result = !$a;"),
     libFuncB2A("$a = !$input;"),
 }};
-
-}
 
 }

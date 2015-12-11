@@ -3,11 +3,10 @@
 #include "node.hpp"
 #include "builder_lib.hpp"
 
-namespace libblock {
-
 namespace {
 
-using namespace builder;
+using namespace libblock;
+using namespace libblock::builder;
 
 class Then: public BlockBuiltin {
 protected:
@@ -48,7 +47,5 @@ Builtin __assign__ {"core", "__assign__", {
         };
     },
 }};
-
-}
 
 }

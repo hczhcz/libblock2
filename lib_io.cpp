@@ -3,11 +3,10 @@
 #include "node.hpp"
 #include "builder_lib.hpp"
 
-namespace libblock {
-
 namespace {
 
-using namespace builder;
+using namespace libblock;
+using namespace libblock::builder;
 
 Builtin print {"io", "print", {
     []() -> Block & {
@@ -56,7 +55,5 @@ Builtin print {"io", "print", {
         };
     },
 }};
-
-}
 
 }

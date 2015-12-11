@@ -3,11 +3,10 @@
 #include "node.hpp"
 #include "builder_lib.hpp"
 
-namespace libblock {
-
 namespace {
 
-using namespace builder;
+using namespace libblock;
+using namespace libblock::builder;
 
 Builtin __eq__ {"core", "__eq__", {
     libFuncB3R("$result = $a == $b;"),
@@ -44,7 +43,5 @@ Builtin __gte__ {"core", "__gte__", {
     libFuncI3R("$result = $a >= $b;"),
     libFuncR3R("$result = $a >= $b;"),
 }};
-
-}
 
 }

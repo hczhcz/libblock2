@@ -3,11 +3,10 @@
 #include "node.hpp"
 #include "builder_lib.hpp"
 
-namespace libblock {
-
 namespace {
 
-using namespace builder;
+using namespace libblock;
+using namespace libblock::builder;
 
 Builtin __add__ {"core", "__add__", {
     libFuncR3R("$result = $a + $b;"),
@@ -44,7 +43,5 @@ Builtin __neg__ {"core", "__neg__", {
 }};
 
 // TODO: div / mod for float?
-
-}
 
 }

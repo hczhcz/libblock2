@@ -3,11 +3,10 @@
 #include "node.hpp"
 #include "builder_lib.hpp"
 
-namespace libblock {
-
 namespace {
 
-using namespace builder;
+using namespace libblock;
+using namespace libblock::builder;
 
 Builtin __add__ {"core", "__add__", {
     libFuncI3R("$result = $a + $b;"),
@@ -106,7 +105,5 @@ Builtin __ror__ {"core", "__ror__", {
             "\t(((lb_uint_t) $input) >> ((LB_BIT_WIDTH - 1) & -$b));"
     ),
 }};
-
-}
 
 }
