@@ -11,7 +11,7 @@ Node &parse(std::string &&code) {
     myparser::Pass<myparser::PASS_AST> visitor;
 
     myparser::Node<> *parse_tree {
-        parser.parse(code, true)
+        parser.parse(code)
     };
     parse_tree->runPass(&visitor);
 
@@ -23,7 +23,7 @@ Node &parseFile(std::string &&file) {
     myparser::Pass<myparser::PASS_AST> visitor;
 
     myparser::Node<> *parse_tree {
-        parser.parseFile(file, true)
+        parser.parseFile(file)
     };
     parse_tree->runPass(&visitor);
 

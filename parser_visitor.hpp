@@ -1,5 +1,6 @@
 #pragma once
 
+#include "exception.hpp"
 #include "type.hpp"
 #include "node.hpp"
 #include "block.hpp"
@@ -64,7 +65,7 @@ public:
 
     libblock::Node &getOne() {
         if (lb_nodes.size() != 1) {
-            throw "internal error"; // TODO
+            throw libblock::ErrorParserInternalError {};
         }
 
         return lb_nodes.front();
@@ -703,7 +704,7 @@ public:
         // self as closure
 
         if (!lb_nodes.empty()) {
-            throw "internal error"; // TODO
+            throw libblock::ErrorParserInternalError {};
         }
         libblock::Node &lb_source {
             *new (GC) libblock::NodeSymbol {
@@ -854,35 +855,35 @@ public:
         // never reach
         (void) node;
 
-        throw "internal error"; // TODO
+        throw libblock::ErrorParserInternalError {};
     }
 
     RUN_LIST("keyword", 0) {
         // never reach
         (void) node;
 
-        throw "internal error"; // TODO
+        throw libblock::ErrorParserInternalError {};
     }
 
     RUN_TEXT("id") {
         // never reach
         (void) node;
 
-        throw "internal error"; // TODO
+        throw libblock::ErrorParserInternalError {};
     }
 
     RUN_TEXT("sign") {
         // never reach
         (void) node;
 
-        throw "internal error"; // TODO
+        throw libblock::ErrorParserInternalError {};
     }
 
     RUN_TEXT("ignored") {
         // never reach
         (void) node;
 
-        throw "internal error"; // TODO
+        throw libblock::ErrorParserInternalError {};
     }
 
     #undef RUN_LIST
@@ -895,7 +896,7 @@ public:
         // never reach if no parsing error
         (void) node;
 
-        throw "syntax error"; // TODO
+        throw libblock::ErrorParserFailed {};
     }
 };
 

@@ -4,6 +4,10 @@ namespace libblock {
 
 class Error {};
 
+// parser
+class ErrorParserFailed: public Error {};
+class ErrorParserInternalError: public Error {};
+
 // access directions
 class ErrorDiscardNotAllowed: public Error {};
 class ErrorReadNotAllowed: public Error {};
