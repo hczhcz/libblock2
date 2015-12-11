@@ -54,7 +54,7 @@ Builtin::Builtin(
     std::gc_vector<std::gc_function<Block &()>> &&_funcs
 ):
     name {std::move(_name)},
-    funcs (std::move(_funcs)) /* force move init, TODO */ {
+    funcs {std::move(_funcs)} {
         auto list = all().find(package);
 
         if (list == all().end()) {

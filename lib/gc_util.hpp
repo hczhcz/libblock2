@@ -26,7 +26,10 @@ template <class R, class... Args>
 class gc_function<R (Args...)>: public function<R (Args...)> {
 public:
     template <class Func>
-    gc_function(Func _func):
+    gc_function(
+        Func _func,
+        decltype(&Func::operator()) * = nullptr
+    ):
         function<R (Args...)> {
             std::allocator_arg,
             gc_allocator<char> {},
