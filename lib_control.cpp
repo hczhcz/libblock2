@@ -34,18 +34,4 @@ Builtin __then__ {"core", "__then__", {
     libFuncT<Then>()
 }};
 
-Builtin __assign__ {"core", "__assign__", {
-    []() -> Block & {
-        return *new (GC) BlockBuiltinFmt {
-            {BlockOption::allow_proc},
-            {out("dest"), in("src")},
-            {},
-            {
-                {"dest", "src"},
-            },
-            "$dest = $src;"
-        };
-    },
-}};
-
 }
