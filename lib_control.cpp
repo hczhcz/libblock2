@@ -8,7 +8,7 @@ namespace {
 using namespace libblock;
 using namespace libblock::builder;
 
-class Then: public BlockBuiltin {
+class Do: public BlockBuiltin {
 protected:
     virtual void inSpecialArg(
         Instance &caller, Instance &,
@@ -24,14 +24,14 @@ protected:
     }
 
 public:
-    Then():
+    Do():
         BlockBuiltin {
             {BlockOption::allow_proc},
             {}
         } {}
 };
-Builtin __then__ {"core", "__then__", {
-    libFuncT<Then>()
+Builtin __do__ {"core", "__do__", {
+    libFuncT<Do>()
 }};
 
 }

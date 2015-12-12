@@ -38,7 +38,7 @@ int main() {
                         x = x + 300;
                     } (n2); // n2 is 333
 
-                    __then__(print(n1), print(n2));
+                    __do__(print(n1), print(n2));
                 )CODE"
             ) // TODO: add (lookup / frame / block) modes and options in the grammar
         )

@@ -79,7 +79,7 @@ public:
 
     RUN_LIST("root", 0) {
         node->getChildren()[1]->runPass(this);
-        makeCall("__then__");
+        makeCall("__do__");
     }
 
     RUN_LIST("stmt", 0) {
@@ -782,7 +782,7 @@ public:
         // body
 
         node->getChildren()[4]->runPass(this);
-        makeCall("__then__");
+        makeCall("__do__");
 
         libblock::Node &lb_ast {
             getOne()
