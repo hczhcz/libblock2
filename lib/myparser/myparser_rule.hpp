@@ -10,6 +10,7 @@ using ErrorList = MP_STR("Nothing matched");
 using ErrorRegex = MP_STR("Regex not matched");
 using ErrorChecking = MP_STR("Match not accepted");
 using ErrorKeyword = MP_STR("Bad keyword");
+using ErrorTail = MP_STR("Parsing not finished");
 
 template <size_t L, size_t M>
 class Tag {
@@ -300,6 +301,12 @@ public:
         Input &input, const Input &end, const bool dothrow = false
     ) {
         auto current = RuleDef<N>::parse(input, end);
+
+        if (input != end) {
+            current.first->free();
+
+            return new NodeTypedError<N, ErrorList>(input);
+        };
 
         if (current.first) {
             if (current.second) {

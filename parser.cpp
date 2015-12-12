@@ -14,6 +14,7 @@ Node &parse(std::string &&code) {
         parser.parse(code)
     };
     parse_tree->runPass(&visitor);
+    parse_tree->free();
 
     return visitor.getOne();
 }
@@ -26,6 +27,7 @@ Node &parseFile(std::string &&file) {
         parser.parseFile(file)
     };
     parse_tree->runPass(&visitor);
+    parse_tree->free();
 
     return visitor.getOne();
 }
