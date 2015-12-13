@@ -76,14 +76,15 @@ public:
 };
 
 class BlockBuiltin: public Block {
+protected:
+    static void codeFmt(
+        const std::string &str,
+        Instance &instance, OutputContext &oc
+    );
+
 public:
     using Block::Block;
 };
-
-void cCodeFmt(
-    const std::string &str,
-    Instance &instance, OutputContext &oc
-); // TODO: function? lib?
 
 class BlockBuiltinFmt: public BlockBuiltin {
 private:

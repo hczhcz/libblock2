@@ -4,7 +4,7 @@
 
 namespace libblock {
 
-void cCodeFmt(
+void BlockBuiltin::codeFmt(
     const std::string &str,
     Instance &instance, OutputContext &oc
 ) {
@@ -55,7 +55,7 @@ void BlockBuiltinFmt::buildContent(Instance &instance, Output &output) {
     output.content(
         instance,
         [&](OutputContext &oc) {
-            cCodeFmt(str, instance, oc);
+            codeFmt(str, instance, oc);
         }
     );
 }
