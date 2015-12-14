@@ -14,54 +14,6 @@ void NodeCall::renderLabelDef(
     och.os << "LB_FUNC(" << label << ");";
 }
 
-void NodeCall::renderFrameAlloc(
-    Instance &instance, size_t position,
-    OutputContext &oc
-) const {
-    switch (mode) {
-        case FrameMode::static_global:
-            oc.endl();
-            oc.os << "static "
-                  << instance.strCalleeType(position) << " "
-                  << instance.strCalleeName(position) << ";";
-            oc.endl();
-            oc.os << "inner = (struct frame *) &"
-                  << instance.strCalleeName(position) << ";";
-            break;
-
-        case FrameMode::static_local:
-            oc.endl();
-            oc.os << "static _Threal_local "
-                  << instance.strCalleeType(position) << " "
-                  << instance.strCalleeName(position) << ";";
-            oc.endl();
-            oc.os << "inner = (struct frame *) &"
-                  << instance.strCalleeName(position) << ";";
-            break;
-
-        case FrameMode::dynamic_stack:
-            oc.endl();
-            oc.os << "inner = alloca(sizeof("
-                  << instance.strCalleeType(position)
-                  << "));";
-            break;
-
-        case FrameMode::dynamic_gc:
-            oc.endl();
-            oc.os << "inner = GC_malloc(sizeof("
-                  << instance.strCalleeType(position)
-                  << "));";
-            break;
-
-        case FrameMode::dynamic_free:
-            oc.endl();
-            oc.os << "inner = malloc(sizeof("
-                  << instance.strCalleeType(position)
-                  << "));";
-            break;
-    }
-}
-
 void NodeCall::renderLoadCallee(OutputContext &oc) const {
     oc.endl();
     oc.os << "inner->outer = callee;";
@@ -95,28 +47,6 @@ void NodeCall::renderUnloadCallee(OutputContext &oc) const {
     oc.os << "inner = callee;";
     oc.endl();
     oc.os << "callee = inner->outer;";
-}
-
-void NodeCall::renderFrameFree(
-    Instance &instance, size_t position,
-    OutputContext &oc
-) const {
-    switch (mode) {
-        case FrameMode::static_global:
-        case FrameMode::static_local:
-            break;
-
-        case FrameMode::dynamic_stack:
-            oc.endl();
-            oc.os << "alloca(-sizeof("
-                  << instance.strCalleeType(position)
-                  << "));";
-            break;
-
-        case FrameMode::dynamic_gc:
-        case FrameMode::dynamic_free:
-            break;
-    }
 }
 
 void NodeCall::build(
@@ -168,7 +98,7 @@ void NodeCall::build(
             block.build(
                 output,
                 [&](Instance &callee) {
-                    // render (alloc the call frame)
+                    // render (enter)
 
                     output.content(
                         instance,
@@ -177,7 +107,7 @@ void NodeCall::build(
                             oc.os << "/* call */";
                             oc.enter();
 
-                            renderFrameAlloc(instance, position, oc);
+                            block.renderFrame(instance, position, oc);
                         }
                     );
 
@@ -268,13 +198,11 @@ void NodeCall::build(
 
                     after(callee, position);
 
-                    // render (free the call frame)
+                    // render (leave)
 
                     output.content(
                         instance,
                         [&, position](OutputContext &oc) {
-                            renderFrameFree(instance, position, oc);
-
                             oc.leave();
                         }
                     );
@@ -319,11 +247,10 @@ void NodeCall::build(
 }
 
 NodeCall::NodeCall(
-    Node &_source, FrameMode _mode,
+    Node &_source,
     std::gc_vector<std::reference_wrapper<Node>> &&_args
 ):
     source {_source},
-    mode {_mode},
     args {std::move(_args)} {}
 
 void NodeCall::buildProc(

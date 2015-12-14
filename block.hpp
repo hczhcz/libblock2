@@ -10,8 +10,11 @@ class Instance;
 class Node;
 class NodeBlock;
 
-enum class ParamMode {
-    in, out, var, special
+enum class FrameMode {
+    static_global,
+    static_local,
+    dynamic_gc,
+    dynamic_free
 };
 
 enum class BlockOption {
@@ -21,12 +24,22 @@ enum class BlockOption {
     manual_lock
 };
 
+enum class ParamMode {
+    in, out, var, special
+};
+
 class Block {
 private:
+    FrameMode mode;
     std::set<BlockOption> options;
     std::gc_vector<std::pair<std::string, ParamMode>> params;
 
     std::gc_list<std::reference_wrapper<Instance>> instances;
+
+    void renderFrame(
+        Instance &caller, size_t position,
+        OutputContext &oc
+    ) const;
 
     Instance &matchInstance(
         Instance &instance,
@@ -35,6 +48,7 @@ private:
 
 protected:
     Block(
+        // FrameMode _mode, // TODO
         std::set<BlockOption> &&_options,
         std::gc_vector<std::pair<std::string, ParamMode>> &&_params
     );
@@ -52,6 +66,8 @@ protected:
         Output &output,
         std::gc_function<std::string (Type &)> &&target
     );
+
+    friend class NodeCall; // TODO
 
 public:
     bool getOption(BlockOption option);

@@ -57,14 +57,7 @@ inline NodePath &$(Node &source, LookupMode mode, std::string &&name) {
 template <class... Args>
 inline NodeCall &call(Node &source, Args... args) { // default
     return *new (GC) NodeCall {
-        source, FrameMode::dynamic_gc, args...
-    };
-}
-
-template <class... Args>
-inline NodeCall &call(Node &source, FrameMode mode, Args... args) {
-    return *new (GC) NodeCall {
-        source, mode, args...
+        source, args...
     };
 }
 

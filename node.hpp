@@ -128,27 +128,14 @@ public:
     );
 };
 
-enum class FrameMode {
-    static_global,
-    static_local,
-    dynamic_stack,
-    dynamic_gc,
-    dynamic_free
-};
-
 class NodeCall: public Node {
 private:
     Node &source;
-    FrameMode mode;
     std::gc_vector<std::reference_wrapper<Node>> args;
 
     void renderLabelDef(
         OutputContext &och,
         const std::string &label
-    ) const;
-    void renderFrameAlloc(
-        Instance &instance, size_t position,
-        OutputContext &oc
     ) const;
     void renderLoadCallee(OutputContext &oc) const;
     void renderCall(
@@ -157,10 +144,6 @@ private:
         const std::string &func
     ) const;
     void renderUnloadCallee(OutputContext &oc) const;
-    void renderFrameFree(
-        Instance &instance, size_t position,
-        OutputContext &oc
-    ) const;
 
     void build(
         Instance &instance, Output &output,
@@ -171,7 +154,7 @@ private:
 
 public:
     NodeCall(
-        Node &_source, FrameMode _mode,
+        Node &_source,
         std::gc_vector<std::reference_wrapper<Node>> &&_args
     );
 

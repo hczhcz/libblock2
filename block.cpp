@@ -6,6 +6,47 @@
 
 namespace libblock {
 
+void Block::renderFrame(
+    Instance &caller, size_t position,
+    OutputContext &oc
+) const {
+    switch (mode) {
+        case FrameMode::static_global:
+            oc.endl();
+            oc.os << "static "
+                  << caller.strCalleeType(position) << " "
+                  << caller.strCalleeName(position) << ";";
+            oc.endl();
+            oc.os << "inner = (struct frame *) &"
+                  << caller.strCalleeName(position) << ";";
+            break;
+
+        case FrameMode::static_local:
+            oc.endl();
+            oc.os << "static _Threal_local "
+                  << caller.strCalleeType(position) << " "
+                  << caller.strCalleeName(position) << ";";
+            oc.endl();
+            oc.os << "inner = (struct frame *) &"
+                  << caller.strCalleeName(position) << ";";
+            break;
+
+        case FrameMode::dynamic_gc:
+            oc.endl();
+            oc.os << "inner = GC_malloc(sizeof("
+                  << caller.strCalleeType(position)
+                  << "));";
+            break;
+
+        case FrameMode::dynamic_free:
+            oc.endl();
+            oc.os << "inner = malloc(sizeof("
+                  << caller.strCalleeType(position)
+                  << "));";
+            break;
+    }
+}
+
 Instance &Block::matchInstance(
     Instance &instance,
     Output &output
@@ -65,9 +106,12 @@ Instance &Block::matchInstance(
 }
 
 Block::Block(
+    // FrameMode _mode, // TODO
     std::set<BlockOption> &&_options,
     std::gc_vector<std::pair<std::string, ParamMode>> &&_params
 ):
+    // mode {_mode},
+    mode {FrameMode::dynamic_gc},
     options {std::move(_options)},
     params {std::move(_params)} {}
 

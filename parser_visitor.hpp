@@ -52,7 +52,6 @@ private:
                     libblock::LookupMode::mixed,
                     std::move(name)
                 },
-                libblock::FrameMode::dynamic_gc,
                 std::move(args)
             }
         );
@@ -675,7 +674,6 @@ public:
         lb_nodes.push_back(
             *new (GC) libblock::NodeCall {
                 lb_source,
-                libblock::FrameMode::dynamic_gc,
                 std::move(args)
             }
         );
