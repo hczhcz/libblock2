@@ -50,11 +50,11 @@ int main() {
 
     root_block.build(
         output,
-        [&](Instance &root) {
+        [&](Block &, Instance &root) {
             bc.apply("core", root);
             bc.apply("io", root);
         },
-        [&](Instance &root) {
+        [&](Block &, Instance &root) {
             root_p = &root;
         }
     );

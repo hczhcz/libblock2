@@ -86,8 +86,8 @@ public:
     );
     void build(
         Output &output,
-        std::gc_function<void (Instance &)> &&before,
-        std::gc_function<void (Instance &)> &&after
+        std::gc_function<void (Block &, Instance &)> &&before,
+        std::gc_function<void (Block &, Instance &)> &&after
     );
 };
 

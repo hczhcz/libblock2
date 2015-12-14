@@ -179,8 +179,6 @@ private:
     Node &source;
     std::gc_vector<std::reference_wrapper<Block>> blocks;
 
-    friend class NodeCall;
-
 public:
     NodeBlock(
         Node &_source,
@@ -188,6 +186,11 @@ public:
     );
 
     void addBlock(Block &block_p);
+    void build(
+        Output &output,
+        std::gc_function<void (Block &, Instance &)> &&before,
+        std::gc_function<void (Block &, Instance &)> &&after
+    );
 
     virtual void buildProc(
         Instance &instance,

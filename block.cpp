@@ -201,8 +201,8 @@ void Block::outArg(
 
 void Block::build(
     Output &output,
-    std::gc_function<void (Instance &)> &&before,
-    std::gc_function<void (Instance &)> &&after
+    std::gc_function<void (Block &, Instance &)> &&before,
+    std::gc_function<void (Block &, Instance &)> &&after
 ) {
     // init
 
@@ -212,7 +212,7 @@ void Block::build(
 
     // in
 
-    before(instance_early);
+    before(*this, instance_early);
 
     // find or create instance
 
@@ -222,7 +222,7 @@ void Block::build(
 
     // out
 
-    after(instance);
+    after(*this, instance);
 }
 
 }

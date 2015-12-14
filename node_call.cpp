@@ -94,149 +94,120 @@ void NodeCall::build(
 
         Type &parent {closure_p->parent};
 
-        auto do_build = [&](Block &block) {
-            block.build(
-                output,
-                [&](Instance &callee) {
-                    // render (enter)
+        closure_p->blocks.build(
+            output,
+            [&](Block &block, Instance &callee) {
+                // render (enter)
 
-                    output.content(
-                        instance,
-                        [&, position](OutputContext &oc) {
-                            oc.endl();
-                            oc.os << "/* call */";
-                            oc.enter();
+                output.content(
+                    instance,
+                    [&, position](OutputContext &oc) {
+                        oc.endl();
+                        oc.os << "/* call */";
+                        oc.enter();
 
-                            block.renderFrame(instance, position, oc);
-                        }
-                    );
-
-                    // init
-
-                    init(block);
-
-                    // parent
-
-                    callee.insert("parent", parent);
-
-                    // render (parent)
-
-                    output.content(
-                        instance,
-                        [&, position](OutputContext &oc) {
-                            oc.endl();
-                            oc.os << instance.strInner(position) << "->data.parent = "
-                                  << parent.strReint("tmp") << ";";
-                        }
-                    );
-
-                    // input
-
-                    before(callee, position);
-
-                    // render (load the callee)
-
-                    output.content(
-                        instance,
-                        [&](OutputContext &oc) {
-                            renderLoadCallee(oc);
-                        }
-                    );
-
-                    // in args
-
-                    for (size_t i = 0; i < args.size(); ++i) {
-                        block.inArg(
-                            instance, callee,
-                            i, args[i],
-                            output,
-                            [&, position](Type &) {
-                                return instance.strCallee(position);
-                            }
-                        );
+                        block.renderFrame(instance, position, oc);
                     }
-                },
-                [&](Instance &callee) {
-                    instance.addCallee(position, callee);
+                );
 
-                    // render (call)
+                // init
 
-                    output.content(
-                        instance,
-                        [&, position](OutputContext &oc) {
-                            renderCall(
-                                oc,
-                                instance.strLabel(position),
-                                callee.strFunc()
-                            );
-                        }
-                    );
+                init(block);
 
-                    // out args
+                // parent
 
-                    for (size_t i = 0; i < args.size(); ++i) {
-                        block.outArg(
-                            instance, callee,
-                            i, args[i],
-                            output,
-                            [&, position](Type &) {
-                                return instance.strCallee(position);
-                            }
-                        );
+                callee.insert("parent", parent);
+
+                // render (parent)
+
+                output.content(
+                    instance,
+                    [&, position](OutputContext &oc) {
+                        oc.endl();
+                        oc.os << instance.strInner(position) << "->data.parent = "
+                              << parent.strReint("tmp") << ";";
                     }
+                );
 
-                    // render (unload the callee)
+                // input
 
-                    output.content(
-                        instance,
-                        [&](OutputContext &oc) {
-                            renderUnloadCallee(oc);
-                        }
-                    );
+                before(callee, position);
 
-                    // result
+                // render (load the callee)
 
-                    after(callee, position);
+                output.content(
+                    instance,
+                    [&](OutputContext &oc) {
+                        renderLoadCallee(oc);
+                    }
+                );
 
-                    // render (leave)
+                // in args
 
-                    output.content(
-                        instance,
-                        [&, position](OutputContext &oc) {
-                            oc.leave();
+                for (size_t i = 0; i < args.size(); ++i) {
+                    block.inArg(
+                        instance, callee,
+                        i, args[i],
+                        output,
+                        [&, position](Type &) {
+                            return instance.strCallee(position);
                         }
                     );
                 }
-            );
-        };
+            },
+            [&](Block &block, Instance &callee) {
+                instance.addCallee(position, callee);
 
-        if (closure_p->blocks.blocks.size() > 1) {
-            Block *selected_p {nullptr};
+                // render (call)
 
-            for (Block &block: closure_p->blocks.blocks) {
-                if (
-                    forkTry([&]() {
-                        do_build(block);
-                    })
-                ) {
-                    if (selected_p) {
-                        throw ErrorOverloadAmbiguous {};
-                    } else {
-                        selected_p = &block;
+                output.content(
+                    instance,
+                    [&, position](OutputContext &oc) {
+                        renderCall(
+                            oc,
+                            instance.strLabel(position),
+                            callee.strFunc()
+                        );
                     }
-                }
-            }
+                );
 
-            if (selected_p) {
-                do_build(*selected_p);
-            } else {
-                throw ErrorOverloadNotFound {};
+                // out args
+
+                for (size_t i = 0; i < args.size(); ++i) {
+                    block.outArg(
+                        instance, callee,
+                        i, args[i],
+                        output,
+                        [&, position](Type &) {
+                            return instance.strCallee(position);
+                        }
+                    );
+                }
+
+                // render (unload the callee)
+
+                output.content(
+                    instance,
+                    [&](OutputContext &oc) {
+                        renderUnloadCallee(oc);
+                    }
+                );
+
+                // result
+
+                after(callee, position);
+
+                // render (leave)
+
+                output.content(
+                    instance,
+                    [&, position](OutputContext &oc) {
+                        oc.leave();
+                    }
+                );
             }
-        } else if (closure_p->blocks.blocks.size() == 1) {
-            do_build(closure_p->blocks.blocks.front());
-        } else {
-            throw ErrorBlockNotFound {};
-        }
+        );
+
     } else {
         // TODO: object as callee
         //           return (func point to error)

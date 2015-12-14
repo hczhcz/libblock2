@@ -17,6 +17,52 @@ void NodeBlock::addBlock(Block &block) {
     blocks.push_back(block);
 }
 
+void NodeBlock::build(
+    Output &output,
+    std::gc_function<void (Block &, Instance &)> &&before,
+    std::gc_function<void (Block &, Instance &)> &&after
+) {
+    if (blocks.size() > 1) {
+        Block *selected_p {nullptr};
+
+        for (Block &block: blocks) {
+            if (
+                forkTry([&]() {
+                    block.build(
+                        output,
+                        std::move(before),
+                        std::move(after)
+                    );
+                })
+            ) {
+                if (selected_p) {
+                    throw ErrorOverloadAmbiguous {};
+                } else {
+                    selected_p = &block;
+                }
+            }
+        }
+
+        if (selected_p) {
+            selected_p->build(
+                output,
+                std::move(before),
+                std::move(after)
+            );
+        } else {
+            throw ErrorOverloadNotFound {};
+        }
+    } else if (blocks.size() == 1) {
+        blocks.front().get().build(
+            output,
+            std::move(before),
+            std::move(after)
+        );
+    } else {
+        throw ErrorBlockNotFound {};
+    }
+}
+
 void NodeBlock::buildProc(
     Instance &,
     Output &
