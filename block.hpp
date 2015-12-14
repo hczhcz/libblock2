@@ -36,17 +36,6 @@ private:
 
     std::gc_list<std::reference_wrapper<Instance>> instances;
 
-    void renderFrame(
-        Instance &caller,
-        size_t position,
-        OutputContext &oc
-    ) const;
-    void renderCall(
-        Instance &caller, Instance &instance,
-        size_t position,
-        OutputContext &oc
-    ) const;
-
     Instance &matchInstance(
         Instance &instance,
         Output &output
@@ -73,10 +62,19 @@ protected:
         std::gc_function<std::string (Type &)> &&target
     );
 
-    friend class NodeCall; // TODO
-
 public:
     bool getOption(BlockOption option);
+
+    void renderFrame(
+        Instance &caller,
+        size_t position,
+        OutputContext &oc
+    ) const;
+    void renderCall(
+        Instance &caller, Instance &instance,
+        size_t position,
+        OutputContext &oc
+    ) const;
 
     void inArg(
         Instance &caller, Instance &instance,
