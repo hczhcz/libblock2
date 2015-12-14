@@ -6,13 +6,19 @@
     static void (func)( \
         struct frame *self, \
         struct frame *callee, \
-        struct frame *inner, \
-        lb_reg_t tmp \
+        struct frame *inner \
     )
 
 #define LB_CALL() \
-    return self->func(self, callee, inner, tmp);
+    return self->func(self, callee, inner);
 
-#define LB_ENTER(func) LB_FUNC(func) {
-#define LB_EXIT() LB_CALL() }
-#define LB_YIELD(func) LB_CALL() } LB_FUNC(func) {
+#define LB_ENTER(func) \
+    LB_FUNC(func) { \
+        lb_reg_t tmp; \
+        (void) tmp;
+
+#define LB_EXIT() \
+        LB_CALL() \
+    }
+
+#define LB_YIELD(func) LB_EXIT() LB_ENTER(func)

@@ -14,8 +14,7 @@ typedef uint64_t    lb_reg_t;
 typedef void (*lb_func_t)(
     struct frame *,
     struct frame *,
-    struct frame *,
-    lb_reg_t
+    struct frame *
 );
 
 #ifdef __cplusplus

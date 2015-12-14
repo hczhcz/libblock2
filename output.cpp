@@ -134,7 +134,7 @@ void Output::getContent(std::ostream &os, Instance &root) const {
         oc.endl();
 
         oc.endl();
-        oc.os << root.strFunc() << "(&root.frame, 0, 0, 0);";
+        oc.os << root.strFunc() << "(&root.frame, 0, 0);";
 
     oc.leave();
     oc.endl();
