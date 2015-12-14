@@ -17,7 +17,9 @@ void NodeBlock::addBlock(Block &block) {
     blocks.push_back(block);
 }
 
-void NodeBlock::build(
+void NodeBlock::buildCall(
+    Instance &caller,
+    size_t position,
     Output &output,
     std::gc_function<void (Block &, Instance &)> &&before,
     std::gc_function<void (Block &, Instance &)> &&after
@@ -28,8 +30,8 @@ void NodeBlock::build(
         for (Block &block: blocks) {
             if (
                 forkTry([&]() {
-                    block.build(
-                        output,
+                    block.buildCall(
+                        caller, position, output,
                         std::move(before),
                         std::move(after)
                     );
@@ -44,8 +46,8 @@ void NodeBlock::build(
         }
 
         if (selected_p) {
-            selected_p->build(
-                output,
+            selected_p->buildCall(
+                caller, position, output,
                 std::move(before),
                 std::move(after)
             );
@@ -53,8 +55,8 @@ void NodeBlock::build(
             throw ErrorOverloadNotFound {};
         }
     } else if (blocks.size() == 1) {
-        blocks.front().get().build(
-            output,
+        blocks.front().get().buildCall(
+            caller, position, output,
             std::move(before),
             std::move(after)
         );

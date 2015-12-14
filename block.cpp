@@ -6,6 +6,73 @@
 
 namespace libblock {
 
+void Block::renderFrame(
+    Instance &caller,
+    size_t position,
+    OutputContext &oc
+) const {
+    switch (mode) {
+        case FrameMode::static_global:
+            oc.endl();
+            oc.os << "static "
+                  << caller.strCalleeType(position) << " "
+                  << caller.strCalleeName(position) << ";";
+            oc.endl();
+            oc.os << "inner = (struct frame *) &"
+                  << caller.strCalleeName(position) << ";";
+            break;
+
+        case FrameMode::static_local:
+            oc.endl();
+            oc.os << "static _Threal_local "
+                  << caller.strCalleeType(position) << " "
+                  << caller.strCalleeName(position) << ";";
+            oc.endl();
+            oc.os << "inner = (struct frame *) &"
+                  << caller.strCalleeName(position) << ";";
+            break;
+
+        case FrameMode::dynamic_gc:
+            oc.endl();
+            oc.os << "inner = GC_malloc(sizeof("
+                  << caller.strCalleeType(position)
+                  << "));";
+            break;
+
+        case FrameMode::dynamic_free:
+            oc.endl();
+            oc.os << "inner = malloc(sizeof("
+                  << caller.strCalleeType(position)
+                  << "));";
+            break;
+    }
+}
+
+void Block::renderCall(
+    Instance &caller, Instance &instance,
+    size_t position,
+    OutputContext &oc
+) const {
+    oc.endl();
+    oc.os << "LB_FUNC(" << caller.strLabel(position) << ");";
+    oc.endl();
+    oc.os << "self->func = &" << caller.strLabel(position) << ";";
+
+    // notice: reset callee->func
+    oc.endl();
+    oc.os << "LB_FUNC(" << instance.strFunc() << ");";
+    oc.endl();
+    oc.os << "callee->func = &" << instance.strFunc() << ";";
+
+    oc.endl();
+    oc.os << "callee->caller = self;";
+    oc.endl();
+    oc.os << "self = callee;";
+
+    oc.endl();
+    oc.os << "LB_YIELD(" << caller.strLabel(position) << ")";
+}
+
 Instance &Block::matchInstance(
     Instance &instance,
     Output &output
@@ -95,73 +162,6 @@ bool Block::getOption(BlockOption option) {
     return options.find(option) != options.end();
 }
 
-void Block::renderFrame(
-    Instance &caller,
-    size_t position,
-    OutputContext &oc
-) const {
-    switch (mode) {
-        case FrameMode::static_global:
-            oc.endl();
-            oc.os << "static "
-                  << caller.strCalleeType(position) << " "
-                  << caller.strCalleeName(position) << ";";
-            oc.endl();
-            oc.os << "inner = (struct frame *) &"
-                  << caller.strCalleeName(position) << ";";
-            break;
-
-        case FrameMode::static_local:
-            oc.endl();
-            oc.os << "static _Threal_local "
-                  << caller.strCalleeType(position) << " "
-                  << caller.strCalleeName(position) << ";";
-            oc.endl();
-            oc.os << "inner = (struct frame *) &"
-                  << caller.strCalleeName(position) << ";";
-            break;
-
-        case FrameMode::dynamic_gc:
-            oc.endl();
-            oc.os << "inner = GC_malloc(sizeof("
-                  << caller.strCalleeType(position)
-                  << "));";
-            break;
-
-        case FrameMode::dynamic_free:
-            oc.endl();
-            oc.os << "inner = malloc(sizeof("
-                  << caller.strCalleeType(position)
-                  << "));";
-            break;
-    }
-}
-
-void Block::renderCall(
-    Instance &caller, Instance &instance,
-    size_t position,
-    OutputContext &oc
-) const {
-    oc.endl();
-    oc.os << "LB_FUNC(" << caller.strLabel(position) << ");";
-    oc.endl();
-    oc.os << "self->func = &" << caller.strLabel(position) << ";";
-
-    // notice: reset callee->func
-    oc.endl();
-    oc.os << "LB_FUNC(" << instance.strFunc() << ");";
-    oc.endl();
-    oc.os << "callee->func = &" << instance.strFunc() << ";";
-
-    oc.endl();
-    oc.os << "callee->caller = self;";
-    oc.endl();
-    oc.os << "self = callee;";
-
-    oc.endl();
-    oc.os << "LB_YIELD(" << caller.strLabel(position) << ")";
-}
-
 void Block::inArg(
     Instance &caller, Instance &instance,
     size_t index, Node &arg,
@@ -224,7 +224,7 @@ void Block::outArg(
     }
 }
 
-void Block::build(
+void Block::buildEntry( // TODO: exported function?
     Output &output,
     std::gc_function<void (Block &, Instance &)> &&before,
     std::gc_function<void (Block &, Instance &)> &&after
@@ -244,6 +244,52 @@ void Block::build(
     Instance &instance {
         matchInstance(instance_early, output)
     };
+
+    // out
+
+    after(*this, instance);
+}
+
+void Block::buildCall(
+    Instance &caller,
+    size_t position,
+    Output &output,
+    std::gc_function<void (Block &, Instance &)> &&before,
+    std::gc_function<void (Block &, Instance &)> &&after
+) {
+    // init
+
+    Instance &instance_early {
+        *new (GC) Instance
+    };
+
+    // render (frame)
+
+    output.content(
+        caller,
+        [&, position](OutputContext &oc) {
+            renderFrame(caller, position, oc);
+        }
+    );
+
+    // in
+
+    before(*this, instance_early);
+
+    // find or create instance
+
+    Instance &instance {
+        matchInstance(instance_early, output)
+    };
+
+    // render (call)
+
+    output.content(
+        caller,
+        [&, position](OutputContext &oc) {
+            renderCall(caller, instance, position, oc);
+        }
+    );
 
     // out
 

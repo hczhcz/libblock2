@@ -174,7 +174,9 @@ public:
     );
 
     void addBlock(Block &block_p);
-    void build(
+    void buildCall(
+        Instance &caller,
+        size_t position,
         Output &output,
         std::gc_function<void (Block &, Instance &)> &&before,
         std::gc_function<void (Block &, Instance &)> &&after

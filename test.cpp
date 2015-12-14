@@ -47,7 +47,7 @@ int main() {
     Output output;
     Instance *root_p {nullptr};
 
-    root_block.build(
+    root_block.buildEntry(
         output,
         [&](Block &, Instance &root) {
             Builtin::apply("core", root);

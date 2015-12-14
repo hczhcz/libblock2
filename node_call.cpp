@@ -36,22 +36,20 @@ void NodeCall::build(
 
         Type &parent {closure_p->parent};
 
-        closure_p->blocks.build(
-            output,
+        // render (enter)
+
+        output.content(
+            instance,
+            [&](OutputContext &oc) {
+                oc.endl();
+                oc.os << "/* call */";
+                oc.enter();
+            }
+        );
+
+        closure_p->blocks.buildCall(
+            instance, position, output,
             [&](Block &block, Instance &callee) {
-                // render (enter)
-
-                output.content(
-                    instance,
-                    [&, position](OutputContext &oc) {
-                        oc.endl();
-                        oc.os << "/* call */";
-                        oc.enter();
-
-                        block.renderFrame(instance, position, oc);
-                    }
-                );
-
                 // init
 
                 init(block);
@@ -103,19 +101,6 @@ void NodeCall::build(
             [&](Block &block, Instance &callee) {
                 instance.addCallee(position, callee);
 
-                // render (call)
-
-                output.content(
-                    instance,
-                    [&, position](OutputContext &oc) {
-                        block.renderCall(
-                            instance, callee,
-                            position,
-                            oc
-                        );
-                    }
-                );
-
                 // out args
 
                 for (size_t i = 0; i < args.size(); ++i) {
@@ -144,18 +129,17 @@ void NodeCall::build(
                 // result
 
                 after(callee, position);
-
-                // render (leave)
-
-                output.content(
-                    instance,
-                    [&, position](OutputContext &oc) {
-                        oc.leave();
-                    }
-                );
             }
         );
 
+        // render (leave)
+
+        output.content(
+            instance,
+            [&](OutputContext &oc) {
+                oc.leave();
+            }
+        );
     } else {
         // TODO: object as callee
         //           return (func point to error)
