@@ -77,11 +77,6 @@ void Instance::renderStruct(OutputContext &och) const {
     och.endl();
 }
 
-void Instance::renderFuncDef(OutputContext &och) const {
-    och.endl();
-    och.os << "LB_FUNC(" << strFunc() << ");";
-}
-
 void Instance::renderFuncHead(OutputContext &oc) const {
     oc.endl();
     oc.os << "LB_ENTER(" << strFunc() << ")";

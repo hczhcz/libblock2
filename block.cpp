@@ -60,6 +60,8 @@ void Block::renderCall(
 
     // notice: reset callee->func
     oc.endl();
+    oc.os << "LB_FUNC(" << instance.strFunc() << ");";
+    oc.endl();
     oc.os << "callee->func = &" << instance.strFunc() << ";";
 
     oc.endl();
@@ -119,7 +121,6 @@ Instance &Block::matchInstance(
     output.header(
         instance,
         [&](OutputContext &och) {
-            instance.renderFuncDef(och);
             instance.renderStruct(och);
         }
     );
