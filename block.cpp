@@ -7,7 +7,8 @@
 namespace libblock {
 
 void Block::renderFrame(
-    Instance &caller, size_t position,
+    Instance &caller,
+    size_t position,
     OutputContext &oc
 ) const {
     switch (mode) {
@@ -45,6 +46,29 @@ void Block::renderFrame(
                   << "));";
             break;
     }
+}
+
+void Block::renderCall(
+    Instance &caller, Instance &instance,
+    size_t position,
+    OutputContext &oc
+) const {
+    oc.endl();
+    oc.os << "LB_FUNC(" << caller.strLabel(position) << ");";
+    oc.endl();
+    oc.os << "self->func = &" << caller.strLabel(position) << ";";
+
+    // notice: reset callee->func
+    oc.endl();
+    oc.os << "callee->func = &" << instance.strFunc() << ";";
+
+    oc.endl();
+    oc.os << "callee->caller = self;";
+    oc.endl();
+    oc.os << "self = callee;";
+
+    oc.endl();
+    oc.os << "LB_YIELD(" << caller.strLabel(position) << ")";
 }
 
 Instance &Block::matchInstance(

@@ -6,58 +6,12 @@
 
 namespace libblock {
 
-void NodeCall::renderLabelDef(
-    OutputContext &och,
-    const std::string &label
-) const {
-    och.endl();
-    och.os << "LB_FUNC(" << label << ");";
-}
-
-void NodeCall::renderLoadCallee(OutputContext &oc) const {
-    oc.endl();
-    oc.os << "inner->outer = callee;";
-    oc.endl();
-    oc.os << "callee = inner;";
-}
-
-void NodeCall::renderCall(
-    OutputContext &oc,
-    const std::string &label,
-    const std::string &func
-) const {
-    oc.endl();
-    oc.os << "self->func = &" << label << ";";
-
-    // notice: reset callee->func
-    oc.endl();
-    oc.os << "callee->func = &" << func << ";";
-
-    oc.endl();
-    oc.os << "callee->caller = self;";
-    oc.endl();
-    oc.os << "self = callee;";
-
-    oc.endl();
-    oc.os << "LB_YIELD(" << label << ")";
-}
-
-void NodeCall::renderUnloadCallee(OutputContext &oc) const {
-    oc.endl();
-    oc.os << "inner = callee;";
-    oc.endl();
-    oc.os << "callee = inner->outer;";
-}
-
 void NodeCall::build(
     Instance &instance, Output &output,
     std::gc_function<void (Block &)> &&init,
     std::gc_function<void (Instance &, size_t)> &&before,
     std::gc_function<void (Instance &, size_t)> &&after
 ) {
-    // special symbols:
-    //     lookup: self, input, result, parent
-
     // get callee
 
     Type &callee_type {
@@ -76,18 +30,6 @@ void NodeCall::build(
         }
     ) {
         size_t position {instance.addPosition()};
-
-        // render function definition
-
-        output.header(
-            instance,
-            [&, position](OutputContext &och) {
-                renderLabelDef(
-                    och,
-                    instance.strLabel(position)
-                );
-            }
-        );
 
         // callee is closure
         // create a frame and call the function
@@ -138,7 +80,10 @@ void NodeCall::build(
                 output.content(
                     instance,
                     [&](OutputContext &oc) {
-                        renderLoadCallee(oc);
+                        oc.endl();
+                        oc.os << "inner->outer = callee;";
+                        oc.endl();
+                        oc.os << "callee = inner;";
                     }
                 );
 
@@ -163,10 +108,10 @@ void NodeCall::build(
                 output.content(
                     instance,
                     [&, position](OutputContext &oc) {
-                        renderCall(
-                            oc,
-                            instance.strLabel(position),
-                            callee.strFunc()
+                        block.renderCall(
+                            instance, callee,
+                            position,
+                            oc
                         );
                     }
                 );
@@ -189,7 +134,10 @@ void NodeCall::build(
                 output.content(
                     instance,
                     [&](OutputContext &oc) {
-                        renderUnloadCallee(oc);
+                        oc.endl();
+                        oc.os << "inner = callee;";
+                        oc.endl();
+                        oc.os << "callee = inner->outer;";
                     }
                 );
 

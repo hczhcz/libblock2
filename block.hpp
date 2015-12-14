@@ -37,7 +37,13 @@ private:
     std::gc_list<std::reference_wrapper<Instance>> instances;
 
     void renderFrame(
-        Instance &caller, size_t position,
+        Instance &caller,
+        size_t position,
+        OutputContext &oc
+    ) const;
+    void renderCall(
+        Instance &caller, Instance &instance,
+        size_t position,
         OutputContext &oc
     ) const;
 

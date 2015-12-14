@@ -133,18 +133,6 @@ private:
     Node &source;
     std::gc_vector<std::reference_wrapper<Node>> args;
 
-    void renderLabelDef(
-        OutputContext &och,
-        const std::string &label
-    ) const;
-    void renderLoadCallee(OutputContext &oc) const;
-    void renderCall(
-        OutputContext &oc,
-        const std::string &label,
-        const std::string &func
-    ) const;
-    void renderUnloadCallee(OutputContext &oc) const;
-
     void build(
         Instance &instance, Output &output,
         std::gc_function<void (Block &)> &&init,

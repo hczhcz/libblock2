@@ -3,7 +3,7 @@
 #include "lbstd.h"
 
 #define LB_FUNC(func) \
-    static void (func)( \
+    void (func)( \
         struct frame *self, \
         struct frame *callee, \
         struct frame *inner \

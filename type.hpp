@@ -81,6 +81,9 @@ private:
     // update when called:
     //     callee_types
 
+    // special symbols:
+    //     lookup: self, input, result, parent
+
     bool locked {false};
     size_t last_position {0};
 
