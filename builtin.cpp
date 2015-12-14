@@ -5,10 +5,27 @@
 
 namespace libblock {
 
-void BuiltinContainer::apply(
+std::gc_map<
+    std::string,
+    std::gc_list<std::reference_wrapper<Builtin>>
+> &Builtin::all() {
+    static std::gc_map<
+        std::string,
+        std::gc_list<std::reference_wrapper<Builtin>>
+    > builtins;
+
+    return builtins;
+}
+
+void Builtin::apply(
     std::string &&package,
     Instance &instance
 ) {
+    std::gc_map<
+        std::string,
+        std::reference_wrapper<NodeBlock>
+    > nodes;
+
     for (Builtin &builtin: Builtin::all().at(std::move(package))) {
         auto node = nodes.find(builtin.name);
 
@@ -34,18 +51,6 @@ void BuiltinContainer::apply(
             node->second.get().addBlock(func());
         }
     }
-}
-
-std::gc_map<
-    std::string,
-    std::gc_list<std::reference_wrapper<Builtin>>
-> &Builtin::all() {
-    static std::gc_map<
-        std::string,
-        std::gc_list<std::reference_wrapper<Builtin>>
-    > builtins;
-
-    return builtins;
 }
 
 Builtin::Builtin(

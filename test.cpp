@@ -46,13 +46,12 @@ int main() {
 
     Output output;
     Instance *root_p {nullptr};
-    BuiltinContainer bc;
 
     root_block.build(
         output,
         [&](Block &, Instance &root) {
-            bc.apply("core", root);
-            bc.apply("io", root);
+            Builtin::apply("core", root);
+            Builtin::apply("io", root);
         },
         [&](Block &, Instance &root) {
             root_p = &root;

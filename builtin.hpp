@@ -8,20 +8,6 @@ class Instance;
 class NodeBlock;
 class Block;
 
-class BuiltinContainer {
-private:
-    std::gc_map<
-        std::string,
-        std::reference_wrapper<NodeBlock>
-    > nodes;
-
-public:
-    void apply(
-        std::string &&package,
-        Instance &instance
-    );
-};
-
 class Builtin {
 private:
     static std::gc_map<
@@ -35,6 +21,11 @@ private:
     friend class BuiltinContainer;
 
 public:
+    static void apply(
+        std::string &&package,
+        Instance &instance
+    );
+
     Builtin(
         std::string &&package,
         std::string &&_name,
