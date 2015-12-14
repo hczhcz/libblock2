@@ -8,18 +8,15 @@
 
 #define LB_BIT_WIDTH 64
 
-#define LB_FUNC(func) \
-    void (func)( \
-        struct frame *self, \
-        struct frame *callee, \
-        struct frame *inner, \
-        lb_reg_t tmp \
-    )
-
 struct frame;
 
 typedef uint64_t    lb_reg_t;
-typedef LB_FUNC(*lb_func_t);
+typedef void (*lb_func_t)(
+    struct frame *,
+    struct frame *,
+    struct frame *,
+    lb_reg_t
+);
 
 #ifdef __cplusplus
     typedef std::nullptr_t lb_void_t;
