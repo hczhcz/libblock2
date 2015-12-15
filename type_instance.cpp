@@ -11,7 +11,9 @@ void Instance::typeCheck(Type &type1, Type &type2) {
     }
 }
 
-Instance::Instance() {}
+Instance::Instance():
+    header {*new (GC) OutputTask},
+    content {*new (GC) OutputTask} {}
 
 std::string Instance::strFunc() const {
     return "func_" + std::to_string(tuid);

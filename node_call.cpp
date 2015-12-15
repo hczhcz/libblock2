@@ -7,7 +7,8 @@
 namespace libblock {
 
 void NodeCall::build(
-    Instance &instance, Output &output,
+    Session &session,
+    Instance &instance,
     std::gc_function<void (Block &)> &&init,
     std::gc_function<void (Instance &, size_t)> &&before,
     std::gc_function<void (Instance &, size_t)> &&after
@@ -16,8 +17,7 @@ void NodeCall::build(
 
     Type &callee_type {
         source.buildOut(
-            instance,
-            output,
+            session, instance,
             [](Type &type) -> std::string {
                 return type.strReint("tmp");
             }
@@ -38,8 +38,7 @@ void NodeCall::build(
 
         // render (enter)
 
-        output.content(
-            instance,
+        instance.content.insert(
             [&](OutputContext &oc) {
                 oc.endl();
                 oc.os << "/* call */";
@@ -48,7 +47,7 @@ void NodeCall::build(
         );
 
         closure_p->blocks.buildCall(
-            instance, position, output,
+            session, instance, position,
             [&](Block &block, Instance &callee) {
                 // init
 
@@ -60,8 +59,7 @@ void NodeCall::build(
 
                 // render (parent)
 
-                output.content(
-                    instance,
+                instance.content.insert(
                     [&, position](OutputContext &oc) {
                         oc.endl();
                         oc.os << instance.strInner(position) << "->data.parent = "
@@ -75,8 +73,7 @@ void NodeCall::build(
 
                 // render (load the callee)
 
-                output.content(
-                    instance,
+                instance.content.insert(
                     [&](OutputContext &oc) {
                         oc.endl();
                         oc.os << "inner->outer = callee;";
@@ -89,9 +86,9 @@ void NodeCall::build(
 
                 for (size_t i = 0; i < args.size(); ++i) {
                     block.inArg(
+                        session,
                         instance, callee,
                         i, args[i],
-                        output,
                         [&, position](Type &) {
                             return instance.strCallee(position);
                         }
@@ -105,9 +102,9 @@ void NodeCall::build(
 
                 for (size_t i = 0; i < args.size(); ++i) {
                     block.outArg(
+                        session,
                         instance, callee,
                         i, args[i],
-                        output,
                         [&, position](Type &) {
                             return instance.strCallee(position);
                         }
@@ -116,8 +113,7 @@ void NodeCall::build(
 
                 // render (unload the callee)
 
-                output.content(
-                    instance,
+                instance.content.insert(
                     [&](OutputContext &oc) {
                         oc.endl();
                         oc.os << "inner = callee;";
@@ -134,8 +130,7 @@ void NodeCall::build(
 
         // render (leave)
 
-        output.content(
-            instance,
+        instance.content.insert(
             [&](OutputContext &oc) {
                 oc.leave();
             }
@@ -157,11 +152,11 @@ NodeCall::NodeCall(
     args {std::move(_args)} {}
 
 void NodeCall::buildProc(
-    Instance &instance,
-    Output &output
+    Session &session,
+    Instance &instance
 ) {
     build(
-        instance, output,
+        session, instance,
         [](Block &block) {
             if (!block.getOption(BlockOption::allow_proc)) {
                 throw ErrorDiscardNotAllowed {};
@@ -177,14 +172,14 @@ void NodeCall::buildProc(
 }
 
 Type &NodeCall::buildOut(
+    Session &session,
     Instance &instance,
-    Output &output,
     std::gc_function<std::string (Type &)> &&target
 ) {
     Type *type_p {nullptr}; // return value
 
     build(
-        instance, output,
+        session, instance,
         [](Block &block) {
             if (!block.getOption(BlockOption::allow_out)) {
                 throw ErrorReadNotAllowed {};
@@ -201,8 +196,7 @@ Type &NodeCall::buildOut(
 
             // render
 
-            output.content(
-                instance,
+            instance.content.insert(
                 [&, position, target = std::move(target)](OutputContext &oc) {
                     oc.endl();
                     oc.os << target(type) << " = "
@@ -216,12 +210,12 @@ Type &NodeCall::buildOut(
 }
 
 void NodeCall::buildIn(
+    Session &session,
     Instance &instance, Type &type,
-    Output &output,
     std::gc_function<std::string (Type &)> &&target
 ) {
     build(
-        instance, output,
+        session, instance,
         [](Block &block) {
             if (!block.getOption(BlockOption::allow_in)) {
                 throw ErrorWriteNotAllowed {};
@@ -232,8 +226,7 @@ void NodeCall::buildIn(
 
             // render
 
-            output.content(
-                instance,
+            instance.content.insert(
                 [&, position, target = std::move(target)](OutputContext &oc) {
                     oc.endl();
                     oc.os << instance.strInner(position) << "->data.input = "

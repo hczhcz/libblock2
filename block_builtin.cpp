@@ -31,7 +31,10 @@ void BlockBuiltin::codeFmt(
     }
 }
 
-void BlockBuiltinFmt::buildContent(Instance &instance, Output &output) {
+void BlockBuiltinFmt::buildContent(
+    Session &,
+    Instance &instance
+) {
     // gen type
     // notice: for existing symbols,
     //         Instance::insert covers Instance::check here
@@ -52,8 +55,7 @@ void BlockBuiltinFmt::buildContent(Instance &instance, Output &output) {
 
     // render
 
-    output.content(
-        instance,
+    instance.content.insert(
         [&](OutputContext &oc) {
             codeFmt(str, instance, oc);
         }

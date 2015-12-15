@@ -4,6 +4,18 @@
 
 namespace libblock {
 
+Instance &NodePath::getInner(
+    Session &session,
+    Instance &instance
+) {
+    return source.buildOut(
+        session, instance,
+        [](Type &type) -> std::string {
+            return type.strReint("tmp");
+        }
+    ).prepareLookup();
+}
+
 void NodePath::renderPath(std::ostream &os, size_t level) const {
     for (size_t i = 0; i < level; ++i) {
         os << "->data.parent";
@@ -12,16 +24,6 @@ void NodePath::renderPath(std::ostream &os, size_t level) const {
     if (name != "self") {
         os << "->data." << name;
     }
-}
-
-Instance &NodePath::getInner(Instance &instance, Output &output) {
-    return source.buildOut(
-        instance,
-        output,
-        [](Type &type) -> std::string {
-            return type.strReint("tmp");
-        }
-    ).prepareLookup();
 }
 
 NodePath::NodePath(Node &_source, LookupMode _mode, std::string &&_name):
@@ -35,13 +37,13 @@ NodePath::NodePath(Node &_source, LookupMode _mode, const std::string &_name):
     name {_name} {}
 
 void NodePath::buildProc(
-    Instance &instance,
-    Output &output
+    Session &session,
+    Instance &instance
 ) {
     // get inner
 
     Instance &inner {
-        getInner(instance, output)
+        getInner(session, instance)
     };
 
     // gen type
@@ -56,14 +58,14 @@ void NodePath::buildProc(
 }
 
 Type &NodePath::buildOut(
+    Session &session,
     Instance &instance,
-    Output &output,
     std::gc_function<std::string (Type &)> &&target
 ) {
     // get inner
 
     Instance &inner {
-        getInner(instance, output)
+        getInner(session, instance)
     };
 
     // get type
@@ -77,8 +79,7 @@ Type &NodePath::buildOut(
 
     // render
 
-    output.content(
-        instance,
+    instance.content.insert(
         [&, target = std::move(target), level](OutputContext &oc) {
             oc.endl();
             oc.os << target(type) << " = " << inner.strReint("tmp");
@@ -93,14 +94,14 @@ Type &NodePath::buildOut(
 }
 
 void NodePath::buildIn(
+    Session &session,
     Instance &instance, Type &type,
-    Output &output,
     std::gc_function<std::string (Type &)> &&target
 ) {
     // get inner
 
     Instance &inner {
-        getInner(instance, output)
+        getInner(session, instance)
     };
 
     // set type
@@ -115,8 +116,7 @@ void NodePath::buildIn(
 
     // render
 
-    output.content(
-        instance,
+    instance.content.insert(
         [&, target = std::move(target), level](OutputContext &oc) {
             oc.endl();
             oc.os << inner.strReint("tmp");

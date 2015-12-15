@@ -4,7 +4,7 @@
 
 namespace libblock {
 
-class Output;
+class Session;
 class OutputContext;
 class Instance;
 class Node;
@@ -60,16 +60,19 @@ protected:
     );
 
     virtual void inSpecialArg(
+        Session &session,
         Instance &caller, Instance &instance,
         size_t index, Node &arg,
-        Output &output,
         std::gc_function<std::string (Type &)> &&target
     );
-    virtual void buildContent(Instance &instance, Output &output) = 0;
+    virtual void buildContent(
+        Session &session,
+        Instance &instance
+    ) = 0;
     virtual void outSpecialArg(
+        Session &session,
         Instance &caller, Instance &instance,
         size_t index, Node &arg,
-        Output &output,
         std::gc_function<std::string (Type &)> &&target
     );
 
@@ -77,26 +80,26 @@ public:
     bool getOption(BlockOption option);
 
     void inArg(
+        Session &session,
         Instance &caller, Instance &instance,
         size_t index, Node &arg,
-        Output &output,
         std::gc_function<std::string (Type &)> &&target
     );
     void outArg(
+        Session &session,
         Instance &caller, Instance &instance,
         size_t index, Node &arg,
-        Output &output,
         std::gc_function<std::string (Type &)> &&target
     );
     void buildEntry(
-        Output &output,
+        Session &session,
         std::gc_function<void (Block &, Instance &)> &&before,
         std::gc_function<void (Block &, Instance &)> &&after
     );
     void buildCall(
+        Session &session,
         Instance &caller,
         size_t position,
-        Output &output,
         std::gc_function<void (Block &, Instance &)> &&before,
         std::gc_function<void (Block &, Instance &)> &&after
     );
@@ -124,7 +127,10 @@ private:
 
 protected:
     // as block
-    virtual void buildContent(Instance &instance, Output &output);
+    virtual void buildContent(
+        Session &session,
+        Instance &instance
+    );
 
 public:
     BlockBuiltinFmt(
@@ -145,7 +151,10 @@ private:
 
 protected:
     // as block
-    virtual void buildContent(Instance &instance, Output &output);
+    virtual void buildContent(
+        Session &session,
+        Instance &instance
+    );
 
 public:
     BlockUser(

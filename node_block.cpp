@@ -18,9 +18,9 @@ void NodeBlock::addBlock(Block &block) {
 }
 
 void NodeBlock::buildCall(
+    Session &session,
     Instance &caller,
     size_t position,
-    Output &output,
     std::gc_function<void (Block &, Instance &)> &&before,
     std::gc_function<void (Block &, Instance &)> &&after
 ) {
@@ -31,7 +31,7 @@ void NodeBlock::buildCall(
             if (
                 forkTry([&]() {
                     block.buildCall(
-                        caller, position, output,
+                        session, caller, position,
                         std::move(before),
                         std::move(after)
                     );
@@ -47,7 +47,7 @@ void NodeBlock::buildCall(
 
         if (selected_p) {
             selected_p->buildCall(
-                caller, position, output,
+                session, caller, position,
                 std::move(before),
                 std::move(after)
             );
@@ -56,7 +56,7 @@ void NodeBlock::buildCall(
         }
     } else if (blocks.size() == 1) {
         blocks.front().get().buildCall(
-            caller, position, output,
+            session, caller, position,
             std::move(before),
             std::move(after)
         );
@@ -66,23 +66,22 @@ void NodeBlock::buildCall(
 }
 
 void NodeBlock::buildProc(
-    Instance &,
-    Output &
+    Session &,
+    Instance &
 ) {
     throw ErrorDiscardNotAllowed {};
 }
 
 Type &NodeBlock::buildOut(
+    Session &session,
     Instance &instance,
-    Output &output,
     std::gc_function<std::string (Type &)> &&target
 ) {
     // get type
 
     Type &parent {
         source.buildOut(
-            instance,
-            output,
+            session, instance,
             std::move(target)
         )
     };
@@ -99,8 +98,8 @@ Type &NodeBlock::buildOut(
 }
 
 void NodeBlock::buildIn(
+    Session &,
     Instance &, Type &,
-    Output &,
     std::gc_function<std::string (Type &)> &&
 ) {
     throw ErrorWriteNotAllowed {};

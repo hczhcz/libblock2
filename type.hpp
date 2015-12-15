@@ -4,7 +4,7 @@
 
 namespace libblock {
 
-class Output;
+class OutputTask;
 class OutputContext;
 class Instance;
 class NodeBlock;
@@ -98,6 +98,9 @@ private:
     > callee_types;
 
 public:
+    OutputTask &header;
+    OutputTask &content;
+
     Instance();
 
     std::string strFunc() const;

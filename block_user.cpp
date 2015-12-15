@@ -4,10 +4,13 @@
 
 namespace libblock {
 
-void BlockUser::buildContent(Instance &instance, Output &output) {
+void BlockUser::buildContent(
+    Session &session,
+    Instance &instance
+) {
     // gen type
 
-    ast.buildProc(instance, output);
+    ast.buildProc(session, instance);
 }
 
 BlockUser::BlockUser(

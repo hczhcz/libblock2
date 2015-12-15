@@ -30,31 +30,4 @@ public:
     void generate(OutputContext &oc);
 };
 
-class Output {
-private:
-    std::gc_map<
-        std::reference_wrapper<Instance>,
-        std::reference_wrapper<OutputTask>
-    > headers;
-    std::gc_map<
-        std::reference_wrapper<Instance>,
-        std::reference_wrapper<OutputTask>
-    > contents;
-
-public:
-    void header(
-        Instance &instance,
-        std::gc_function<void (OutputContext &)> &&render
-    );
-    void content(
-        Instance &instance,
-        std::gc_function<void (OutputContext &)> &&render
-    );
-
-    void insert(Instance &instance);
-
-    void getHeader(std::ostream &os, Instance &root) const;
-    void getContent(std::ostream &os, Instance &root) const;
-};
-
 }

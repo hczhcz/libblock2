@@ -23,8 +23,8 @@ NodeSymbol::NodeSymbol(LookupMode _mode, const std::string &_name):
     name {_name} {}
 
 void NodeSymbol::buildProc(
-    Instance &instance,
-    Output &
+    Session &,
+    Instance &instance
 ) {
     // gen type
 
@@ -38,8 +38,8 @@ void NodeSymbol::buildProc(
 }
 
 Type &NodeSymbol::buildOut(
+    Session &,
     Instance &instance,
-    Output &output,
     std::gc_function<std::string (Type &)> &&target
 ) {
     // get type
@@ -53,8 +53,7 @@ Type &NodeSymbol::buildOut(
 
     // render
 
-    output.content(
-        instance,
+    instance.content.insert(
         [&, target = std::move(target), level](OutputContext &oc) {
             oc.endl();
             oc.os << target(type) << " = " << instance.strSelf();
@@ -69,8 +68,8 @@ Type &NodeSymbol::buildOut(
 }
 
 void NodeSymbol::buildIn(
+    Session &,
     Instance &instance, Type &type,
-    Output &output,
     std::gc_function<std::string (Type &)> &&target
 ) {
     // set type
@@ -85,8 +84,7 @@ void NodeSymbol::buildIn(
 
     // render
 
-    output.content(
-        instance,
+    instance.content.insert(
         [&, target = std::move(target), level](OutputContext &oc) {
             oc.endl();
             oc.os << instance.strSelf();

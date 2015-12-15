@@ -11,15 +11,18 @@ using namespace libblock::builder;
 class Do: public BlockBuiltin {
 protected:
     virtual void inSpecialArg(
+        Session &session,
         Instance &caller, Instance &,
         size_t, Node &arg,
-        Output &output,
         std::gc_function<std::string (Type &)> &&
     ) {
-        arg.buildProc(caller, output);
+        arg.buildProc(session, caller);
     }
 
-    virtual void buildContent(Instance &, Output &) {
+    virtual void buildContent(
+        Session &,
+        Instance &
+    ) {
         // nothing
     }
 

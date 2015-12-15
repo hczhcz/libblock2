@@ -1,3 +1,4 @@
+#include "session.hpp"
 #include "builtin.hpp"
 #include "output.hpp"
 #include "type.hpp"
@@ -44,11 +45,11 @@ int main() {
         )
     };
 
-    Output output;
+    Session session;
     Instance *root_p {nullptr};
 
     root_block.buildEntry(
-        output,
+        session,
         [&](Block &, Instance &root) {
             Builtin::apply("core", root);
             Builtin::apply("io", root);
@@ -61,9 +62,9 @@ int main() {
     std::ofstream fs {
         "./build/test.gen.c"
     };
-    output.getHeader(fs, *root_p);
+    session.renderHeader(fs, *root_p);
     fs << std::endl;
-    output.getContent(fs, *root_p);
+    session.renderContent(fs, *root_p);
 
     return 0;
 }

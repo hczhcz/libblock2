@@ -4,7 +4,7 @@
 
 namespace libblock {
 
-class Output;
+class Session;
 class OutputContext;
 class Type;
 class TypeClosure;
@@ -20,17 +20,17 @@ protected:
 
 public:
     virtual void buildProc(
-        Instance &instance,
-        Output &output
+        Session &session,
+        Instance &instance
     ) = 0;
     virtual Type &buildOut(
+        Session &session,
         Instance &instance,
-        Output &output,
         std::gc_function<std::string (Type &)> &&target
     ) = 0;
     virtual void buildIn(
+        Session &session,
         Instance &instance, Type &type,
-        Output &output,
         std::gc_function<std::string (Type &)> &&target
     ) = 0;
 };
@@ -47,17 +47,17 @@ public:
     NodeLiteral(const T &_value);
 
     virtual void buildProc(
-        Instance &instance,
-        Output &output
+        Session &session,
+        Instance &instance
     );
     virtual Type &buildOut(
+        Session &session,
         Instance &instance,
-        Output &output,
         std::gc_function<std::string (Type &)> &&target
     );
     virtual void buildIn(
+        Session &session,
         Instance &instance, Type &type,
-        Output &output,
         std::gc_function<std::string (Type &)> &&target
     );
 };
@@ -83,17 +83,17 @@ public:
     NodeSymbol(LookupMode _mode, const std::string &_name);
 
     virtual void buildProc(
-        Instance &instance,
-        Output &output
+        Session &session,
+        Instance &instance
     );
     virtual Type &buildOut(
+        Session &session,
         Instance &instance,
-        Output &output,
         std::gc_function<std::string (Type &)> &&target
     );
     virtual void buildIn(
+        Session &session,
         Instance &instance, Type &type,
-        Output &output,
         std::gc_function<std::string (Type &)> &&target
     );
 };
@@ -104,26 +104,29 @@ private:
     LookupMode mode;
     std::string name;
 
-    void renderPath(std::ostream &os, size_t level) const;
+    Instance &getInner(
+        Session &session,
+        Instance &instance
+    );
 
-    Instance &getInner(Instance &instance, Output &output);
+    void renderPath(std::ostream &os, size_t level) const;
 
 public:
     NodePath(Node &_source, LookupMode _mode, std::string &&_name);
     NodePath(Node &_source, LookupMode _mode, const std::string &_name);
 
     virtual void buildProc(
-        Instance &instance,
-        Output &output
+        Session &session,
+        Instance &instance
     );
     virtual Type &buildOut(
+        Session &session,
         Instance &instance,
-        Output &output,
         std::gc_function<std::string (Type &)> &&target
     );
     virtual void buildIn(
+        Session &session,
         Instance &instance, Type &type,
-        Output &output,
         std::gc_function<std::string (Type &)> &&target
     );
 };
@@ -134,7 +137,8 @@ private:
     std::gc_vector<std::reference_wrapper<Node>> args;
 
     void build(
-        Instance &instance, Output &output,
+        Session &session,
+        Instance &instance,
         std::gc_function<void (Block &)> &&init,
         std::gc_function<void (Instance &, size_t)> &&before,
         std::gc_function<void (Instance &, size_t)> &&after
@@ -147,17 +151,17 @@ public:
     );
 
     virtual void buildProc(
-        Instance &instance,
-        Output &output
+        Session &session,
+        Instance &instance
     );
     virtual Type &buildOut(
+        Session &session,
         Instance &instance,
-        Output &output,
         std::gc_function<std::string (Type &)> &&target
     );
     virtual void buildIn(
+        Session &session,
         Instance &instance, Type &type,
-        Output &output,
         std::gc_function<std::string (Type &)> &&target
     );
 };
@@ -175,25 +179,25 @@ public:
 
     void addBlock(Block &block_p);
     void buildCall(
+        Session &session,
         Instance &caller,
         size_t position,
-        Output &output,
         std::gc_function<void (Block &, Instance &)> &&before,
         std::gc_function<void (Block &, Instance &)> &&after
     );
 
     virtual void buildProc(
-        Instance &instance,
-        Output &output
+        Session &session,
+        Instance &instance
     );
     virtual Type &buildOut(
+        Session &session,
         Instance &instance,
-        Output &output,
         std::gc_function<std::string (Type &)> &&target
     );
     virtual void buildIn(
+        Session &session,
         Instance &instance, Type &type,
-        Output &output,
         std::gc_function<std::string (Type &)> &&target
     );
 };

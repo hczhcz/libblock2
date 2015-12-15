@@ -58,16 +58,16 @@ NodeLiteral<T>::NodeLiteral(const T &_value):
 
 template <class T>
 void NodeLiteral<T>::buildProc(
-    Instance &,
-    Output &
+    Session &,
+    Instance &
 ) {
     throw ErrorDiscardNotAllowed {};
 }
 
 template <class T>
 Type &NodeLiteral<T>::buildOut(
+    Session &,
     Instance &instance,
-    Output &output,
     std::gc_function<std::string (Type &)> &&target
 ) {
     // get type
@@ -78,8 +78,7 @@ Type &NodeLiteral<T>::buildOut(
 
     // render
 
-    output.content(
-        instance,
+    instance.content.insert(
         [&, target = std::move(target)](OutputContext &oc) {
             oc.endl();
             oc.os << target(type) << " = ";
@@ -95,8 +94,8 @@ Type &NodeLiteral<T>::buildOut(
 
 template <class T>
 void NodeLiteral<T>::buildIn(
+    Session &,
     Instance &, Type &,
-    Output &,
     std::gc_function<std::string (Type &)> &&
 ) {
     throw ErrorWriteNotAllowed {};

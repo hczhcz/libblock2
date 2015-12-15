@@ -1,4 +1,5 @@
 #include "exception.hpp"
+#include "session.hpp"
 #include "output.hpp"
 #include "type.hpp"
 #include "node.hpp"
@@ -7,8 +8,8 @@
 namespace libblock {
 
 Instance &Block::matchInstance(
-    Instance &instance,
-    Output &output
+    Session &session,
+    Instance &instance
 ) {
     // find exist instance
 
@@ -21,12 +22,11 @@ Instance &Block::matchInstance(
     // not found
 
     instances.push_back(instance);
-    output.insert(instance);
+    session.insert(instance);
 
     // render (before body)
 
-    output.content(
-        instance,
+    instance.content.insert(
         [&](OutputContext &oc) {
             instance.renderFuncHead(oc);
         }
@@ -34,7 +34,7 @@ Instance &Block::matchInstance(
 
     // build
 
-    buildContent(instance, output);
+    buildContent(session, instance);
 
     if (!getOption(BlockOption::manual_lock)) {
         instance.lock();
@@ -42,8 +42,7 @@ Instance &Block::matchInstance(
 
     // render (after body)
 
-    output.content(
-        instance,
+    instance.content.insert(
         [&](OutputContext &oc) {
             instance.renderFuncTail(oc);
         }
@@ -51,8 +50,7 @@ Instance &Block::matchInstance(
 
     // render header
 
-    output.header(
-        instance,
+    instance.header.insert(
         [&](OutputContext &och) {
             instance.renderStruct(och);
         }
@@ -141,18 +139,18 @@ Block::Block(
     params {std::move(_params)} {}
 
 void Block::inSpecialArg(
+    Session &,
     Instance &, Instance &,
     size_t, Node &,
-    Output &,
     std::gc_function<std::string (Type &)> &&
 ) {
     throw ErrorTooManyArguments {}; // TODO: va_args?
 }
 
 void Block::outSpecialArg(
+    Session &,
     Instance &, Instance &,
     size_t, Node &,
-    Output &,
     std::gc_function<std::string (Type &)> &&
 ) {
     // nothing, by default // TODO: va_args?
@@ -163,9 +161,9 @@ bool Block::getOption(BlockOption option) {
 }
 
 void Block::inArg(
+    Session &session,
     Instance &caller, Instance &instance,
     size_t index, Node &arg,
-    Output &output,
     std::gc_function<std::string (Type &)> &&target
 ) {
     if (
@@ -173,9 +171,10 @@ void Block::inArg(
         || params[index].second == ParamMode::special
     ) {
         inSpecialArg(
+            session,
             caller, instance,
             index, arg,
-            output, std::move(target)
+            std::move(target)
         );
     } else if (
         params[index].second == ParamMode::in
@@ -184,8 +183,7 @@ void Block::inArg(
         instance.insert(
             params[index].first,
             arg.buildOut(
-                caller,
-                output,
+                session, caller,
                 [&, index, target = std::move(target)](Type &type) {
                     return target(type) + "->data." + params[index].first;
                 }
@@ -195,9 +193,9 @@ void Block::inArg(
 }
 
 void Block::outArg(
+    Session &session,
     Instance &caller, Instance &instance,
     size_t index, Node &arg,
-    Output &output,
     std::gc_function<std::string (Type &)> &&target
 ) {
     if (
@@ -205,18 +203,17 @@ void Block::outArg(
         || params[index].second == ParamMode::special
     ) {
         outSpecialArg(
-            caller, instance,
+            session, caller, instance,
             index, arg,
-            output, std::move(target)
+            std::move(target)
         );
     } else if (
         params[index].second == ParamMode::out
         || params[index].second == ParamMode::var
     ) {
         arg.buildIn(
-            caller,
+            session, caller,
             instance.at(params[index].first),
-            output,
             [&, index, target = std::move(target)](Type &type) {
                 return target(type) + "->data." + params[index].first;
             }
@@ -225,7 +222,7 @@ void Block::outArg(
 }
 
 void Block::buildEntry( // TODO: exported function?
-    Output &output,
+    Session &session,
     std::gc_function<void (Block &, Instance &)> &&before,
     std::gc_function<void (Block &, Instance &)> &&after
 ) {
@@ -242,7 +239,7 @@ void Block::buildEntry( // TODO: exported function?
     // find or create instance
 
     Instance &instance {
-        matchInstance(instance_early, output)
+        matchInstance(session, instance_early)
     };
 
     // out
@@ -251,9 +248,9 @@ void Block::buildEntry( // TODO: exported function?
 }
 
 void Block::buildCall(
+    Session &session,
     Instance &caller,
     size_t position,
-    Output &output,
     std::gc_function<void (Block &, Instance &)> &&before,
     std::gc_function<void (Block &, Instance &)> &&after
 ) {
@@ -265,8 +262,7 @@ void Block::buildCall(
 
     // render (frame)
 
-    output.content(
-        caller,
+    caller.content.insert(
         [&, position](OutputContext &oc) {
             renderFrame(caller, position, oc);
         }
@@ -279,13 +275,12 @@ void Block::buildCall(
     // find or create instance
 
     Instance &instance {
-        matchInstance(instance_early, output)
+        matchInstance(session, instance_early)
     };
 
     // render (call)
 
-    output.content(
-        caller,
+    caller.content.insert(
         [&, position](OutputContext &oc) {
             renderCall(caller, instance, position, oc);
         }
