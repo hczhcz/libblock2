@@ -110,10 +110,6 @@ public:
     std::string strInner(size_t position) const;
     std::string strCallee(size_t position) const;
 
-    void renderStruct(OutputContext &och) const;
-    void renderFuncHead(OutputContext &oc) const;
-    void renderFuncTail(OutputContext &oc) const;
-
     bool in(Instance &instance) const;
 
     Type &at(const std::string &name);
@@ -131,6 +127,10 @@ public:
     void addCallee(size_t position, Instance &callee);
 
     void lock();
+
+    void renderStruct(OutputContext &och) const;
+    void renderFuncHead(OutputContext &oc) const;
+    void renderFuncTail(OutputContext &oc) const;
 
     virtual std::string strDecl(const std::string &name) const;
     virtual std::string strReint(const std::string &name) const;

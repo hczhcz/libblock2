@@ -6,6 +6,63 @@
 
 namespace libblock {
 
+Instance &Block::matchInstance(
+    Instance &instance,
+    Output &output
+) {
+    // find exist instance
+
+    for (Instance &exist: instances) {
+        if (instance.in(exist)) {
+            return exist;
+        }
+    }
+
+    // not found
+
+    instances.push_back(instance);
+    output.insert(instance);
+
+    // render (before body)
+
+    output.content(
+        instance,
+        [&](OutputContext &oc) {
+            instance.renderFuncHead(oc);
+        }
+    );
+
+    // build
+
+    buildContent(instance, output);
+
+    if (!getOption(BlockOption::manual_lock)) {
+        instance.lock();
+    }
+
+    // render (after body)
+
+    output.content(
+        instance,
+        [&](OutputContext &oc) {
+            instance.renderFuncTail(oc);
+        }
+    );
+
+    // render header
+
+    output.header(
+        instance,
+        [&](OutputContext &och) {
+            instance.renderStruct(och);
+        }
+    );
+
+    // return
+
+    return instance;
+}
+
 void Block::renderFrame(
     Instance &caller,
     size_t position,
@@ -71,63 +128,6 @@ void Block::renderCall(
 
     oc.endl();
     oc.os << "LB_YIELD(" << caller.strLabel(position) << ")";
-}
-
-Instance &Block::matchInstance(
-    Instance &instance,
-    Output &output
-) {
-    // find exist instance
-
-    for (Instance &exist: instances) {
-        if (instance.in(exist)) {
-            return exist;
-        }
-    }
-
-    // not found
-
-    instances.push_back(instance);
-    output.insert(instance);
-
-    // render (before body)
-
-    output.content(
-        instance,
-        [&](OutputContext &oc) {
-            instance.renderFuncHead(oc);
-        }
-    );
-
-    // build
-
-    buildContent(instance, output);
-
-    if (!getOption(BlockOption::manual_lock)) {
-        instance.lock();
-    }
-
-    // render (after body)
-
-    output.content(
-        instance,
-        [&](OutputContext &oc) {
-            instance.renderFuncTail(oc);
-        }
-    );
-
-    // render header
-
-    output.header(
-        instance,
-        [&](OutputContext &och) {
-            instance.renderStruct(och);
-        }
-    );
-
-    // return
-
-    return instance;
 }
 
 Block::Block(

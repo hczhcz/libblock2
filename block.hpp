@@ -36,6 +36,11 @@ private:
 
     std::gc_list<std::reference_wrapper<Instance>> instances;
 
+    Instance &matchInstance(
+        Session &session,
+        Instance &instance
+    );
+
     void renderFrame(
         Instance &caller,
         size_t position,
@@ -46,11 +51,6 @@ private:
         size_t position,
         OutputContext &oc
     ) const;
-
-    Instance &matchInstance(
-        Instance &instance,
-        Output &output
-    );
 
 protected:
     Block(

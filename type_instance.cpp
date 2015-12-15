@@ -49,52 +49,6 @@ std::string Instance::strCallee(size_t position) const {
     return "((" + strCalleeType(position) + " *) callee)";
 }
 
-void Instance::renderStruct(OutputContext &och) const {
-    och.endl();
-    och.os << strStruct() << " {";
-    och.enter();
-
-        och.endl();
-        och.os << "struct frame frame;";
-        och.endl();
-
-        och.endl();
-        och.os << "struct {";
-        och.enter();
-
-            for (const std::string &symbol: symbols) {
-                och.endl();
-                och.os << symbol_types.at(symbol).get().strDecl(symbol) << ";";
-            }
-
-        och.leave();
-        och.endl();
-        och.os << "} data;";
-
-    och.leave();
-    och.endl();
-    och.os << "};";
-    och.endl();
-}
-
-void Instance::renderFuncHead(OutputContext &oc) const {
-    oc.endl();
-    oc.os << "LB_ENTER(" << strFunc() << ")";
-    oc.enter();
-}
-
-void Instance::renderFuncTail(OutputContext &oc) const {
-        oc.endl();
-        oc.os << "self->func = &func_illegal;";
-        oc.endl();
-        oc.os << "self = self->caller;";
-
-    oc.leave();
-    oc.endl();
-    oc.os << "LB_EXIT()";
-    oc.endl();
-}
-
 bool Instance::in(Instance &instance) const {
     for (const auto &symbol: symbol_types) {
         if (symbol.second != instance.at(symbol.first)) {
@@ -186,6 +140,52 @@ void Instance::addCallee(size_t position, Instance &callee) {
 
 void Instance::lock() {
     locked = true;
+}
+
+void Instance::renderStruct(OutputContext &och) const {
+    och.endl();
+    och.os << strStruct() << " {";
+    och.enter();
+
+        och.endl();
+        och.os << "struct frame frame;";
+        och.endl();
+
+        och.endl();
+        och.os << "struct {";
+        och.enter();
+
+            for (const std::string &symbol: symbols) {
+                och.endl();
+                och.os << symbol_types.at(symbol).get().strDecl(symbol) << ";";
+            }
+
+        och.leave();
+        och.endl();
+        och.os << "} data;";
+
+    och.leave();
+    och.endl();
+    och.os << "};";
+    och.endl();
+}
+
+void Instance::renderFuncHead(OutputContext &oc) const {
+    oc.endl();
+    oc.os << "LB_ENTER(" << strFunc() << ")";
+    oc.enter();
+}
+
+void Instance::renderFuncTail(OutputContext &oc) const {
+        oc.endl();
+        oc.os << "self->func = &func_illegal;";
+        oc.endl();
+        oc.os << "self = self->caller;";
+
+    oc.leave();
+    oc.endl();
+    oc.os << "LB_EXIT()";
+    oc.endl();
 }
 
 std::string Instance::strDecl(const std::string &name) const {
