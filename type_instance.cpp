@@ -1,7 +1,6 @@
 #include "exception.hpp"
 #include "output.hpp"
 #include "type.hpp"
-#include "node.hpp"
 
 namespace libblock {
 

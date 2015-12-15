@@ -1,7 +1,6 @@
 #include "builtin.hpp"
 #include "type.hpp"
 #include "node.hpp"
-#include "block.hpp"
 
 namespace libblock {
 

@@ -1,5 +1,4 @@
 #include "output.hpp"
-#include "type.hpp"
 
 namespace libblock {
 

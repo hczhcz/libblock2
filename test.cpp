@@ -1,6 +1,5 @@
 #include "session.hpp"
 #include "builtin.hpp"
-#include "output.hpp"
 #include "type.hpp"
 #include "parser.hpp"
 #include "builder_node.hpp"
