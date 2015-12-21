@@ -88,10 +88,7 @@ void NodeCall::build(
                     block.inArg(
                         session,
                         instance, callee,
-                        i, args[i],
-                        [&, position](Type &) {
-                            return instance.strCallee(position);
-                        }
+                        position, i, args[i]
                     );
                 }
             },
@@ -104,10 +101,7 @@ void NodeCall::build(
                     block.outArg(
                         session,
                         instance, callee,
-                        i, args[i],
-                        [&, position](Type &) {
-                            return instance.strCallee(position);
-                        }
+                        position, i, args[i]
                     );
                 }
 

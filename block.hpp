@@ -62,8 +62,7 @@ protected:
     virtual void inSpecialArg(
         Session &session,
         Instance &caller, Instance &instance,
-        size_t index, Node &arg,
-        std::gc_function<std::string (Type &)> &&target
+        size_t position, size_t index, Node &arg
     );
     virtual void buildContent(
         Session &session,
@@ -72,8 +71,7 @@ protected:
     virtual void outSpecialArg(
         Session &session,
         Instance &caller, Instance &instance,
-        size_t index, Node &arg,
-        std::gc_function<std::string (Type &)> &&target
+        size_t position, size_t index, Node &arg
     );
 
 public:
@@ -82,14 +80,12 @@ public:
     void inArg(
         Session &session,
         Instance &caller, Instance &instance,
-        size_t index, Node &arg,
-        std::gc_function<std::string (Type &)> &&target
+        size_t position, size_t index, Node &arg
     );
     void outArg(
         Session &session,
         Instance &caller, Instance &instance,
-        size_t index, Node &arg,
-        std::gc_function<std::string (Type &)> &&target
+        size_t position, size_t index, Node &arg
     );
     void buildEntry(
         Session &session,

@@ -12,8 +12,7 @@ protected:
     virtual void inSpecialArg(
         Session &session,
         Instance &caller, Instance &,
-        size_t, Node &arg,
-        std::gc_function<std::string (Type &)> &&
+        size_t, size_t, Node &arg
     ) {
         arg.buildProc(session, caller);
     }

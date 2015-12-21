@@ -141,8 +141,7 @@ Block::Block(
 void Block::inSpecialArg(
     Session &,
     Instance &, Instance &,
-    size_t, Node &,
-    std::gc_function<std::string (Type &)> &&
+    size_t, size_t, Node &
 ) {
     throw ErrorTooManyArguments {}; // TODO: va_args?
 }
@@ -150,8 +149,7 @@ void Block::inSpecialArg(
 void Block::outSpecialArg(
     Session &,
     Instance &, Instance &,
-    size_t, Node &,
-    std::gc_function<std::string (Type &)> &&
+    size_t, size_t, Node &
 ) {
     // nothing, by default // TODO: va_args?
 }
@@ -163,8 +161,7 @@ bool Block::getOption(BlockOption option) {
 void Block::inArg(
     Session &session,
     Instance &caller, Instance &instance,
-    size_t index, Node &arg,
-    std::gc_function<std::string (Type &)> &&target
+    size_t position, size_t index, Node &arg
 ) {
     if (
         index >= params.size()
@@ -173,8 +170,7 @@ void Block::inArg(
         inSpecialArg(
             session,
             caller, instance,
-            index, arg,
-            std::move(target)
+            position, index, arg
         );
     } else if (
         params[index].second == ParamMode::in
@@ -184,8 +180,9 @@ void Block::inArg(
             params[index].first,
             arg.buildOut(
                 session, caller,
-                [&, index, target = std::move(target)](Type &type) {
-                    return target(type) + "->data." + params[index].first;
+                [&, position, index](Type &) {
+                    return caller.strCallee(position)
+                        + "->data." + params[index].first;
                 }
             )
         );
@@ -195,8 +192,7 @@ void Block::inArg(
 void Block::outArg(
     Session &session,
     Instance &caller, Instance &instance,
-    size_t index, Node &arg,
-    std::gc_function<std::string (Type &)> &&target
+    size_t position, size_t index, Node &arg
 ) {
     if (
         index >= params.size()
@@ -204,8 +200,7 @@ void Block::outArg(
     ) {
         outSpecialArg(
             session, caller, instance,
-            index, arg,
-            std::move(target)
+            position, index, arg
         );
     } else if (
         params[index].second == ParamMode::out
@@ -214,8 +209,9 @@ void Block::outArg(
         arg.buildIn(
             session, caller,
             instance.at(params[index].first),
-            [&, index, target = std::move(target)](Type &type) {
-                return target(type) + "->data." + params[index].first;
+            [&, position, index](Type &) {
+                return caller.strCallee(position)
+                    + "->data." + params[index].first;
             }
         );
     }
