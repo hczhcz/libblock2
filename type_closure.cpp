@@ -10,8 +10,8 @@ std::string TypeClosure::strDecl(const std::string &name) const {
     return parent.strDecl(name);
 }
 
-std::string TypeClosure::strReint(const std::string &name) const {
-    return parent.strReint(name);
+std::string TypeClosure::strReint() const {
+    return parent.strReint();
 }
 
 }

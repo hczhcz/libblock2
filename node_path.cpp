@@ -11,7 +11,7 @@ Instance &NodePath::getInner(
     return source.buildOut(
         session, instance,
         [](Type &type) -> std::string {
-            return type.strReint("tmp");
+            return type.strReint();
         }
     ).prepareLookup();
 }
@@ -82,7 +82,7 @@ Type &NodePath::buildOut(
     instance.content.insert(
         [&, target = std::move(target), level](OutputContext &oc) {
             oc.endl();
-            oc.os << target(type) << " = " << inner.strReint("tmp");
+            oc.os << target(type) << " = " << inner.strReint();
             renderPath(oc.os, level);
             oc.os << ";";
         }
@@ -119,7 +119,7 @@ void NodePath::buildIn(
     instance.content.insert(
         [&, target = std::move(target), level](OutputContext &oc) {
             oc.endl();
-            oc.os << inner.strReint("tmp");
+            oc.os << inner.strReint();
             renderPath(oc.os, level);
             oc.os << " = " << target(type) << ";";
         }

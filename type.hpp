@@ -24,7 +24,7 @@ public:
     Instance &prepareLookup();
 
     virtual std::string strDecl(const std::string &name) const = 0;
-    virtual std::string strReint(const std::string &name) const = 0;
+    virtual std::string strReint() const = 0;
 };
 
 inline bool operator==(const Type &a, const Type &b) {
@@ -48,7 +48,7 @@ public:
     static TypeNative<T> &get();
 
     virtual std::string strDecl(const std::string &name) const;
-    virtual std::string strReint(const std::string &name) const;
+    virtual std::string strReint() const;
 };
 using TypeNativeVoid = TypeNative<lb_void_t>;
 using TypeNativeBool = TypeNative<lb_bool_t>;
@@ -67,7 +67,7 @@ public:
     TypeClosure(Type &_parent, NodeBlock &_blocks);
 
     virtual std::string strDecl(const std::string &name) const;
-    virtual std::string strReint(const std::string &name) const;
+    virtual std::string strReint() const;
 };
 
 class Instance: public Type {
@@ -136,7 +136,7 @@ public:
     void renderFuncTail(OutputContext &oc) const;
 
     virtual std::string strDecl(const std::string &name) const;
-    virtual std::string strReint(const std::string &name) const;
+    virtual std::string strReint() const;
 };
 
 }

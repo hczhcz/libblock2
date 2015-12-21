@@ -193,8 +193,8 @@ std::string Instance::strDecl(const std::string &name) const {
     return strStruct() + " *" + name;
 }
 
-std::string Instance::strReint(const std::string &name) const {
-    return "(*(" + strStruct() + " **) &" + name + ")";
+std::string Instance::strReint() const {
+    return "(*(" + strStruct() + " **) &tmp)";
 }
 
 }

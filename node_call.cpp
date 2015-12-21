@@ -19,7 +19,7 @@ void NodeCall::build(
         source.buildOut(
             session, instance,
             [](Type &type) -> std::string {
-                return type.strReint("tmp");
+                return type.strReint();
             }
         )
     };
@@ -63,7 +63,7 @@ void NodeCall::build(
                     [&, position](OutputContext &oc) {
                         oc.endl();
                         oc.os << instance.strInner(position) << "->data.parent = "
-                              << parent.strReint("tmp") << ";";
+                              << parent.strReint() << ";";
                     }
                 );
 
