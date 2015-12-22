@@ -55,7 +55,7 @@ inline NodePath &$(Node &source, LookupMode mode, std::string &&name) {
 }
 
 template <class... Args>
-inline NodeCall &call(Node &source, Args... args) { // default
+inline NodeCall &call(Node &source, Args... args) {
     return *new (GC) NodeCall {
         source, args...
     };

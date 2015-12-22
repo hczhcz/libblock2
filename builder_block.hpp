@@ -37,7 +37,8 @@ inline BlockUser &block(
     return *new (GC) BlockUser {
         {
             BlockOption::allow_proc,
-            BlockOption::allow_out
+            BlockOption::allow_out,
+            BlockOption::allow_in
         },
         std::move(params),
         ast

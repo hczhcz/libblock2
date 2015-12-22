@@ -706,7 +706,7 @@ public:
         }
         libblock::Node &lb_source {
             *new (GC) libblock::NodeSymbol {
-                libblock::LookupMode::mixed,
+                libblock::LookupMode::local,
                 "self"
             }
         };
