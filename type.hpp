@@ -108,6 +108,9 @@ public:
     std::string strSelf() const;
 
     std::string strLabel(size_t position) const;
+    std::string strSpecialLabel(
+        size_t position, std::string &&name
+    ) const;
     std::string strCalleeType(size_t position) const;
     std::string strCalleeName(size_t position) const;
     std::string strInner(size_t position) const;

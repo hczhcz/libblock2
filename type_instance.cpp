@@ -32,6 +32,14 @@ std::string Instance::strLabel(size_t position) const {
         + std::to_string(position);
 }
 
+std::string Instance::strSpecialLabel(
+    size_t position, std::string &&name
+) const {
+    return name + "_"
+        + std::to_string(tuid) + "_"
+        + std::to_string(position);
+}
+
 std::string Instance::strCalleeType(size_t position) const {
     return callee_types.at(position).get().strStruct();
 }
